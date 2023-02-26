@@ -45,7 +45,9 @@ export function SiteHeader() {
                 <span className="sr-only">Twitter</span>
               </div>
             </Link>
-            <Button variant="outline">Login</Button>
+            <Button variant="outline" disabled={true}>
+              Login
+            </Button>
             <SignupButton>
               <Button variant="default">Register</Button>
             </SignupButton>

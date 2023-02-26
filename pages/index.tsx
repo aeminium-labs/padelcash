@@ -25,7 +25,7 @@ export default function IndexPage() {
       </Head>
       <section className="container grid items-center gap-12 pt-6 pb-8 md:py-10">
         <div className="flex flex-col items-start gap-2">
-          <h1 className="max-w-[1280px] text-3xl font-extrabold leading-snug sm:text-3xl md:text-5xl lg:text-6xl lg:leading-snug">
+          <h1 className="max-w-[1280px] text-4xl font-extrabold leading-tight sm:text-4xl md:text-5xl lg:text-6xl lg:leading-snug">
             The World&apos;s fastest growing sport is moving into the next{" "}
             <span className="text-teal-500">dimension</span>.
           </h1>
@@ -55,7 +55,7 @@ export default function IndexPage() {
             </li>
           </ul>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col gap-4 md:flex-row">
           <SignupButton>
             <Button variant="default" size="lg">
               I&apos;m interested!
@@ -64,11 +64,9 @@ export default function IndexPage() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger disabled>
-                <div
-                  className={buttonVariants({ variant: "outline", size: "lg" })}
-                >
+                <Button disabled variant="outline" size="lg">
                   Read the Whitepaper
-                </div>
+                </Button>
               </TooltipTrigger>
               <TooltipContent>Soon!</TooltipContent>
             </Tooltip>
