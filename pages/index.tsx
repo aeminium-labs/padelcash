@@ -63,7 +63,7 @@ export default function IndexPage() {
           </SignupButton>
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger disabled>
+              <TooltipTrigger disabled asChild>
                 <Button disabled variant="outline" size="lg">
                   Read the Whitepaper
                 </Button>
