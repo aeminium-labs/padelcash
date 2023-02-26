@@ -1,7 +1,6 @@
 import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
-import logo from "@/public/logo.png"
 
 import { NavItem } from "@/types/nav"
 import { siteConfig } from "@/config/site"
