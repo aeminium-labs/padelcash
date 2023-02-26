@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 
 interface LayoutProps {
@@ -8,7 +9,8 @@ export function Layout({ children }: LayoutProps) {
   return (
     <>
       <SiteHeader />
-      <main>{children}</main>
+      <main className="mb-24">{children}</main>
+      <SiteFooter />
     </>
   )
 }

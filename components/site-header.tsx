@@ -3,16 +3,16 @@ import Link from "next/link"
 import { siteConfig } from "@/config/site"
 import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/main-nav"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { buttonVariants } from "@/components/ui/button"
+import { SignupButton } from "@/components/shared/signup-button"
+import { Button, buttonVariants } from "@/components/ui/button"
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-b-slate-200 bg-white dark:border-b-slate-700 dark:bg-slate-900">
+    <header className="sticky top-0 z-40 w-full border-b border-b-teal-200 bg-white dark:border-b-teal-700 dark:bg-slate-900">
       <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
         <MainNav items={siteConfig.mainNav} />
         <div className="flex flex-1 items-center justify-end space-x-4">
-          <nav className="flex items-center space-x-1">
+          <nav className="flex items-center space-x-2">
             <Link
               href={siteConfig.links.github}
               target="_blank"
@@ -45,7 +45,10 @@ export function SiteHeader() {
                 <span className="sr-only">Twitter</span>
               </div>
             </Link>
-            <ThemeToggle />
+            <Button variant="outline">Login</Button>
+            <SignupButton>
+              <Button variant="default">Register</Button>
+            </SignupButton>
           </nav>
         </div>
       </div>

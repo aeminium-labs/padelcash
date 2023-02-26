@@ -1,4 +1,6 @@
 import {
+  ChevronRight,
+  CircleDot,
   Laptop,
   LucideProps,
   Moon,
@@ -14,7 +16,24 @@ export const Icons = {
   moon: Moon,
   laptop: Laptop,
   twitter: Twitter,
+  circleDot: CircleDot,
+  chevronRight: ChevronRight,
   logo: (props: LucideProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" {...props}>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M444 136 252 25h-3L56 136l-2 3v222l2 3 193 111h3l192-111 2-3V139l-2-3ZM258 14c-5-2-11-2-15 0L50 126c-5 2-8 7-8 13v222c0 6 3 11 8 13l193 112c4 2 10 2 15 0l192-112c5-2 8-7 8-13V139c0-6-3-11-8-13L258 14Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="currentColor"
+        d="m317 243 1-8v-10c-2-15-14-30-29-32l-30-1h-62l-20-20a1526 1526 0 0 1-20-21v-1a2 2 0 0 1 1-2h1v-1h1a173 173 0 0 1 17 0h112a80 80 0 0 1 43 17l9 8 6 7 2 3c7 11 10 17 12 26a95 95 0 0 1-3 54 88 88 0 0 1-50 48l-10 3-39 1h-57v27a4151 4151 0 0 1-1 48v1a2 2 0 0 1-5 0l-3-9a14403 14403 0 0 1-37-109v-1a2 2 0 0 1 2-2h1a77 77 0 0 1 7 0h90a1033 1033 0 0 0 33-1 40 40 0 0 0 28-25Z"
+      />
+    </svg>
+  ),
+
+  logo2: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
       <path
         fill="currentColor"

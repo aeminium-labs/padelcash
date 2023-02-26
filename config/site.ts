@@ -8,22 +8,19 @@ interface SiteConfig {
     twitter: string
     github: string
     docs: string
+    aeminium: string
   }
 }
 
 export const siteConfig: SiteConfig = {
-  name: "Next.js",
+  name: "Padelcash",
   description:
     "Beautifully designed components built with Radix UI and Tailwind CSS.",
-  mainNav: [
-    {
-      title: "Home",
-      href: "/",
-    },
-  ],
+  mainNav: [],
   links: {
-    twitter: "https://twitter.com/shadcn",
-    github: "https://github.com/shadcn/ui",
-    docs: "https://ui.shadcn.com",
+    twitter: "https://twitter.com/padelcash",
+    aeminium: "https://github.com/aeminium-labs",
+    github: "https://github.com/aeminium-labs/padelcash",
+    docs: "https://padel.cash",
   },
 }
