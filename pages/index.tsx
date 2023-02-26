@@ -26,8 +26,8 @@ export default function IndexPage() {
       <section className="container grid items-center gap-12 pt-6 pb-8 md:py-10">
         <div className="flex flex-col items-start gap-2">
           <h1 className="max-w-[1280px] text-4xl font-extrabold leading-tight sm:text-4xl md:text-5xl lg:text-6xl lg:leading-snug">
-            The World&apos;s fastest growing sport is moving into the next{" "}
-            <span className="text-teal-500">dimension</span>.
+            Taking the World&apos;s fastest-growing sport into the{" "}
+            <span className="text-teal-500">next digital revolution</span>.
           </h1>
           <p className="text-lg text-slate-700 dark:text-slate-400 sm:text-xl">
             Padelcash is enabling a new padel economy: fast, secure and with

@@ -9,7 +9,7 @@ export function Layout({ children }: LayoutProps) {
   return (
     <>
       <SiteHeader />
-      <main className="mb-24">{children}</main>
+      <main className="py-12">{children}</main>
       <SiteFooter />
     </>
   )

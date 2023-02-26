@@ -16,6 +16,15 @@ export function SiteFooter() {
           >
             aeminium labs
           </Link>
+          . Powered by{" "}
+          <Link
+            href="https://solana.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium underline underline-offset-4"
+          >
+            Solana
+          </Link>
           .
         </p>
       </div>
