@@ -1,6 +1,12 @@
-import { ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { createClient } from "@supabase/supabase-js";
+import { ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+    return twMerge(clsx(inputs));
 }
+
+export const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
