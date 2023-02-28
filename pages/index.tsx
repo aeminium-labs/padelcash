@@ -3,6 +3,7 @@ import Head from "next/head";
 import { Icons } from "@/components/icons";
 import { Layout } from "@/components/layout";
 import { SignupButton } from "@/components/shared/signup-button";
+import { VideoButton } from "@/components/shared/video-button";
 import { Button } from "@/components/ui/button";
 import {
     Tooltip,
@@ -95,22 +96,16 @@ export default function IndexPage() {
                             I&apos;m interested!
                         </Button>
                     </SignupButton>
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <span tabIndex={0}>
-                                    <Button
-                                        disabled
-                                        variant="outline"
-                                        size="lg"
-                                    >
-                                        Read the Whitepaper
-                                    </Button>
-                                </span>
-                            </TooltipTrigger>
-                            <TooltipContent>Soon!</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <VideoButton>
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            className="flex flex-row items-center gap-2"
+                        >
+                            <Icons.youtube className="h-4 w-4" /> Watch the
+                            promo
+                        </Button>
+                    </VideoButton>
                 </div>
             </section>
         </Layout>
