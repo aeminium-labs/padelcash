@@ -5,12 +5,6 @@ import { Layout } from "@/components/layout";
 import { SignupButton } from "@/components/shared/signup-button";
 import { VideoButton } from "@/components/shared/video-button";
 import { Button } from "@/components/ui/button";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 export default function IndexPage() {
     return (
@@ -54,6 +48,18 @@ export default function IndexPage() {
                 <meta name="application-name" content="Padelcash" />
                 <meta name="msapplication-TileColor" content="#00aba9" />
                 <meta name="theme-color" content="#0f172a" />
+                <meta
+                    property="og:title"
+                    content="Padelcash // A new Padel economy"
+                />
+                <meta property="og:site_name" content="Padelcash" />
+                <meta property="og:url" content="https://www.padel.cash" />
+                <meta
+                    property="og:description"
+                    content="Padel is about to enter the next digital era! Pay for lessons, buy your padel equipment and much more with Padelcash"
+                />
+                <meta property="og:type" content="website" />
+                <meta property="og:image" content="/og-padelcash.jpg" />
             </Head>
             <section className="container grid items-center gap-12 pt-6 pb-8 md:py-10">
                 <div className="flex flex-col items-start gap-2">
@@ -69,24 +75,24 @@ export default function IndexPage() {
                 <div className="flex max-w-[980px] flex-col items-start gap-2">
                     <ul className="flex list-none flex-col gap-2 text-xl">
                         <li className="flex items-center gap-2">
-                            <Icons.circleDot className="text-teal-400" /> Pay
-                            for padel lessons
+                            <Icons.circleDot className="h-5 w-5 text-teal-400" />{" "}
+                            Pay for padel lessons
                         </li>
                         <li className="flex items-center gap-2">
-                            <Icons.circleDot className="text-teal-400" /> Buy
-                            padel equipment
+                            <Icons.circleDot className="h-5 w-5 text-teal-400" />{" "}
+                            Buy padel equipment
                         </li>
                         <li className="flex items-center gap-2">
-                            <Icons.circleDot className="text-teal-400" /> Book
-                            padel courts
+                            <Icons.circleDot className="h-5 w-5 text-teal-400" />{" "}
+                            Book padel courts
                         </li>
                         <li className="flex items-center gap-2">
-                            <Icons.circleDot className="text-teal-400" /> Get
-                            rewards for playing padel
+                            <Icons.circleDot className="h-5 w-5 text-teal-400" />{" "}
+                            Get rewards for playing padel
                         </li>
                         <li className="flex items-center gap-2">
-                            <Icons.circleDot className="text-teal-400" /> Invest
-                            your earnings
+                            <Icons.circleDot className="h-5 w-5 text-teal-400" />{" "}
+                            Invest your earnings
                         </li>
                     </ul>
                 </div>
