@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+import { usePathname, useRouter } from "next/navigation";
 import {
     ADAPTER_EVENTS,
     CHAIN_NAMESPACES,
@@ -14,11 +16,21 @@ import { authProviderAtom, web3AuthAtom } from "@/lib/store";
 
 const clientId = process.env.NEXT_PUBLIC_WEB3AUTH_KEY;
 
-const subscribeAuthEvents = (web3auth: Web3AuthCore) => {
-    web3auth.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
-        console.log("connected to wallet", data);
-        // web3auth.provider will be available here after user is connected
-    });
+const subscribeAuthEvents = ({
+    web3auth,
+    path,
+    router,
+}: {
+    web3auth: Web3AuthCore;
+    path: string;
+    router: AppRouterInstance;
+}) => {
+    web3auth.on(
+        ADAPTER_EVENTS.CONNECTED,
+        async (data: CONNECTED_EVENT_DATA) => {
+            console.log("connected to wallet", data);
+        }
+    );
     web3auth.on(ADAPTER_EVENTS.CONNECTING, () => {
         console.log("connecting");
     });
@@ -33,6 +45,8 @@ const subscribeAuthEvents = (web3auth: Web3AuthCore) => {
 export function useWeb3Auth() {
     const [web3auth, setWeb3auth] = useAtom(web3AuthAtom);
     const setProvider = useSetAtom(authProviderAtom);
+    const router = useRouter();
+    const path = usePathname();
 
     useEffect(() => {
         const init = async () => {
@@ -44,8 +58,7 @@ export function useWeb3Auth() {
                         chainConfig: {
                             chainNamespace: CHAIN_NAMESPACES.SOLANA,
                             chainId: "0x1", // Please use 0x1 for Mainnet, 0x2 for Testnet, 0x3 for Devnet
-                            rpcTarget:
-                                "https://rpc.helius.xyz/?api-key=d77a249a-0ebc-4f20-b357-9c4a66307b81",
+                            rpcTarget: `${location.protocol}//${location.host}/api/rpc`,
                         },
                     });
 
@@ -56,8 +69,10 @@ export function useWeb3Auth() {
                         adapterSettings: {
                             whiteLabel: {
                                 name: "Padelcash",
-                                logoLight: "https://www.padel.cash/favicon.svg",
-                                logoDark: "https://www.padel.cash/favicon.svg",
+                                logoLight:
+                                    "https://www.padel.cash/android-chrome-192x192.png",
+                                logoDark:
+                                    "https://www.padel.cash/android-chrome-192x192.png",
                                 defaultLanguage: "en",
                                 dark: true,
                             },
@@ -65,7 +80,6 @@ export function useWeb3Auth() {
                     });
 
                     web3auth.configureAdapter(openloginAdapter);
-
                     setWeb3auth(web3auth);
 
                     await web3auth.init();
@@ -77,7 +91,9 @@ export function useWeb3Auth() {
         if (!web3auth) {
             init();
         } else {
-            subscribeAuthEvents(web3auth);
+            subscribeAuthEvents({ web3auth, router, path });
         }
-    }, [setProvider, setWeb3auth, web3auth]);
+
+        return () => {};
+    }, [setProvider, setWeb3auth, web3auth, router, path]);
 }

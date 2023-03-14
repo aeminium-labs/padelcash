@@ -22,11 +22,6 @@ export class RPC {
             const solanaWallet = new SolanaWallet(this.provider);
             const acc = await solanaWallet.requestAccounts();
 
-            const privateKey = await this.provider.request({
-                method: "solanaPrivateKey",
-            });
-            console.log(privateKey);
-
             return acc;
         } catch (error) {
             return error as string[];

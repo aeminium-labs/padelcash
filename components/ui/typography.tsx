@@ -6,6 +6,7 @@ export const typographyVariants = cva([], {
             paragraph: "leading-7 [&:not(:first-child)]:mt-6",
             small: "text-sm leading-none",
             subtle: "text-sm text-slate-500 dark:text-slate-400",
+            h3: "text-2xl tracking-tight",
         },
         style: {
             normal: "font-normal",

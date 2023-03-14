@@ -1,19 +1,29 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useWeb3Auth } from "@/hooks/use-web3auth";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 
 import { siteConfig } from "@/config/site";
 import {
     authProviderAtom,
     loadableAccountsAtom,
-    loadableBalanceAtom,
+    web3AuthAtom,
 } from "@/lib/store";
+import { trimWalletAddress } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { MainNav } from "@/components/main-nav";
 import { LoginButtton } from "@/components/shared/login-button";
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 function SiteHeaderLoggedOut() {
     return (
@@ -43,15 +53,67 @@ function SiteHeaderLoggedOut() {
 
 function SiteHeaderLoggedIn() {
     const accounts = useAtomValue(loadableAccountsAtom);
-    const balance = useAtomValue(loadableBalanceAtom);
+    const web3auth = useAtomValue(web3AuthAtom);
+    const setProvider = useSetAtom(authProviderAtom);
+    const router = useRouter();
+
+    const onLogoutClick = async () => {
+        if (web3auth) {
+            try {
+                await web3auth.logout();
+                setProvider(null);
+                router.push("/");
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    };
 
     const accountAddress =
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
-    const accountBalance = balance.state === "hasData" ? balance.data : 0;
 
-    console.log(accountAddress);
+    if (accountAddress) {
+        return (
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                        {trimWalletAddress(accountAddress)}
+                        <Icons.moreVertical className="ml-2 h-4 w-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end">
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem
+                            onClick={() =>
+                                router.push(`/account/${accountAddress}/`)
+                            }
+                        >
+                            <Icons.app className="mr-2 h-4 w-4" />
+                            Padelcash App
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() =>
+                                router.push(
+                                    `/account/${accountAddress}/settings`
+                                )
+                            }
+                            disabled={true}
+                        >
+                            <Icons.settings className="mr-2 h-4 w-4" />
+                            Settings
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={onLogoutClick}>
+                            <Icons.logout className="mr-2 h-4 w-4" />
+                            Logout
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        );
+    }
 
-    return <>{accountBalance && <div>{accountBalance}</div>}</>;
+    return null;
 }
 
 export function SiteHeader() {

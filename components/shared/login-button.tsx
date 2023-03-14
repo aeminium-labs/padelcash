@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import { WALLET_ADAPTERS } from "@web3auth/base";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
@@ -32,7 +31,6 @@ export function LoginButtton({ children }: Props) {
     const web3auth = useAtomValue(web3AuthAtom);
     const setProvider = useSetAtom(authProviderAtom);
     const { register, getValues } = useForm<Inputs>();
-    const router = useRouter();
 
     const onProviderClick =
         (provider: string, extra: Record<string, string> = {}) =>
@@ -48,7 +46,6 @@ export function LoginButtton({ children }: Props) {
                         }
                     );
                     setProvider(web3authProvider);
-                    router.push("/account/overview");
                 } catch (e) {
                     console.log(e);
                 }
