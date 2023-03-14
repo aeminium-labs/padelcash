@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { WALLET_ADAPTERS } from "@web3auth/base";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
@@ -31,79 +32,36 @@ export function LoginButtton({ children }: Props) {
     const web3auth = useAtomValue(web3AuthAtom);
     const setProvider = useSetAtom(authProviderAtom);
     const { register, getValues } = useForm<Inputs>();
+    const router = useRouter();
 
-    const onGoogleLoginClick = async () => {
-        if (web3auth) {
-            try {
-                const web3authProvider = await web3auth.connectTo(
-                    WALLET_ADAPTERS.OPENLOGIN,
-                    {
-                        mfaLevel: "none",
-                        loginProvider: "google",
-                    }
-                );
-                setProvider(web3authProvider);
-            } catch (e) {
-                console.log(e);
+    const onProviderClick =
+        (provider: string, extra: Record<string, string> = {}) =>
+        async () => {
+            if (web3auth && web3auth.status === "ready") {
+                try {
+                    const web3authProvider = await web3auth.connectTo(
+                        WALLET_ADAPTERS.OPENLOGIN,
+                        {
+                            mfaLevel: "none",
+                            loginProvider: provider,
+                            extraLoginOptions: extra,
+                        }
+                    );
+                    setProvider(web3authProvider);
+                    router.push("/account/overview");
+                } catch (e) {
+                    console.log(e);
+                }
             }
-        }
-    };
-
-    const onTwitterLoginClick = async () => {
-        if (web3auth) {
-            try {
-                const web3authProvider = await web3auth.connectTo(
-                    WALLET_ADAPTERS.OPENLOGIN,
-                    {
-                        mfaLevel: "none",
-                        loginProvider: "twitter",
-                    }
-                );
-                setProvider(web3authProvider);
-            } catch (e) {
-                console.log(e);
-            }
-        }
-    };
-
-    const onDiscordLoginClick = async () => {
-        if (web3auth) {
-            try {
-                const web3authProvider = await web3auth.connectTo(
-                    WALLET_ADAPTERS.OPENLOGIN,
-                    {
-                        mfaLevel: "none",
-                        loginProvider: "discord",
-                    }
-                );
-                setProvider(web3authProvider);
-            } catch (e) {
-                console.log(e);
-            }
-        }
-    };
+        };
 
     const onEmailLoginClick = async () => {
-        if (web3auth?.status === "ready") {
-            const email = getValues("email");
+        const email = getValues("email");
 
-            try {
-                const web3authProvider = await web3auth.connectTo(
-                    WALLET_ADAPTERS.OPENLOGIN,
-                    {
-                        mfaLevel: "none",
-                        loginProvider: "email_passwordless",
-                        extraLoginOptions: {
-                            login_hint: email,
-                            domain: "https://auth.openlogin.com/",
-                        },
-                    }
-                );
-                setProvider(web3authProvider);
-            } catch (e) {
-                console.log(e);
-            }
-        }
+        onProviderClick("email_passwordless", {
+            login_hint: email,
+            domain: "https://auth.openlogin.com/",
+        });
     };
 
     return (
@@ -120,21 +78,24 @@ export function LoginButtton({ children }: Props) {
                         <Icons.logo className="h-28 w-28" />
                     </div>
                     <div className="flex flex-col gap-4">
-                        <Button variant="subtle" onClick={onGoogleLoginClick}>
+                        <Button
+                            variant="subtle"
+                            onClick={onProviderClick("google")}
+                        >
                             <Icons.google className="mr-2 h-4 w-4" /> Continue
                             with Google
                         </Button>
                         <div className="grid grid-cols-2 gap-4">
                             <Button
                                 variant="subtle"
-                                onClick={onTwitterLoginClick}
+                                onClick={onProviderClick("twitter")}
                             >
                                 <Icons.twitter className="mr-2 h-4 w-4" />
                                 Twitter
                             </Button>
                             <Button
                                 variant="subtle"
-                                onClick={onDiscordLoginClick}
+                                onClick={onProviderClick("discord")}
                             >
                                 <Icons.discord className="mr-2 h-4 w-4" />
                                 Discord
