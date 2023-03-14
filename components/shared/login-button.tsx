@@ -61,7 +61,7 @@ export function LoginButtton({ children }: Props) {
         onProviderClick("email_passwordless", {
             login_hint: email,
             domain: "https://auth.openlogin.com/",
-        });
+        })();
     };
 
     return (
