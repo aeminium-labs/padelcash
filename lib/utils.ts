@@ -7,6 +7,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
 );
+
+export function trimWalletAddress(address: string) {
+    const firstChars = address.slice(0, 5);
+    const lastChars = address.slice(-5);
+
+    return `${firstChars}...${lastChars}`;
+}

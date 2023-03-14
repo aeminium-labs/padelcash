@@ -19,7 +19,7 @@ interface MainNavProps {
     items?: NavItem[];
 }
 
-export function MainNav({ items }: MainNavProps) {
+export function MainNav({ items = [] }: MainNavProps) {
     return (
         <div className="flex gap-6 md:gap-10">
             <Link
@@ -74,8 +74,8 @@ export function MainNav({ items }: MainNavProps) {
                             {siteConfig.name}
                         </Link>
                     </DropdownMenuLabel>
-                    {items?.length > 0 && <DropdownMenuSeparator />}
-                    {items?.map(
+                    {items.length > 0 && <DropdownMenuSeparator />}
+                    {items.map(
                         (item, index) =>
                             item.href && (
                                 <DropdownMenuItem key={index} asChild>
