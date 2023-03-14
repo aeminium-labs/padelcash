@@ -44,7 +44,7 @@ export async function Balances({ data }: Props) {
 
     const padelBalance = {
         native: formatValue(padelToken?.amount, padelToken?.decimals),
-        usd: formatValue(padelToken?.amount, padelToken?.decimals) * 0.1,
+        usd: formatValue((padelToken?.amount || 0) * 0.1, padelToken?.decimals) ,
     };
 
     const usdcBalance = {

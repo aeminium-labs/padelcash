@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, cache } from "react";
 import { Balances } from "@/app/account/[address]/balances";
 import { Transactions } from "@/app/account/[address]/transactions";
 import { gql } from "graphql-request";
@@ -6,7 +6,7 @@ import { gql } from "graphql-request";
 import { graphQLClient } from "@/lib/graphql";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-async function getBalances(address: string) {
+const getBalances = cache(async (address: string) => {
     const query = gql`
         query getBalances($address: String!) {
             account(address: $address) {
@@ -26,9 +26,9 @@ async function getBalances(address: string) {
     `;
 
     return graphQLClient.request(query, { address });
-}
+});
 
-async function getTransfers(address: string) {
+const getTransfers = cache(async (address: string) => {
     const query = gql`
         query getTransfers($address: String!) {
             account(address: $address) {
@@ -53,7 +53,7 @@ async function getTransfers(address: string) {
     `;
 
     return graphQLClient.request(query, { address });
-}
+});
 
 type Props = {
     params: {
@@ -90,5 +90,7 @@ export default async function OverviewPage({ params }: Props) {
 }
 
 export const metadata = {
-    title: "Account Overview",
+    title: "Accounts",
 };
+
+export const revalidate = 30;
