@@ -90,8 +90,6 @@ export function useWeb3Auth() {
 
         if (!web3auth) {
             init();
-        } else {
-            subscribeAuthEvents({ web3auth, router, path });
         }
 
         return () => {};
