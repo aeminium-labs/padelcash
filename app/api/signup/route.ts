@@ -1,7 +1,11 @@
 import { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-import { supabase } from "@/lib/utils";
+const supabase = createClient(
+    process.env.SUPABASE_URL || "",
+    process.env.SUPABASE_ANON_KEY || ""
+);
 
 type Data = { message: String };
 

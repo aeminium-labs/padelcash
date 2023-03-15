@@ -3,7 +3,7 @@ import { BalanceStat } from "@/app/account/[address]/balance-stat";
 import { PADEL_TOKEN, USDC_TOKEN } from "@/lib/constants";
 import { formatValue } from "@/lib/utils";
 
-type Balances = {
+export type Balances = {
     account: {
         balances: {
             nativeBalance: number;
@@ -44,7 +44,7 @@ export async function Balances({ data }: Props) {
 
     const padelBalance = {
         native: formatValue(padelToken?.amount, padelToken?.decimals),
-        usd: formatValue((padelToken?.amount || 0) * 0.1, padelToken?.decimals) ,
+        usd: formatValue((padelToken?.amount || 0) * 0.1, padelToken?.decimals),
     };
 
     const usdcBalance = {

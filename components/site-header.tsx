@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useWeb3Auth } from "@/hooks/use-web3auth";
@@ -57,6 +58,26 @@ function SiteHeaderLoggedIn() {
     const setProvider = useSetAtom(authProviderAtom);
     const router = useRouter();
 
+    const accountAddress =
+        accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
+
+    useEffect(() => {
+        async function registerUser() {
+            if (accountAddress && accountAddress.length > 0 && web3auth) {
+                const userInfo = await web3auth.getUserInfo();
+                await fetch(`/api/register/${accountAddress}`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        email: userInfo.email,
+                        name: userInfo.name,
+                    }),
+                });
+            }
+        }
+
+        registerUser();
+    }, [accountAddress, web3auth]);
+
     const onLogoutClick = async () => {
         if (web3auth) {
             try {
@@ -68,9 +89,6 @@ function SiteHeaderLoggedIn() {
             }
         }
     };
-
-    const accountAddress =
-        accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
 
     if (accountAddress) {
         return (

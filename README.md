@@ -1,78 +1,57 @@
-# next-template
+<br/>
 
-A Next.js 13 template for building apps with Radix UI and Tailwind CSS.
+![logo-graphqlana-narrow](https://www.padel.cash/android-chrome-192x192.png)
 
-## Features
+# Padelcash
 
-- Radix UI Primitives
-- Tailwind CSS
-- Fonts with `@next/font`
-- Icons from [Lucide](https://lucide.dev)
-- Dark mode with `next-themes`
-- Automatic import sorting with `@ianvs/prettier-plugin-sort-imports`
+We're building a new Padel economy with the Padelcash platform enabling P2P payments, on-chain rewards, online shopping and "real-life" utility powered by Solana blockchain.
 
-## Tailwind CSS Features
-
-- Class merging with `taiwind-merge`
-- Animation with `tailwindcss-animate`
-- Conditional classes with `clsx`
-- Variants with `class-variance-authority`
-- Automatic class sorting with `eslint-plugin-tailwindcss`
-
-## Import Sort
-
-The starter comes with `@ianvs/prettier-plugin-sort-imports` for automatically sort your imports.
-
-### Input
-
-```tsx
-import * as React from "react"
-import Link from "next/link"
-
-import { siteConfig } from "@/config/site"
-import { buttonVariants } from "@/components/ui/button"
-import "@/styles/globals.css"
-import { twMerge } from "tailwind-merge"
-
-import { NavItem } from "@/types/nav"
-import { cn } from "@/lib/utils"
+```
+The Padelcash platform is under active development at the moment so expect things to be moving fast.
 ```
 
-### Output
+## FAQ
 
-```tsx
-import * as React from "react"
-// React is always first.
-import Link from "next/link"
-// Followed by next modules.
-import { twMerge } from "tailwind-merge"
+### 1. What is Padelcash?
 
-// Followed by third-party modules
-// Space
-import "@/styles/globals.css"
-// styles
-import { NavItem } from "@/types/nav"
-// types
-import { siteConfig } from "@/config/site"
-// config
-import { cn } from "@/lib/utils"
-// lib
-import { buttonVariants } from "@/components/ui/button"
+-   Platform for paying padel lessons, buying padel equipment, book courts, etc
+-   Backed by $PADEL
+-   Powered by Solana but invisible to users (Web 2.5)
+-   Integration with e-commerce shops and booking applications
 
-// components
-```
+### 2. What is Padel?
 
-### Class Merging
+-   Fastest growing sport in the World
+-   30 million players in more than 90 countries
+-   3 professional circuits
+-   Annual spend forecasted around $400M
+-   Watch intro video - https://www.youtube.com/watch?v=5m8ncaq6pcM
 
-The `cn` util handles conditional classes and class merging.
+### 3. Problems we're solving
 
-### Input
+-   Cash-heavy traditional economy (on-chain records and security)
+-   Low incentives for club loyalty (reward players in $PADEL, special badges)
+-   Prize-money distribution (on-chain automatic distribution)
+-   Social clout and gamification (achievements captured as NFTs)
+-   International barriers ($PADEL as global currency)
+-   Hard to invest earnings (Staking, DeFi with low risk options, token swapping)
 
-```ts
-cn("px-2 bg-slate-100 py-2 bg-slate-200")
-// Outputs `p-2 bg-slate-200`
-```
+### 4. Why Solana?
 
-## License
+-   Speed and transaction cost (firedancer, compressed NFTs)
+-   Solana as the database (on-chain record, tooling, global access)
+-   Constant innovation (DeFi in particular)
+-   "Real world" applications (SolanaPay, Cupcake, TipLink)
 
-Licensed under the [MIT license](https://github.com/shadcn/ui/blob/main/LICENSE.md).
+### 5. Core Team
+
+-   Bernardo Raposo (0xDistro) - https://twitter.com/0xDistro_
+    -   Platform development and Solana integration
+    -   MonkeDAO, FFF, DAA, Grim Syndicate
+    -   Engineering Manager at SingleStore (15+ years of experience)
+    -   Founder of aeminium labs web3 studio (NextJS Solana starter kit, GraphQLana) - https://www.aeminium.xyz/
+    -   UK top 30 padel player
+-   Júlio Álvaro
+    -   Business Development and Partnerships
+    -   Head of Digital Marketing & Technology at Sotheby's (18+ years of experience)
+    -   UK top 5 padel player

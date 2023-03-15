@@ -18,7 +18,7 @@ export type Transfer = {
     }>;
 };
 
-type Transactions = {
+export type Transactions = {
     account: {
         transactions: Array<Transfer>;
     };

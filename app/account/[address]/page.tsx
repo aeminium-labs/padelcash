@@ -25,7 +25,7 @@ const getBalances = cache(async (address: string) => {
         }
     `;
 
-    return graphQLClient.request(query, { address });
+    return graphQLClient.request<Balances>(query, { address });
 });
 
 const getTransfers = cache(async (address: string) => {
@@ -52,7 +52,7 @@ const getTransfers = cache(async (address: string) => {
         }
     `;
 
-    return graphQLClient.request(query, { address });
+    return graphQLClient.request<Transactions>(query, { address });
 });
 
 type Props = {
@@ -76,7 +76,10 @@ export default async function OverviewPage({ params }: Props) {
                 <TabsContent value="transactions">
                     <Suspense fallback={"Loading"}>
                         {/* @ts-expect-error Async Server Component */}
-                        <Transactions data={getTransfers(params.address)} />
+                        <Transactions
+                            data={getTransfers(params.address)}
+                            accountAddress={params.address}
+                        />
                     </Suspense>
                 </TabsContent>
                 <TabsContent value="swaps">

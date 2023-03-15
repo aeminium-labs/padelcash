@@ -29,6 +29,8 @@ const subscribeAuthEvents = ({
         ADAPTER_EVENTS.CONNECTED,
         async (data: CONNECTED_EVENT_DATA) => {
             console.log("connected to wallet", data);
+
+            console.log(await web3auth.getUserInfo());
         }
     );
     web3auth.on(ADAPTER_EVENTS.CONNECTING, () => {
