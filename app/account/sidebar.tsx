@@ -28,11 +28,11 @@ export function Sidebar({ accountAddress }: Props) {
                         Accounts
                     </SidebarLink>
                     <SidebarLink
-                        href={`/account/${accountAddress}/achievements`}
+                        href={`/account/${accountAddress}/badges`}
                         disabled={isDisabled}
                     >
                         <Icons.award className="mr-2 h-4 w-4" />
-                        Achievements
+                        Badges
                     </SidebarLink>
                     <SidebarLink
                         href={`/account/${accountAddress}/payments`}
