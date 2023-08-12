@@ -44,7 +44,6 @@ export default function RootLayout({ children }: Props) {
 }
 
 export const metadata = {
-    metadataBase: new URL("http://localhost:3000"),
     title: {
         default: "Padelcash // A new Padel economy",
         template: "%s // Padelcash",
