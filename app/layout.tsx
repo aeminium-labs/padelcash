@@ -22,7 +22,16 @@ const fontSans = FontSans({
 export default function RootLayout({ children }: Props) {
     return (
         <html lang="en" className={fontSans.variable}>
-            <head />
+            <head>
+                <link
+                    rel="manifest"
+                    href="https://progressier.app/c00Kg9Z1JBplPIq0ICqp/progressier.json"
+                />
+                <script
+                    defer
+                    src="https://progressier.app/c00Kg9Z1JBplPIq0ICqp/script.js"
+                ></script>
+            </head>
             <body className="min-h-screen bg-white font-sans text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-50">
                 <Providers>
                     <SiteHeader />
@@ -49,14 +58,7 @@ export const metadata = {
             { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
             { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
         ],
-        apple: [{ url: "/apple-icon.png", sizes: "180x180" }],
     },
-    manifest: "/site.webmanifest",
-    appleWebApp: {
-        title: "Padelcash",
-    },
-    applicationName: "Padelcash",
-    themeColor: "#0f172a",
     openGraph: {
         title: "Padelcash // A new Padel economy",
         description:
