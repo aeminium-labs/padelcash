@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import {
-    ADAPTER_EVENTS,
-    CHAIN_NAMESPACES,
-    CONNECTED_EVENT_DATA,
-} from "@web3auth/base";
+import { ADAPTER_EVENTS, CHAIN_NAMESPACES } from "@web3auth/base";
 import { Web3AuthNoModal } from "@web3auth/no-modal";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import { SolanaPrivateKeyProvider } from "@web3auth/solana-provider";
@@ -72,6 +68,12 @@ export function useWeb3Auth() {
                                     verifier: "padelcash-discord",
                                     typeOfLogin: "discord",
                                     clientId: "1138241706312089640",
+                                },
+                                google: {
+                                    verifier: "padelcash-google",
+                                    typeOfLogin: "google",
+                                    clientId:
+                                        "684724996220-uj3tjh4krlrs3p63uf2etqbng688nd8e.apps.googleusercontent.com",
                                 },
                             },
                             mfaSettings: {

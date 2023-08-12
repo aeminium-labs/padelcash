@@ -5,7 +5,11 @@ import { WALLET_ADAPTERS } from "@web3auth/base";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
 
-import { web3AuthAtom, web3AuthProviderAtom } from "@/lib/store";
+import {
+    connectionStatusAtom,
+    web3AuthAtom,
+    web3AuthProviderAtom,
+} from "@/lib/store";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,9 +27,12 @@ type Inputs = {
 
 export function LoginButtton({ children }: Props) {
     const web3auth = useAtomValue(web3AuthAtom);
+    const setProvider = useSetAtom(web3AuthProviderAtom);
+    const connectionStatus = useAtomValue(connectionStatusAtom);
+
+    // Local state
     const { register, getValues, handleSubmit, watch } = useForm<Inputs>();
     const [open, setOpen] = React.useState(false);
-    const setProvider = useSetAtom(web3AuthProviderAtom);
 
     const hasEmail = (watch("email") || "").length > 0;
 
@@ -37,7 +44,7 @@ export function LoginButtton({ children }: Props) {
                     const web3authProvider = await web3auth.connectTo(
                         WALLET_ADAPTERS.OPENLOGIN,
                         {
-                            mfaLevel: "none",
+                            mfaLevel: "optional",
                             loginProvider: provider,
                             extraLoginOptions: extra,
                         }
@@ -61,6 +68,9 @@ export function LoginButtton({ children }: Props) {
         })();
     };
 
+    const shouldBeDisabled =
+        connectionStatus !== "ready" && connectionStatus !== "errored";
+
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>{children}</SheetTrigger>
@@ -74,6 +84,7 @@ export function LoginButtton({ children }: Props) {
                             variant="secondary"
                             onClick={onProviderClick("google")}
                             size="lg"
+                            disabled={shouldBeDisabled}
                         >
                             <Icons.google className="mr-2 h-4 w-4" /> Continue
                             with Google
@@ -82,6 +93,7 @@ export function LoginButtton({ children }: Props) {
                             <Button
                                 variant="secondary"
                                 onClick={onProviderClick("twitter")}
+                                disabled={shouldBeDisabled}
                             >
                                 <Icons.twitter className="mr-2 h-4 w-4" />
                                 Twitter
@@ -89,6 +101,7 @@ export function LoginButtton({ children }: Props) {
                             <Button
                                 variant="secondary"
                                 onClick={onProviderClick("discord")}
+                                disabled={shouldBeDisabled}
                             >
                                 <Icons.discord className="mr-2 h-4 w-4" />
                                 Discord
@@ -113,7 +126,7 @@ export function LoginButtton({ children }: Props) {
                         <Button
                             variant="secondary"
                             size="lg"
-                            disabled={!hasEmail}
+                            disabled={shouldBeDisabled || !hasEmail}
                             type="submit"
                         >
                             <Icons.mail className="mr-2 h-4 w-4" />
