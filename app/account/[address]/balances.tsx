@@ -1,21 +1,17 @@
-import { BalanceStat } from "@/app/account/[address]/balance-stat";
-
 import { PADEL_TOKEN, USDC_TOKEN } from "@/lib/constants";
 import { formatValue } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export type Balances = {
     account: {
         balances: {
-            nativeBalance: number;
-            nativeBalanceUSD: number;
-            nativeBalanceDecimals: number;
             tokens: [
                 {
                     amount: number;
                     amountUSD: number;
                     decimals: number;
                     mint: string;
-                }
+                },
             ];
         };
     };
@@ -30,47 +26,28 @@ export async function Balances({ data }: Props) {
         (token) => token.mint === PADEL_TOKEN
     );
 
-    const usdcToken = account.balances.tokens.find(
-        (token) => token.mint === USDC_TOKEN
-    );
-
-    const solBalance = {
-        native: formatValue(
-            account.balances.nativeBalance,
-            account.balances.nativeBalanceDecimals
-        ),
-        usd: formatValue(account.balances.nativeBalanceUSD),
-    };
-
     const padelBalance = {
         native: formatValue(padelToken?.amount, padelToken?.decimals),
         usd: formatValue((padelToken?.amount || 0) * 0.1, padelToken?.decimals),
     };
 
-    const usdcBalance = {
-        native: formatValue(usdcToken?.amount, usdcToken?.decimals),
-        usd: formatValue(usdcToken?.amount, usdcToken?.decimals),
-    };
-
     return (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <BalanceStat
-                nativeValue={padelBalance.native.toString()}
-                usdValue={padelBalance.usd?.toString()}
-                label="PADEL"
-            />
-
-            <BalanceStat
-                nativeValue={solBalance.native.toString()}
-                usdValue={solBalance.usd?.toString()}
-                label="SOL"
-            />
-
-            <BalanceStat
-                nativeValue={usdcBalance.native.toString()}
-                usdValue={usdcBalance.usd?.toString()}
-                label="USDC"
-            />
-        </div>
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-teal-600">
+                        Available balance
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-4xl font-bold mb-1">
+                        {padelBalance.native.toString()} PADEL
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                        ${padelBalance.usd?.toString()} USDC
+                    </p>
+                </CardContent>
+            </Card>
+        </section>
     );
 }

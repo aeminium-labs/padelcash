@@ -1,9 +1,9 @@
 import { Poppins as FontSans } from "next/font/google";
 
 import "@/styles/globals.css";
+
 import { Providers } from "@/app/providers";
 
-import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -27,7 +27,6 @@ export default function RootLayout({ children }: Props) {
                 <Providers>
                     <SiteHeader />
                     {children}
-                    <SiteFooter />
                     <Toaster />
                 </Providers>
             </body>
@@ -36,6 +35,7 @@ export default function RootLayout({ children }: Props) {
 }
 
 export const metadata = {
+    metadataBase: new URL("http://localhost:3000"),
     title: {
         default: "Padelcash // A new Padel economy",
         template: "%s // Padelcash",

@@ -12,6 +12,7 @@ coverage
 .next/
 out/
 build
+tsconfig.tsbuildinfo
 
 # misc
 .DS_Store
@@ -34,3 +35,5 @@ yarn-error.log*
 
 .contentlayer
 .env
+.vercel
+.env*.local

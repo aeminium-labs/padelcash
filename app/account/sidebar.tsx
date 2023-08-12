@@ -2,7 +2,7 @@
 
 import { useAtomValue } from "jotai";
 
-import { authProviderAtom } from "@/lib/store";
+import { connectionStatusAtom } from "@/lib/store";
 import { Icons } from "@/components/icons";
 import { LogoutButton } from "@/components/shared/logout-button";
 import { SidebarLink } from "@/components/shared/sidebar-link";
@@ -12,9 +12,8 @@ type Props = {
 };
 
 export function Sidebar({ accountAddress }: Props) {
-    const provider = useAtomValue(authProviderAtom);
-
-    const isDisabled = !provider;
+    const connectionStatus = useAtomValue(connectionStatusAtom);
+    const isConnected = connectionStatus === "connected";
 
     return (
         <aside className="self-stretch">
@@ -22,14 +21,14 @@ export function Sidebar({ accountAddress }: Props) {
                 <div className="flex flex-col gap-1">
                     <SidebarLink
                         href={`/account/${accountAddress}`}
-                        disabled={isDisabled}
+                        disabled={!isConnected}
                     >
                         <Icons.wallet className="mr-2 h-4 w-4" />
                         Accounts
                     </SidebarLink>
                     <SidebarLink
                         href={`/account/${accountAddress}/badges`}
-                        disabled={isDisabled}
+                        disabled={!isConnected}
                     >
                         <Icons.award className="mr-2 h-4 w-4" />
                         Badges
@@ -88,7 +87,7 @@ export function Sidebar({ accountAddress }: Props) {
                         <Icons.help className="mr-2 h-4 w-4" />
                         Documentation
                     </SidebarLink>
-                    <LogoutButton disabled={isDisabled}>
+                    <LogoutButton disabled={!isConnected}>
                         <Icons.logout className="mr-2 h-4 w-4" />
                         Logout
                     </LogoutButton>

@@ -22,7 +22,7 @@ export function SidebarLink({
 
     const button = (
         <Button
-            variant={isActive ? "subtle" : "ghost"}
+            variant={isActive ? "secondary" : "ghost"}
             size="sm"
             className="w-full justify-start"
             disabled={disabled}

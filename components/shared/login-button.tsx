@@ -5,19 +5,13 @@ import { WALLET_ADAPTERS } from "@web3auth/base";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
 
-import { authProviderAtom, web3AuthAtom } from "@/lib/store";
+import { web3AuthAtom, web3AuthProviderAtom } from "@/lib/store";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 type Props = {
     children: React.ReactNode;
@@ -29,13 +23,16 @@ type Inputs = {
 
 export function LoginButtton({ children }: Props) {
     const web3auth = useAtomValue(web3AuthAtom);
-    const setProvider = useSetAtom(authProviderAtom);
-    const { register, getValues } = useForm<Inputs>();
+    const { register, getValues, handleSubmit, watch } = useForm<Inputs>();
+    const [open, setOpen] = React.useState(false);
+    const setProvider = useSetAtom(web3AuthProviderAtom);
+
+    const hasEmail = (watch("email") || "").length > 0;
 
     const onProviderClick =
         (provider: string, extra: Record<string, string> = {}) =>
         async () => {
-            if (web3auth && web3auth.status === "ready") {
+            if (web3auth) {
                 try {
                     const web3authProvider = await web3auth.connectTo(
                         WALLET_ADAPTERS.OPENLOGIN,
@@ -45,14 +42,17 @@ export function LoginButtton({ children }: Props) {
                             extraLoginOptions: extra,
                         }
                     );
-                    setProvider(web3authProvider);
+                    if (web3auth.connected) {
+                        setOpen(false);
+                        setProvider(web3authProvider);
+                    }
                 } catch (e) {
                     console.log(e);
                 }
             }
         };
 
-    const onEmailLoginClick = async () => {
+    const onEmailLoginSubmit = async () => {
         const email = getValues("email");
 
         onProviderClick("email_passwordless", {
@@ -62,36 +62,32 @@ export function LoginButtton({ children }: Props) {
     };
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    <DialogTitle className="text-center">
-                        Login to your Padelcash account
-                    </DialogTitle>
-                </DialogHeader>
+        <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>{children}</SheetTrigger>
+            <SheetContent side="bottom">
                 <div className="flex flex-col gap-8">
                     <div className="self-center pt-4 text-center text-teal-500">
                         <Icons.logo className="h-28 w-28" />
                     </div>
                     <div className="flex flex-col gap-4">
                         <Button
-                            variant="subtle"
+                            variant="secondary"
                             onClick={onProviderClick("google")}
+                            size="lg"
                         >
                             <Icons.google className="mr-2 h-4 w-4" /> Continue
                             with Google
                         </Button>
                         <div className="grid grid-cols-2 gap-4">
                             <Button
-                                variant="subtle"
+                                variant="secondary"
                                 onClick={onProviderClick("twitter")}
                             >
                                 <Icons.twitter className="mr-2 h-4 w-4" />
                                 Twitter
                             </Button>
                             <Button
-                                variant="subtle"
+                                variant="secondary"
                                 onClick={onProviderClick("discord")}
                             >
                                 <Icons.discord className="mr-2 h-4 w-4" />
@@ -100,7 +96,10 @@ export function LoginButtton({ children }: Props) {
                         </div>
                     </div>
                     <Separator />
-                    <div className="flex flex-col gap-4">
+                    <form
+                        onSubmit={handleSubmit(onEmailLoginSubmit)}
+                        className="flex flex-col gap-4"
+                    >
                         <Label htmlFor="email">Email address</Label>
                         <Input
                             id="email"
@@ -111,13 +110,18 @@ export function LoginButtton({ children }: Props) {
                                 required: true,
                             })}
                         />
-                        <Button variant="subtle" onClick={onEmailLoginClick}>
+                        <Button
+                            variant="secondary"
+                            size="lg"
+                            disabled={!hasEmail}
+                            type="submit"
+                        >
                             <Icons.mail className="mr-2 h-4 w-4" />
                             Continue with Email
                         </Button>
-                    </div>
+                    </form>
                 </div>
-            </DialogContent>
-        </Dialog>
+            </SheetContent>
+        </Sheet>
     );
 }

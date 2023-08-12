@@ -1,70 +1,61 @@
 "use client";
 
 import { useEffect } from "react";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
-import { usePathname, useRouter } from "next/navigation";
 import {
     ADAPTER_EVENTS,
     CHAIN_NAMESPACES,
     CONNECTED_EVENT_DATA,
 } from "@web3auth/base";
-import { Web3AuthCore } from "@web3auth/core";
+import { Web3AuthNoModal } from "@web3auth/no-modal";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import { SolanaPrivateKeyProvider } from "@web3auth/solana-provider";
 import { useAtom, useSetAtom } from "jotai";
 
-import { authProviderAtom, web3AuthAtom } from "@/lib/store";
+import {
+    connectionStatusAtom,
+    Status,
+    web3AuthAtom,
+    web3AuthProviderAtom,
+} from "@/lib/store";
 
 const clientId = process.env.NEXT_PUBLIC_WEB3AUTH_KEY;
 
-const subscribeAuthEvents = ({
-    web3auth,
-    path,
-    router,
-}: {
-    web3auth: Web3AuthCore;
-    path: string;
-    router: AppRouterInstance;
-}) => {
-    web3auth.on(
-        ADAPTER_EVENTS.CONNECTED,
-        async (data: CONNECTED_EVENT_DATA) => {
-            console.log("connected to wallet", data);
-        }
-    );
-    web3auth.on(ADAPTER_EVENTS.CONNECTING, () => {
-        console.log("connecting");
-    });
-    web3auth.on(ADAPTER_EVENTS.DISCONNECTED, () => {
-        console.log("disconnected");
-    });
-    web3auth.on(ADAPTER_EVENTS.ERRORED, (error) => {
-        console.log("error", error);
-    });
-};
-
 export function useWeb3Auth() {
-    const [web3auth, setWeb3auth] = useAtom(web3AuthAtom);
-    const setProvider = useSetAtom(authProviderAtom);
-    const router = useRouter();
-    const path = usePathname();
+    const [web3Auth, setWeb3Auth] = useAtom(web3AuthAtom);
+    const setProvider = useSetAtom(web3AuthProviderAtom);
+    const setConnectionStatus = useSetAtom(connectionStatusAtom);
 
+    // Login for connecting to wallet
     useEffect(() => {
         const init = async () => {
             if (clientId) {
                 try {
-                    const web3auth = new Web3AuthCore({
+                    const chainConfig = {
+                        chainNamespace: CHAIN_NAMESPACES.SOLANA,
+                        chainId: "0x1", // Please use 0x1 for Mainnet, 0x2 for Testnet, 0x3 for Devnet
+                        rpcTarget: `${location.protocol}//${location.host}/api/rpc`,
+                        displayName: "Solana Mainnet",
+                        blockExplorer: "https://explorer.solana.com",
+                        ticker: "SOL",
+                        tickerName: "Solana Token",
+                    };
+
+                    const web3authClient = new Web3AuthNoModal({
                         clientId,
                         web3AuthNetwork: "cyan",
-                        chainConfig: {
-                            chainNamespace: CHAIN_NAMESPACES.SOLANA,
-                            chainId: "0x1", // Please use 0x1 for Mainnet, 0x2 for Testnet, 0x3 for Devnet
-                            rpcTarget: `${location.protocol}//${location.host}/api/rpc`,
-                        },
+                        chainConfig,
+                    });
+
+                    setWeb3Auth(web3authClient);
+
+                    const privateKeyProvider = new SolanaPrivateKeyProvider({
+                        config: { chainConfig },
                     });
 
                     const openloginAdapter = new OpenloginAdapter({
+                        privateKeyProvider,
                         loginSettings: {
-                            mfaLevel: "optional",
+                            mfaLevel: "mandatory",
                         },
                         adapterSettings: {
                             whiteLabel: {
@@ -76,22 +67,116 @@ export function useWeb3Auth() {
                                 defaultLanguage: "en",
                                 dark: true,
                             },
+                            loginConfig: {
+                                discord: {
+                                    verifier: "padelcash-discord",
+                                    typeOfLogin: "discord",
+                                    clientId: "1138241706312089640",
+                                },
+                            },
+                            mfaSettings: {
+                                deviceShareFactor: {
+                                    enable: true,
+                                    priority: 1,
+                                    mandatory: true,
+                                },
+                                backUpShareFactor: {
+                                    enable: true,
+                                    priority: 2,
+                                    mandatory: false,
+                                },
+                                socialBackupFactor: {
+                                    enable: true,
+                                    priority: 3,
+                                    mandatory: false,
+                                },
+                                passwordFactor: {
+                                    enable: true,
+                                    priority: 4,
+                                    mandatory: false,
+                                },
+                            },
                         },
                     });
 
-                    web3auth.configureAdapter(openloginAdapter);
-                    setWeb3auth(web3auth);
+                    web3authClient.configureAdapter(openloginAdapter);
 
-                    await web3auth.init();
-                    setProvider(web3auth.provider);
+                    await web3authClient.init();
+
+                    if (web3authClient.connected) {
+                        setProvider(web3authClient.provider);
+                    }
+
+                    setConnectionStatus(web3authClient.status);
                 } catch (e) {}
             }
         };
 
-        if (!web3auth) {
-            init();
+        init();
+    }, []);
+
+    // Subscribe to adapter events
+    useEffect(() => {
+        if (web3Auth) {
+            web3Auth.on(ADAPTER_EVENTS.CONNECTED, () => {
+                setConnectionStatus(web3Auth.status);
+            });
+
+            web3Auth.on(ADAPTER_EVENTS.CONNECTING, () => {
+                setConnectionStatus(web3Auth.status);
+            });
+
+            web3Auth.on(ADAPTER_EVENTS.DISCONNECTED, () => {
+                setConnectionStatus(web3Auth.status);
+            });
+
+            web3Auth.on(ADAPTER_EVENTS.ERRORED, () => {
+                setConnectionStatus(web3Auth.status);
+            });
+
+            web3Auth.on(ADAPTER_EVENTS.ERRORED, () => {
+                setConnectionStatus(web3Auth.status);
+            });
+
+            web3Auth.on(ADAPTER_EVENTS.READY, () => {
+                setConnectionStatus(web3Auth.status);
+            });
+
+            web3Auth.on(ADAPTER_EVENTS.NOT_READY, () => {
+                setConnectionStatus(web3Auth.status);
+            });
         }
 
-        return () => {};
-    }, [setProvider, setWeb3auth, web3auth, router, path]);
+        return () => {
+            if (web3Auth) {
+                web3Auth.off(ADAPTER_EVENTS.CONNECTED, () => {
+                    setConnectionStatus(web3Auth.status);
+                });
+
+                web3Auth.off(ADAPTER_EVENTS.CONNECTING, () => {
+                    setConnectionStatus(web3Auth.status);
+                });
+
+                web3Auth.off(ADAPTER_EVENTS.DISCONNECTED, () => {
+                    setConnectionStatus(web3Auth.status);
+                });
+
+                web3Auth.off(ADAPTER_EVENTS.ERRORED, (error) => {
+                    setConnectionStatus(web3Auth.status);
+                });
+
+                web3Auth.off(ADAPTER_EVENTS.ERRORED, () => {
+                    setConnectionStatus(web3Auth.status);
+                });
+
+                web3Auth.off(ADAPTER_EVENTS.READY, () => {
+                    setConnectionStatus(web3Auth.status);
+                });
+
+                web3Auth.off(ADAPTER_EVENTS.NOT_READY, () => {
+                    setConnectionStatus(web3Auth.status);
+                });
+            }
+        };
+    }, [web3Auth]);
 }

@@ -1,6 +1,7 @@
 import {
     ArrowLeftRight,
     Award,
+    Book,
     CalendarDays,
     CheckCircle,
     ChevronRight,
@@ -11,6 +12,7 @@ import {
     HeartHandshake,
     Laptop,
     LayoutGrid,
+    LogIn,
     LogOut,
     LucideProps,
     Mail,
@@ -21,10 +23,11 @@ import {
     SunMedium,
     Trophy,
     Twitter,
+    Undo,
     User,
     Wallet,
     Youtube,
-    type Icon as LucideIcon,
+    type IconNode as LucideIcon,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -44,6 +47,7 @@ export const Icons = {
     user: User,
     settings: Settings,
     logout: LogOut,
+    login: LogIn,
     transfer: ArrowLeftRight,
     coins: Coins,
     help: HeartHandshake,
@@ -54,6 +58,8 @@ export const Icons = {
     contact: Contact,
     globe: Globe2,
     calendar: CalendarDays,
+    book: Book,
+    undo: Undo,
     logo: (props: LucideProps) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"
