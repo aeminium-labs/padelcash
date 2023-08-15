@@ -5,6 +5,7 @@ import { AuthChecker } from "@/app/auth-checker";
 import { gql } from "graphql-request";
 
 import { graphQLClient } from "@/lib/graphql";
+import { getBaseUrl } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -32,6 +33,10 @@ const getBalances = async (address: string) => {
 };
 
 const getTransfers = async (address: string) => {
+    const baseUrl = getBaseUrl();
+    const ataReq = await fetch(`${baseUrl}/api/${address}/getAta`);
+    const ataAddress = await ataReq.json();
+
     const query = gql`
         query getTransfers($address: String!) {
             account(address: $address) {
@@ -49,7 +54,9 @@ const getTransfers = async (address: string) => {
         }
     `;
 
-    return graphQLClient.request<Transactions>(query, { address });
+    return graphQLClient.request<Transactions>(query, {
+        address: ataAddress.ata,
+    });
 };
 
 type Props = {
