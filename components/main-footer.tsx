@@ -3,14 +3,17 @@
 import Link from "next/link";
 import { useAtomValue } from "jotai";
 
-import { loadableAccountsAtom, web3AuthAtom } from "@/lib/store";
+import { connectionStatusAtom, loadableAccountsAtom } from "@/lib/store";
 import { Icons } from "@/components/icons";
 import { LoginButtton } from "@/components/shared/login-button";
 import { Button } from "@/components/ui/button";
 
 export function MainFooter() {
     const accounts = useAtomValue(loadableAccountsAtom);
-    const web3auth = useAtomValue(web3AuthAtom);
+    const connectionStatus = useAtomValue(connectionStatusAtom);
+
+    const shouldBeDisabled =
+        connectionStatus !== "ready" && connectionStatus !== "errored";
 
     const accountAddress =
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
@@ -37,7 +40,7 @@ export function MainFooter() {
                             variant="default"
                             size="lg"
                             className="flex flex-row items-center gap-2 w-full"
-                            disabled={web3auth?.status !== "ready"}
+                            disabled={shouldBeDisabled}
                         >
                             <Icons.login className="h-4 w-4" /> Login
                         </Button>

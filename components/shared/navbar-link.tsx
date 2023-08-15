@@ -1,5 +1,6 @@
 "use client";
 
+import { Url } from "next/dist/shared/lib/router/router";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -11,20 +12,22 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export function SidebarLink({
+export function NavbarLink({
     children,
     href,
     disabled = false,
     ...rest
-}: React.ComponentPropsWithoutRef<typeof Link> & { disabled?: boolean }) {
+}: Omit<React.ComponentPropsWithoutRef<typeof Link>, "href"> & {
+    disabled?: boolean;
+    href?: Url;
+}) {
     const pathname = usePathname();
     const isActive = pathname === href;
 
     const button = (
         <Button
-            variant={isActive ? "secondary" : "ghost"}
-            size="sm"
-            className="w-full justify-start"
+            variant={isActive ? "default" : "ghost"}
+            className="w-full flex flex-col h-auto text-xs rounded-none"
             disabled={disabled}
         >
             {children}
@@ -38,7 +41,7 @@ export function SidebarLink({
                     <TooltipTrigger asChild>
                         <span tabIndex={0}>{button}</span>
                     </TooltipTrigger>
-                    <TooltipContent side="left">
+                    <TooltipContent side="top">
                         <p>Soon</p>
                     </TooltipContent>
                 </Tooltip>
@@ -46,9 +49,13 @@ export function SidebarLink({
         );
     }
 
-    return (
-        <Link href={href} {...rest}>
-            {button}
-        </Link>
-    );
+    if (href) {
+        return (
+            <Link href={href} {...rest}>
+                {button}
+            </Link>
+        );
+    }
+
+    return button;
 }

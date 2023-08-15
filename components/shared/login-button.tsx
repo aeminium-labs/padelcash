@@ -15,7 +15,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
 
 type Props = {
     children: React.ReactNode;
@@ -35,6 +42,8 @@ export function LoginButtton({ children }: Props) {
     const [open, setOpen] = React.useState(false);
 
     const hasEmail = (watch("email") || "").length > 0;
+    const shouldBeDisabled =
+        connectionStatus !== "ready" && connectionStatus !== "errored";
 
     const onProviderClick =
         (provider: string, extra: Record<string, string> = {}) =>
@@ -68,17 +77,25 @@ export function LoginButtton({ children }: Props) {
         })();
     };
 
-    const shouldBeDisabled =
-        connectionStatus !== "ready" && connectionStatus !== "errored";
+    const handleOpenChange = (open) => {
+        if (!shouldBeDisabled) {
+            setOpen(open);
+        }
+    };
 
     return (
-        <Sheet open={open} onOpenChange={setOpen}>
+        <Sheet open={open} onOpenChange={handleOpenChange}>
             <SheetTrigger asChild>{children}</SheetTrigger>
             <SheetContent side="bottom">
-                <div className="flex flex-col gap-8">
-                    <div className="self-center pt-4 text-center text-teal-500">
-                        <Icons.logo className="h-28 w-28" />
-                    </div>
+                <SheetHeader className="text-left">
+                    <SheetTitle>Login to your account</SheetTitle>
+                    <SheetDescription>
+                        Use your preferred method to login to your Padelcash
+                        account. If this is your first time, we'll automatically
+                        create a new one.
+                    </SheetDescription>
+                </SheetHeader>
+                <div className="flex flex-col gap-8 mt-8">
                     <div className="flex flex-col gap-4">
                         <Button
                             variant="secondary"
@@ -86,8 +103,8 @@ export function LoginButtton({ children }: Props) {
                             size="lg"
                             disabled={shouldBeDisabled}
                         >
-                            <Icons.google className="mr-2 h-4 w-4" /> Continue
-                            with Google
+                            <Icons.google className="mr-2 h-4 w-4" /> Login with
+                            Google
                         </Button>
                         <div className="grid grid-cols-2 gap-4">
                             <Button
@@ -108,21 +125,33 @@ export function LoginButtton({ children }: Props) {
                             </Button>
                         </div>
                     </div>
-                    <Separator />
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-background px-2 text-muted-foreground">
+                                Or continue with
+                            </span>
+                        </div>
+                    </div>
                     <form
                         onSubmit={handleSubmit(onEmailLoginSubmit)}
                         className="flex flex-col gap-4"
                     >
-                        <Label htmlFor="email">Email address</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="your@email.com"
-                            autoComplete="off"
-                            {...register("email", {
-                                required: true,
-                            })}
-                        />
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="email">Email address</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="your@email.com"
+                                autoComplete="off"
+                                disabled={shouldBeDisabled}
+                                {...register("email", {
+                                    required: true,
+                                })}
+                            />
+                        </div>
                         <Button
                             variant="secondary"
                             size="lg"
@@ -130,7 +159,7 @@ export function LoginButtton({ children }: Props) {
                             type="submit"
                         >
                             <Icons.mail className="mr-2 h-4 w-4" />
-                            Continue with Email
+                            Login with Email
                         </Button>
                     </form>
                 </div>

@@ -1,13 +1,15 @@
-import { cache, Suspense } from "react";
+import { Suspense } from "react";
 import { Balances } from "@/app/account/[address]/balances";
 import { Transactions } from "@/app/account/[address]/transactions";
 import { AuthChecker } from "@/app/auth-checker";
 import { gql } from "graphql-request";
 
 import { graphQLClient } from "@/lib/graphql";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const getBalances = cache(async (address: string) => {
+const getBalances = async (address: string) => {
     const query = gql`
         query getBalances($address: String!) {
             account(address: $address) {
@@ -27,21 +29,15 @@ const getBalances = cache(async (address: string) => {
     `;
 
     return graphQLClient.request<Balances>(query, { address });
-});
+};
 
-const getTransfers = cache(async (address: string) => {
+const getTransfers = async (address: string) => {
     const query = gql`
         query getTransfers($address: String!) {
             account(address: $address) {
                 transactions(type: "TRANSFER") {
-                    description
                     timestamp
                     dateUTC
-                    nativeTransfers {
-                        fromUserAccount
-                        toUserAccount
-                        amount
-                    }
                     tokenTransfers {
                         fromUserAccount
                         toUserAccount
@@ -54,7 +50,7 @@ const getTransfers = cache(async (address: string) => {
     `;
 
     return graphQLClient.request<Transactions>(query, { address });
-});
+};
 
 type Props = {
     params: {
@@ -64,30 +60,34 @@ type Props = {
 
 export default function OverviewPage({ params }: Props) {
     return (
-        <AuthChecker>
+        <AuthChecker address={params.address}>
             <section className="container grid items-center gap-6 pt-6 px-4">
-                <Suspense fallback={"Loading"}>
+                <Suspense fallback={<Skeleton className="h-24 w-full" />}>
                     <Balances data={getBalances(params.address)} />
                 </Suspense>
-                <Tabs defaultValue="transactions">
+                <Tabs defaultValue="activity">
                     <TabsList>
-                        <TabsTrigger value="transactions">
-                            Transactions
+                        <TabsTrigger value="activity">
+                            Recent Activity
                         </TabsTrigger>
-                        <TabsTrigger value="swaps">Swaps</TabsTrigger>
+                        <TabsTrigger value="requests">Requests</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="transactions">
-                        <Suspense fallback={"Loading"}>
-                            <Transactions
-                                data={getTransfers(params.address)}
-                                accountAddress={params.address}
-                            />
+                    <TabsContent value="activity">
+                        <Suspense
+                            fallback={<Skeleton className="h-8 w-full" />}
+                        >
+                            <ScrollArea className="h-80 border rounded-xl ">
+                                <Transactions
+                                    data={getTransfers(params.address)}
+                                    accountAddress={params.address}
+                                />
+                            </ScrollArea>
                         </Suspense>
                     </TabsContent>
-                    <TabsContent value="swaps">
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                    <TabsContent value="requests">
+                        <div className="flex flex-col pt-2 px-2 gap-2">
                             Soon
-                        </p>
+                        </div>
                     </TabsContent>
                 </Tabs>
             </section>

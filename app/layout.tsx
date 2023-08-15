@@ -23,14 +23,12 @@ export default function RootLayout({ children }: Props) {
     return (
         <html lang="en" className={fontSans.variable}>
             <head>
-                <link
-                    rel="manifest"
-                    href="https://progressier.app/c00Kg9Z1JBplPIq0ICqp/progressier.json"
-                />
-                <script
-                    defer
-                    src="https://progressier.app/c00Kg9Z1JBplPIq0ICqp/script.js"
-                ></script>
+                {process.env.NODE_ENV === "production" && (
+                    <script
+                        defer
+                        src="https://progressier.app/c00Kg9Z1JBplPIq0ICqp/script.js"
+                    ></script>
+                )}
             </head>
             <body className="min-h-screen bg-white font-sans text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-50">
                 <Providers>
@@ -58,6 +56,7 @@ export const metadata = {
             { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
         ],
     },
+    manifest: "https://progressier.app/c00Kg9Z1JBplPIq0ICqp/progressier.json",
     openGraph: {
         title: "Padelcash // A new Padel economy",
         description:

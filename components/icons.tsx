@@ -10,6 +10,7 @@ import {
     Contact,
     Globe2,
     HeartHandshake,
+    Landmark,
     Laptop,
     LayoutGrid,
     LogIn,
@@ -17,6 +18,7 @@ import {
     LucideProps,
     Mail,
     Moon,
+    MoreHorizontal,
     MoreVertical,
     Scroll,
     Settings,
@@ -53,6 +55,7 @@ export const Icons = {
     help: HeartHandshake,
     mail: Mail,
     moreVertical: MoreVertical,
+    moreHorizontal: MoreHorizontal,
     app: LayoutGrid,
     trophy: Trophy,
     contact: Contact,
@@ -60,6 +63,7 @@ export const Icons = {
     calendar: CalendarDays,
     book: Book,
     undo: Undo,
+    vault: Landmark,
     logo: (props: LucideProps) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"

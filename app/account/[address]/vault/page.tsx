@@ -17,7 +17,6 @@ export default async function BadgesPage({ params }: Props) {
         </AuthChecker>
     );
 }
-
 export const metadata = {
-    title: "Badges",
+    title: "Vault",
 };
