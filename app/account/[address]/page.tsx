@@ -74,9 +74,13 @@ const getTransfers = async (address: string) => {
         }
     `;
 
-    return graphQLClient.request<Transactions>(query, {
-        address: ataAddress.ata,
-    });
+    if (ataAddress.ata) {
+        return graphQLClient.request<Transactions>(query, {
+            address: ataAddress.ata,
+        });
+    }
+
+    return Promise.resolve({ account: { transactions: [] } });
 };
 
 type Props = {

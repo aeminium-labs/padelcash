@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { PADEL_TOKEN } from "@/lib/constants";
-
 export async function GET(
     req: NextRequest,
     { params }: { params: { address: string } }
@@ -39,11 +37,11 @@ export async function GET(
 
     if (res.ok) {
         const data = await res.json();
-        return NextResponse.json({ ata: data.result.value[0].pubkey });
-    } else {
-        return NextResponse.json(
-            { error: res.statusText },
-            { status: res.status }
-        );
+
+        if (data.result.value.length > 0) {
+            return NextResponse.json({ ata: data.result.value[0].pubkey });
+        }
     }
+
+    return NextResponse.json({ error: res.statusText }, { status: res.status });
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 
 function ViewFinder() {
@@ -11,6 +11,10 @@ function ViewFinder() {
 export function QrCodeScanner() {
     const [code, setCode] = useState<string>("");
     const router = useRouter();
+    const params = useSearchParams();
+
+    const to = params.get("to");
+    const amount = params.get("amount");
 
     useEffect(() => {
         async function getUrl() {
@@ -24,11 +28,9 @@ export function QrCodeScanner() {
             if (res.ok) {
                 const data = await res.json();
 
-                console.log("cam", data);
-
-                // if (data) {
-                //     router.push(`${baseUrl}/pay/${data.code}`);
-                // }
+                if (data.params) {
+                    router.replace(`?${data.params}`);
+                }
             }
         }
 
@@ -37,12 +39,12 @@ export function QrCodeScanner() {
         }
     }, [code]);
 
-    if (code.length > 0) {
+    if (to && amount) {
         return <>somethi</>;
     }
 
     return (
-        <div className="h-80">
+        <div className="rounded-md overflow-hidden">
             <QrScanner
                 onDecode={(result) => {
                     setCode(result);
