@@ -31,6 +31,7 @@
     "@web3auth/no-modal": "^6.1.7",
     "@web3auth/openlogin-adapter": "^6.1.7",
     "@web3auth/solana-provider": "^6.1.7",
+    "@yudiel/react-qr-scanner": "^1.1.10",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
@@ -46,6 +47,7 @@
     "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.4",
+    "react-qr-code": "^2.0.12",
     "sharp": "^0.32.4",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.6"

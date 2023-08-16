@@ -1,23 +1,40 @@
 import { Suspense } from "react";
-import { Balances } from "@/app/account/[address]/balances";
 import { Transactions } from "@/app/account/[address]/transactions";
 import { AuthChecker } from "@/app/auth-checker";
 import { gql } from "graphql-request";
 
+import { PADEL_TOKEN } from "@/lib/constants";
 import { graphQLClient } from "@/lib/graphql";
 import { getBaseUrl } from "@/lib/utils";
+import { PadelBalance } from "@/components/padelBalance";
+import { Container } from "@/components/shared/container";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+export type AccountBalances = {
+    account: {
+        balances: {
+            nativeBalance: number;
+            nativeBalanceUSD: number;
+            nativeBalanceDecimals: number;
+            tokens: [
+                {
+                    amount: number;
+                    amountUSD: number;
+                    decimals: number;
+                    mint: string;
+                },
+            ];
+        };
+    };
+};
 
 const getBalances = async (address: string) => {
     const query = gql`
         query getBalances($address: String!) {
             account(address: $address) {
                 balances {
-                    nativeBalance
-                    nativeBalanceUSD
-                    nativeBalanceDecimals
                     tokens {
                         amount
                         amountUSD
@@ -29,18 +46,21 @@ const getBalances = async (address: string) => {
         }
     `;
 
-    return graphQLClient.request<Balances>(query, { address });
+    return graphQLClient.request<AccountBalances>(query, { address });
 };
 
 const getTransfers = async (address: string) => {
     const baseUrl = getBaseUrl();
-    const ataReq = await fetch(`${baseUrl}/api/${address}/getAta`);
+    const ataReq = await fetch(
+        `${baseUrl}/api/${address}/getAta?mint=${PADEL_TOKEN}`
+    );
     const ataAddress = await ataReq.json();
 
     const query = gql`
         query getTransfers($address: String!) {
             account(address: $address) {
                 transactions(type: "TRANSFER") {
+                    signature
                     timestamp
                     dateUTC
                     tokenTransfers {
@@ -68,20 +88,22 @@ type Props = {
 export default function OverviewPage({ params }: Props) {
     return (
         <AuthChecker address={params.address}>
-            <section className="container grid items-center gap-6 pt-6 px-4">
-                <Suspense fallback={<Skeleton className="h-24 w-full" />}>
-                    <Balances data={getBalances(params.address)} />
+            <Container>
+                <Suspense fallback={<Skeleton className="h-36 w-full" />}>
+                    <PadelBalance data={getBalances(params.address)} />
                 </Suspense>
                 <Tabs defaultValue="activity">
                     <TabsList>
                         <TabsTrigger value="activity">
                             Recent Activity
                         </TabsTrigger>
-                        <TabsTrigger value="requests">Requests</TabsTrigger>
+                        <TabsTrigger value="requests" disabled>
+                            Requests
+                        </TabsTrigger>
                     </TabsList>
                     <TabsContent value="activity">
                         <Suspense
-                            fallback={<Skeleton className="h-8 w-full" />}
+                            fallback={<Skeleton className="h-80 w-full" />}
                         >
                             <ScrollArea className="h-80 border rounded-xl ">
                                 <Transactions
@@ -97,7 +119,7 @@ export default function OverviewPage({ params }: Props) {
                         </div>
                     </TabsContent>
                 </Tabs>
-            </section>
+            </Container>
         </AuthChecker>
     );
 }

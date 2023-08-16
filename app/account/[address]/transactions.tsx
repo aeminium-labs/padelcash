@@ -1,15 +1,18 @@
 import { PADEL_TOKEN, PADEL_TOKEN_VALUE } from "@/lib/constants";
-import { cn, formatDate, formatValue, trimWalletAddress } from "@/lib/utils";
+import { formatDate, formatValue, trimWalletAddress } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
     Sheet,
+    SheetClose,
     SheetContent,
-    SheetDescription,
+    SheetFooter,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
 
 export type Transfer = {
+    signature: string;
     timestamp: number;
     dateUTC: string;
     nativeTransfers: Array<{
@@ -32,6 +35,7 @@ export type Transactions = {
 };
 
 type ParsedTransaction = {
+    signature: string;
     dateUTC: string;
     timestamp: number;
     fromUserAccount: string;
@@ -68,7 +72,7 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                     </div>
                     <div className="flex flex-col gap-1 text-right">
                         <p className={"text-md font-medium leading-none"}>
-                            {`${txSign}$${formatValue(tx.tokenAmount)}`}
+                            {`${txSign}${formatValue(tx.tokenAmount)}`}
                         </p>
                         <p className="text-xs text-muted-foreground">
                             ~ $
@@ -81,13 +85,20 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                 </div>
             </SheetTrigger>
             <SheetContent side="bottom">
-                <SheetHeader>
-                    <SheetTitle className="text-left">
+                <SheetHeader className="text-left">
+                    <SheetTitle className="text-teal-500">
                         Transaction details
                     </SheetTitle>
-                    <SheetDescription></SheetDescription>
                 </SheetHeader>
-                <div className="flex flex-col gap-4 mt-4">
+                <div className="flex flex-col gap-4 my-6">
+                    <div className="flex flex-col gap-1 grow text-left">
+                        <p className="text-xs text-muted-foreground">
+                            Signature
+                        </p>
+                        <p className="text-sm font-medium leading-none">
+                            {trimWalletAddress(tx.signature, 15)}
+                        </p>
+                    </div>
                     <div className="flex flex-col gap-1 grow text-left">
                         <p className="text-xs text-muted-foreground">Date</p>
                         <p className="text-sm font-medium leading-none">
@@ -115,7 +126,7 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                             Amount (PADEL)
                         </p>
                         <p className="text-sm font-medium leading-none">
-                            ${formatValue(tx.tokenAmount)}
+                            {formatValue(tx.tokenAmount)}
                         </p>
                     </div>
                     <div className="flex flex-col gap-1 grow text-left">
@@ -127,6 +138,11 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                         </p>
                     </div>
                 </div>
+                <SheetFooter>
+                    <SheetClose>
+                        <Button className="w-full">Close</Button>
+                    </SheetClose>
+                </SheetFooter>
             </SheetContent>
         </Sheet>
     );
@@ -154,6 +170,7 @@ export async function Transactions({
             if (padelTx) {
                 return {
                     ...padelTx,
+                    signature: tx.signature,
                     tokenAmount: parseFloat(padelTx.tokenAmount),
                     timestamp: tx.timestamp,
                     dateUTC: tx.dateUTC,
@@ -165,7 +182,7 @@ export async function Transactions({
         .filter(Boolean) as Array<ParsedTransaction>;
 
     if (padelTxs.length === 0) {
-        return <p>No transactions</p>;
+        return <p className="p-4">No transactions</p>;
     }
 
     return (

@@ -1,24 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAssociatedTokenAddress } from "@solana/spl-token";
-import { PublicKey } from "@solana/web3.js";
 
 import { PADEL_TOKEN } from "@/lib/constants";
 
-type Data = { message: String };
-
 export async function GET(
-    _: NextRequest,
+    req: NextRequest,
     { params }: { params: { address: string } }
 ) {
-    try {
-        const ata = await getAssociatedTokenAddress(
-            new PublicKey(PADEL_TOKEN),
-            new PublicKey(params.address),
-            false
-        );
+    const url = new URL(req.url);
+    const mint = url.searchParams.get("mint");
 
-        return NextResponse.json({ ata: ata.toBase58() });
-    } catch (e) {
-        return NextResponse.json({ error: e }, { status: 500 });
+    if (!mint?.length) {
+        return NextResponse.json(
+            { error: "no mint address sent" },
+            { status: 500 }
+        );
+    }
+
+    const res = await fetch(
+        `https://rpc.helius.xyz/?api-key=${process.env.HELIUS_API_KEY}`,
+        {
+            method: "POST",
+            body: JSON.stringify({
+                jsonrpc: "2.0",
+                id: 1,
+                method: "getTokenAccountsByOwner",
+                params: [
+                    params.address,
+                    {
+                        mint: url.searchParams.get("mint"),
+                    },
+                    {
+                        encoding: "jsonParsed",
+                    },
+                ],
+            }),
+        }
+    );
+
+    if (res.ok) {
+        const data = await res.json();
+        return NextResponse.json({ ata: data.result.value[0].pubkey });
+    } else {
+        return NextResponse.json(
+            { error: res.statusText },
+            { status: res.status }
+        );
     }
 }

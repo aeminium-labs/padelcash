@@ -1,5 +1,6 @@
 import { AuthChecker } from "@/app/auth-checker";
 
+import { Container } from "@/components/shared/container";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
@@ -11,9 +12,9 @@ type Props = {
 export default async function BadgesPage({ params }: Props) {
     return (
         <AuthChecker address={params.address}>
-            <section className="container grid items-center gap-6 pt-6 px-4">
+            <Container>
                 <Skeleton className="h-24 w-full" />
-            </section>
+            </Container>
         </AuthChecker>
     );
 }

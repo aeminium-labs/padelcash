@@ -1,8 +1,5 @@
-import Link from "next/link";
-
 import { Icons } from "@/components/icons";
 import { NavbarLink } from "@/components/shared/navbar-link";
-import { Button } from "@/components/ui/button";
 
 export default function AccountLayout({
     children,
@@ -17,7 +14,7 @@ export default function AccountLayout({
     return (
         <>
             {children}
-            <footer className="w-full fixed bottom-0 border-t-2 bg-slate-900 border-t-teal-700">
+            <footer className="w-full fixed bottom-0 border-t bg-slate-900 border-t-teal-700">
                 <div className="grid grid-cols-5 divide-x">
                     <NavbarLink href={`/account/${address}`}>
                         <Icons.wallet className="mb-2 h-6 w-6" />
@@ -27,9 +24,9 @@ export default function AccountLayout({
                         <Icons.vault className="mb-2 h-6 w-6" />
                         Vault
                     </NavbarLink>
-                    <NavbarLink href={`/account/${address}/pay`}>
+                    <NavbarLink href={`/account/${address}/payments`}>
                         <Icons.coins className="mb-2 h-6 w-6" />
-                        Pay
+                        Payments
                     </NavbarLink>
                     <NavbarLink href={`/account/${address}/badges`}>
                         <Icons.award className="mb-2 h-6 w-6" />

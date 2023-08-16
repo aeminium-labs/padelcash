@@ -63,19 +63,13 @@ function SiteHeaderLoggedIn() {
 
     useEffect(() => {
         async function registerUser() {
-            if (accountAddress.length > 0 && web3auth) {
-                const userInfo = await web3auth.getUserInfo();
-                await fetch(`/api/register/${accountAddress}`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                        email: userInfo.email,
-                        name: userInfo.name,
-                    }),
-                });
-            }
+            await fetch(`/api/${accountAddress}/register`, {
+                method: "POST",
+                body: JSON.stringify({}),
+            });
         }
 
-        if (isConnected) {
+        if (isConnected && accountAddress.length > 0) {
             registerUser();
         }
     }, [accountAddress, web3auth, isConnected]);

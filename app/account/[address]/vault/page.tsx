@@ -1,6 +1,15 @@
+import { Suspense } from "react";
+import { AccountBalances } from "@/app/account/[address]/page";
 import { AuthChecker } from "@/app/auth-checker";
+import { gql } from "graphql-request";
 
+import { graphQLClient } from "@/lib/graphql";
+import { PadelBalance } from "@/components/padelBalance";
+import { Container } from "@/components/shared/container";
+import { SolBalance } from "@/components/solBalance";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { UsdcBalance } from "@/components/usdcBalance";
 
 type Props = {
     params: {
@@ -8,12 +17,41 @@ type Props = {
     };
 };
 
+const getBalances = async (address: string) => {
+    const query = gql`
+        query getBalances($address: String!) {
+            account(address: $address) {
+                balances {
+                    nativeBalance
+                    nativeBalanceUSD
+                    nativeBalanceDecimals
+                    tokens {
+                        amount
+                        amountUSD
+                        decimals
+                        mint
+                    }
+                }
+            }
+        }
+    `;
+
+    return graphQLClient.request<AccountBalances>(query, { address });
+};
+
 export default async function BadgesPage({ params }: Props) {
+    const balances = getBalances(params.address);
+
     return (
         <AuthChecker address={params.address}>
-            <section className="container grid items-center gap-6 pt-6 px-4">
-                <Skeleton className="h-24 w-full" />
-            </section>
+            <Container>
+                <Suspense fallback={<Skeleton className="h-36 w-full" />}>
+                    <PadelBalance data={balances} label="Wallet balance" />
+                </Suspense>
+                <Separator />
+                <UsdcBalance data={balances} label="USDC balance" />
+                <SolBalance data={balances} label="SOL balance" />
+            </Container>
         </AuthChecker>
     );
 }
