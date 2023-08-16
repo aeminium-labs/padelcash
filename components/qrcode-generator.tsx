@@ -65,7 +65,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
                 const data = await res.json();
 
                 if (data) {
-                    setUrl(`${baseUrl}/pay/${data.code}`);
+                    setUrl(data.code);
                 }
             }
         }
