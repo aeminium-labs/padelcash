@@ -14,7 +14,7 @@ export default function AccountLayout({
     return (
         <>
             {children}
-            <footer className="w-full fixed bottom-0 border-t bg-slate-900 border-t-teal-700">
+            <footer className="w-full fixed bottom-0 border-t bg-slate-900/40 backdrop-blur-xl border-t-teal-700">
                 <div className="grid grid-cols-5 divide-x">
                     <NavbarLink href={`/account/${address}`}>
                         <Icons.wallet className="mb-2 h-6 w-6" />

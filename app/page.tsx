@@ -2,12 +2,13 @@ import Link from "next/link";
 
 import { Icons } from "@/components/icons";
 import { MainFooter } from "@/components/main-footer";
+import { Container } from "@/components/shared/container";
 import { Button } from "@/components/ui/button";
 
 export default function IndexPage() {
     return (
         <>
-            <section className="container px-6 grid items-center gap-12 pt-6 pb-8 md:py-16 mb-20">
+            <Container>
                 <div className="flex flex-col items-start gap-2">
                     <h1 className="max-w-[1280px] text-4xl font-extrabold leading-tight sm:text-4xl md:text-5xl lg:text-6xl lg:leading-snug">
                         Taking the World&apos;s fastest-growing sport into the
@@ -43,7 +44,7 @@ export default function IndexPage() {
                         </li>
                     </ul>
                 </div>
-                <div className="flex flex-col gap-4 md:flex-row">
+                <div className="flex flex-col gap-4 md:flex-row pb-4">
                     <Link
                         href="https://bristle-citron-418.notion.site/3d9aecc3248d4861a98b83bf8ef1959b"
                         target="_blank"
@@ -57,7 +58,7 @@ export default function IndexPage() {
                         </Button>
                     </Link>
                 </div>
-            </section>
+            </Container>
             <MainFooter />
         </>
     );

@@ -147,7 +147,7 @@ export function SiteHeader() {
     const isConnected = useAtomValue(isConnectedAtom);
 
     return (
-        <header className="w-full border-b border-b-teal-200 bg-white dark:border-b-teal-700 dark:bg-slate-900">
+        <header className="fixed top-0 w-full border-b border-b-teal-700 bg-slate-900/30 backdrop-blur-xl z-10">
             <div className="container px-4 flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
                 <Link
                     href="/"

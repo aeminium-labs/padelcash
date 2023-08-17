@@ -51,7 +51,7 @@ export function QrCodeScanner() {
                 }}
                 onError={(error) => console.log(error?.message)}
                 viewFinder={ViewFinder}
-                containerStyle={{ height: 550 }}
+                containerStyle={{ height: 500 }}
                 videoStyle={{ objectFit: "cover" }}
             />
         </div>
