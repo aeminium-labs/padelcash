@@ -2,10 +2,9 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
 import { useAtomValue } from "jotai";
 
-import { fetcher } from "@/lib/fetchers";
+import { retrievePaymentParams } from "@/lib/fetchers";
 import { connectionStatusAtom, loadableAccountsAtom } from "@/lib/store";
 import { Container } from "@/components/shared/container";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -32,15 +31,7 @@ export default function PayPage({ params }: Props) {
 
     useEffect(() => {
         async function checkData() {
-            const res = await fetcher<PayRetrieveResponse>(
-                `/api/pay/retrieve`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        code,
-                    }),
-                }
-            );
+            const res = await retrievePaymentParams(code);
 
             if (!isLoading && res.params) {
                 router.push(

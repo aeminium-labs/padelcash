@@ -50,7 +50,7 @@ export default async function PaymentsPage({ params, searchParams }: Props) {
         <AuthChecker address={params.address}>
             <Container>
                 <Tabs defaultValue={defaultTab}>
-                    <TabsList className="w-full mb-4">
+                    <TabsList className="w-full mb-2">
                         <TabsTrigger value="receive" className="w-full">
                             Receive
                         </TabsTrigger>

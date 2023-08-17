@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { AccountBalances } from "@/app/account/[address]/page";
-import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
+import { Transaction } from "@solana/web3.js";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { useAtomValue } from "jotai";
 
 import { PADEL_TOKEN, PADEL_TOKEN_VALUE } from "@/lib/constants";
-import { fetcher } from "@/lib/fetchers";
+import { createTx, retrievePaymentParams, sendTx } from "@/lib/fetchers";
+import { RPC } from "@/lib/rpc";
 import { web3AuthProviderAtom } from "@/lib/store";
 import { formatValue, trimWalletAddress } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,26 +28,23 @@ function ViewFinder() {
 
 export function QrCodeScanner({ data }: { data: AccountBalances }) {
     const [code, setCode] = useState<string>("");
+    const [status, setStatus] = useState<
+        "idle" | "sending" | "success" | "error"
+    >("idle");
     const router = useRouter();
-    const params = useSearchParams();
+    const params = useParams();
+    const searchParams = useSearchParams();
     const provider = useAtomValue(web3AuthProviderAtom);
 
-    const to = params.get("to");
-    const amount = params.get("amount");
+    const from = params.address;
+    const to = searchParams.get("to");
+    const amount = searchParams.get("amount");
 
     const hasTx = to && amount;
 
     useEffect(() => {
         async function getUrl() {
-            const res = await fetcher<PayRetrieveResponse>(
-                `/api/pay/retrieve`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        code,
-                    }),
-                }
-            );
+            const res = await retrievePaymentParams(code);
 
             if (res.params) {
                 router.replace(`?${res.params}`);
@@ -64,14 +62,23 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
     }
 
     async function handleAcceptClick() {
-        // const res = await fetcher(`/api/pay/retrieve`, {
-        //     method: "POST",
-        //     body: JSON.stringify({
-        //         code,
-        //     }),
-        // });
-        // router.replace("?");
-        // setCode("");
+        // Create new transaction from API
+        const createTxRes = await createTx({
+            senderAddress: Array.isArray(from) ? from[0] : from,
+            receiverAddress: Array.isArray(to) ? to[0] : to,
+            amount: parseFloat(amount || "0"),
+        });
+
+        // Rebuild tx in client
+        const tx = Transaction.from(Buffer.from(createTxRes.tx, "base64"));
+
+        // Sign transaction
+        if (provider) {
+            const rpc = new RPC(provider);
+
+            const signedTx = await rpc.signTransaction(tx);
+            const sendTxRes = await sendTx(signedTx);
+        }
     }
 
     if (hasTx && data) {
@@ -148,12 +155,13 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
                         variant="destructive"
                         size="lg"
                         onClick={handleRejectClick}
+                        disabled={status !== "idle"}
                     >
                         Reject
                     </Button>
                     <Button
                         size="lg"
-                        disabled={!hasEnoughBalance}
+                        disabled={!hasEnoughBalance || status !== "idle"}
                         variant="success"
                         onClick={handleAcceptClick}
                     >

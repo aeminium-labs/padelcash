@@ -9,6 +9,10 @@ import { PADEL_TOKEN } from "@/lib/constants";
 import { getPadelAta, getTokenInfo } from "@/lib/fetchers";
 import { getBaseUrl } from "@/lib/utils";
 
+export type TxCreateResponse = {
+    tx: string;
+};
+
 export async function POST(request: NextRequest) {
     const baseUrl = getBaseUrl();
     const { senderAddress, receiverAddress, amount } = await request.json();
@@ -66,5 +70,5 @@ export async function POST(request: NextRequest) {
 
     const transactionBase64 = serializedTransaction.toString("base64");
 
-    return NextResponse.json({ tx: transactionBase64 });
+    return NextResponse.json<TxCreateResponse>({ tx: transactionBase64 });
 }

@@ -1,15 +1,12 @@
 "use client";
 
 import { MouseEventHandler, useEffect, useState } from "react";
-import { PayCreateResponse } from "@/app/api/pay/create/route";
 import QRCode from "react-qr-code";
 
 import { PADEL_TOKEN_VALUE } from "@/lib/constants";
-import { fetcher } from "@/lib/fetchers";
-import { getBaseUrl } from "@/lib/utils";
+import { createPaymentCode } from "@/lib/fetchers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
     Sheet,
     SheetClose,
@@ -55,12 +52,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
 
     useEffect(() => {
         async function createUrl() {
-            const res = await fetcher<PayCreateResponse>(`/api/pay/create`, {
-                method: "POST",
-                body: JSON.stringify({
-                    params: `to=${to}&amount=${amount}`,
-                }),
-            });
+            const res = await createPaymentCode(`to=${to}&amount=${amount}`);
 
             if (res.code) {
                 setUrl(res.code);
@@ -77,8 +69,8 @@ export function QrCodeGenerator({ to }: { to: string }) {
     const hasOtherAmount = !amounts.includes(amount);
 
     return (
-        <div className="flex flex-col gap-8">
-            <div className="rounded-sm bg-primary p-8">
+        <div className="flex flex-col gap-4">
+            <div className="rounded-md bg-primary p-8">
                 <QRCode value={url} className="w-full" size={300} />
             </div>
             <div className="grid grid-cols-2 gap-2">

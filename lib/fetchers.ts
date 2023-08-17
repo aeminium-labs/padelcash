@@ -1,5 +1,9 @@
+import { PayCreateResponse } from "@/app/api/pay/create/route";
+import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
 import { GetAtaResponse } from "@/app/api/rpc/getAta/route";
 import { GetTokenInfoResponse } from "@/app/api/rpc/getTokenInfo/route";
+import { TxCreateResponse } from "@/app/api/tx/create/route";
+import { TxSendResponse } from "@/app/api/tx/send/route";
 import { RpcResponseAndContext } from "@solana/web3.js";
 
 import { PADEL_TOKEN } from "@/lib/constants";
@@ -45,4 +49,58 @@ export async function getTokenInfo(mint: string) {
             }),
         }
     );
+}
+
+export async function retrievePaymentParams(code: string) {
+    const baseUrl = getBaseUrl();
+
+    return fetcher<PayRetrieveResponse>(`${baseUrl}/api/pay/retrieve`, {
+        method: "POST",
+        body: JSON.stringify({
+            code,
+        }),
+    });
+}
+
+export async function createPaymentCode(params: string) {
+    const baseUrl = getBaseUrl();
+
+    return fetcher<PayCreateResponse>(`${baseUrl}/api/pay/create`, {
+        method: "POST",
+        body: JSON.stringify({
+            params,
+        }),
+    });
+}
+
+export async function createTx({
+    senderAddress,
+    receiverAddress,
+    amount,
+}: {
+    senderAddress: string;
+    receiverAddress: string;
+    amount: number;
+}) {
+    const baseUrl = getBaseUrl();
+
+    return fetcher<TxCreateResponse>(`${baseUrl}/api/pay/create`, {
+        method: "POST",
+        body: JSON.stringify({
+            senderAddress,
+            receiverAddress,
+            amount,
+        }),
+    });
+}
+
+export async function sendTx(signedTx: string) {
+    const baseUrl = getBaseUrl();
+
+    return fetcher<TxSendResponse>(`${baseUrl}/api/pay/create`, {
+        method: "POST",
+        body: JSON.stringify({
+            signedTx,
+        }),
+    });
 }
