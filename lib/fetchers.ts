@@ -83,8 +83,7 @@ export async function createTx({
     amount: number;
 }) {
     const baseUrl = getBaseUrl();
-
-    return fetcher<TxCreateResponse>(`${baseUrl}/api/pay/create`, {
+    return fetcher<TxCreateResponse>(`${baseUrl}/api/tx/create`, {
         method: "POST",
         body: JSON.stringify({
             senderAddress,
@@ -97,7 +96,7 @@ export async function createTx({
 export async function sendTx(signedTx: string) {
     const baseUrl = getBaseUrl();
 
-    return fetcher<TxSendResponse>(`${baseUrl}/api/pay/create`, {
+    return fetcher<TxSendResponse>(`${baseUrl}/api/tx/send`, {
         method: "POST",
         body: JSON.stringify({
             signedTx,
