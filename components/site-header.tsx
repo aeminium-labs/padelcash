@@ -3,10 +3,12 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { LogoutResponse } from "@/app/api/logout/route";
 import { useWeb3Auth } from "@/hooks/use-web3auth";
 import { useAtomValue, useSetAtom } from "jotai";
 
 import { siteConfig } from "@/config/site";
+import { fetcher } from "@/lib/fetchers";
 import {
     connectionStatusAtom,
     isConnectedAtom,
@@ -63,7 +65,7 @@ function SiteHeaderLoggedIn() {
 
     useEffect(() => {
         async function registerUser() {
-            await fetch(`/api/${accountAddress}/register`, {
+            await fetcher(`/api/${accountAddress}/register`, {
                 method: "POST",
                 body: JSON.stringify({}),
             });
@@ -85,7 +87,7 @@ function SiteHeaderLoggedIn() {
                 await web3auth.logout();
                 setProvider(null);
 
-                await fetch(`/api/logout`, {
+                await fetcher<LogoutResponse>(`/api/logout`, {
                     method: "POST",
                     body: JSON.stringify({
                         token: userInfo.oAuthAccessToken,

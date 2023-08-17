@@ -1,9 +1,11 @@
 "use client";
 
 import { MouseEventHandler, useEffect, useState } from "react";
+import { PayCreateResponse } from "@/app/api/pay/create/route";
 import QRCode from "react-qr-code";
 
 import { PADEL_TOKEN_VALUE } from "@/lib/constants";
+import { fetcher } from "@/lib/fetchers";
 import { getBaseUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,25 +50,20 @@ function AmountButton({
 }
 
 export function QrCodeGenerator({ to }: { to: string }) {
-    const baseUrl = getBaseUrl();
     const [amount, setAmount] = useState(50);
     const [url, setUrl] = useState<string>("");
 
     useEffect(() => {
         async function createUrl() {
-            const res = await fetch(`/api/pay/create`, {
+            const res = await fetcher<PayCreateResponse>(`/api/pay/create`, {
                 method: "POST",
                 body: JSON.stringify({
                     params: `to=${to}&amount=${amount}`,
                 }),
             });
 
-            if (res.ok) {
-                const data = await res.json();
-
-                if (data) {
-                    setUrl(data.code);
-                }
+            if (res.code) {
+                setUrl(res.code);
             }
         }
 

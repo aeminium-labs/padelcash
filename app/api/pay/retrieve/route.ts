@@ -1,6 +1,10 @@
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
+export type PayRetrieveResponse = {
+    params: string;
+};
+
 export async function POST(req: NextRequest) {
     const body = await req.json();
 
@@ -18,7 +22,9 @@ export async function POST(req: NextRequest) {
 
         decryptedData += decipher.final("utf8");
 
-        return NextResponse.json({ params: decryptedData });
+        return NextResponse.json<PayRetrieveResponse>({
+            params: decryptedData,
+        });
     }
 
     return NextResponse.json({

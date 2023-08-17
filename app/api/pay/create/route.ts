@@ -1,6 +1,10 @@
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
+export type PayCreateResponse = {
+    code: string;
+};
+
 export async function POST(req: NextRequest) {
     const body = await req.json();
 

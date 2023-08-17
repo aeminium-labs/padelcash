@@ -34,26 +34,37 @@ export const isConnectedAtom = atom<boolean>((get) => {
 });
 
 const accountsAtom = atom(async (get) => {
-    const provider = get(web3AuthProviderAtom);
-    if (!provider) {
+    const rpc = get(rpcAtom);
+
+    if (!rpc) {
         return null;
     }
 
-    const rpc = new RPC(provider);
     return rpc.getAccounts();
 });
 accountsAtom.debugLabel = "accountsAtom";
 
 const balanceAtom = atom(async (get) => {
+    const rpc = get(rpcAtom);
+
+    if (!rpc) {
+        return null;
+    }
+
+    return rpc.getBalance();
+});
+balanceAtom.debugLabel = "balanceAtom";
+
+const rpcAtom = atom((get) => {
     const provider = get(web3AuthProviderAtom);
+
     if (!provider) {
         return null;
     }
 
-    const rpc = new RPC(provider);
-    return rpc.getBalance();
+    return new RPC(provider);
 });
-balanceAtom.debugLabel = "balanceAtom";
+balanceAtom.debugLabel = "rpcAtom";
 
 export const loadableAccountsAtom = loadable(accountsAtom);
 loadableAccountsAtom.debugLabel = "loadableAccountsAtom";

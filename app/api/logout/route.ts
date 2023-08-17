@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { fetcher } from "@/lib/fetchers";
+
 type Data = { message: String };
 
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const DISCORD_SECRET_KEY = process.env.DISCORD_SECRET_KEY;
+
+export type LogoutResponse = {
+    message: string;
+};
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
@@ -12,9 +18,8 @@ export async function POST(req: NextRequest) {
         const data = new FormData();
         data.append("token", body.token);
 
-        const response = await fetch(
-            "https://discord.com/api/oauth2/token/revoke",
-            {
+        try {
+            await fetcher("https://discord.com/api/oauth2/token/revoke", {
                 method: "POST",
                 body: data,
                 headers: {
@@ -22,16 +27,11 @@ export async function POST(req: NextRequest) {
                         `${DISCORD_CLIENT_ID}:${DISCORD_SECRET_KEY}`
                     ).toString("base64")}`,
                 },
-            }
-        );
+            });
 
-        if (response.ok) {
             return NextResponse.json({ message: "success" }, { status: 200 });
-        } else {
-            return NextResponse.json(
-                { message: "error" },
-                { status: response.status }
-            );
+        } catch (e) {
+            return NextResponse.json({ message: e }, { status: 400 });
         }
     }
 

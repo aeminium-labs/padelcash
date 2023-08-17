@@ -7,7 +7,7 @@ const nextConfig = {
     async rewrites() {
         return [
             {
-                source: "/api/rpc",
+                source: "/api/rpc-alt",
                 destination: `https://rpc.helius.xyz/?api-key=${process.env.HELIUS_API_KEY}`,
             },
         ];

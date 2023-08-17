@@ -3,9 +3,8 @@ import { Transactions } from "@/app/account/[address]/transactions";
 import { AuthChecker } from "@/app/auth-checker";
 import { gql } from "graphql-request";
 
-import { PADEL_TOKEN } from "@/lib/constants";
+import { getPadelAta } from "@/lib/fetchers";
 import { graphQLClient } from "@/lib/graphql";
-import { getBaseUrl } from "@/lib/utils";
 import { PadelBalance } from "@/components/padelBalance";
 import { Container } from "@/components/shared/container";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -50,11 +49,7 @@ const getBalances = async (address: string) => {
 };
 
 const getTransfers = async (address: string) => {
-    const baseUrl = getBaseUrl();
-    const ataReq = await fetch(
-        `${baseUrl}/api/${address}/getAta?mint=${PADEL_TOKEN}`
-    );
-    const ataAddress = await ataReq.json();
+    const account = await getPadelAta(address);
 
     const query = gql`
         query getTransfers($address: String!) {
@@ -74,9 +69,9 @@ const getTransfers = async (address: string) => {
         }
     `;
 
-    if (ataAddress.ata) {
+    if (account.ata) {
         return graphQLClient.request<Transactions>(query, {
-            address: ataAddress.ata,
+            address: account.ata,
         });
     }
 

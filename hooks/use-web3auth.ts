@@ -9,7 +9,6 @@ import { useAtom, useSetAtom } from "jotai";
 
 import {
     connectionStatusAtom,
-    Status,
     web3AuthAtom,
     web3AuthProviderAtom,
 } from "@/lib/store";
@@ -28,7 +27,7 @@ export function useWeb3Auth() {
                 try {
                     const chainConfig = {
                         chainNamespace: CHAIN_NAMESPACES.SOLANA,
-                        chainId: "0x1", // Please use 0x1 for Mainnet, 0x2 for Testnet, 0x3 for Devnet
+                        chainId: "0x1",
                         rpcTarget: `${location.protocol}//${location.host}/api/rpc`,
                         displayName: "Solana Mainnet",
                         blockExplorer: "https://explorer.solana.com",

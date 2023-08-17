@@ -3,9 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AccountBalances } from "@/app/account/[address]/page";
+import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
 import { QrScanner } from "@yudiel/react-qr-scanner";
+import { useAtomValue } from "jotai";
 
 import { PADEL_TOKEN, PADEL_TOKEN_VALUE } from "@/lib/constants";
+import { fetcher } from "@/lib/fetchers";
+import { web3AuthProviderAtom } from "@/lib/store";
 import { formatValue, trimWalletAddress } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +29,7 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
     const [code, setCode] = useState<string>("");
     const router = useRouter();
     const params = useSearchParams();
+    const provider = useAtomValue(web3AuthProviderAtom);
 
     const to = params.get("to");
     const amount = params.get("amount");
@@ -33,19 +38,18 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
 
     useEffect(() => {
         async function getUrl() {
-            const res = await fetch(`/api/pay/retrieve`, {
-                method: "POST",
-                body: JSON.stringify({
-                    code,
-                }),
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-
-                if (data.params) {
-                    router.replace(`?${data.params}`);
+            const res = await fetcher<PayRetrieveResponse>(
+                `/api/pay/retrieve`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        code,
+                    }),
                 }
+            );
+
+            if (res.params) {
+                router.replace(`?${res.params}`);
             }
         }
 
@@ -57,6 +61,17 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
     function handleRejectClick() {
         router.replace("?");
         setCode("");
+    }
+
+    async function handleAcceptClick() {
+        // const res = await fetcher(`/api/pay/retrieve`, {
+        //     method: "POST",
+        //     body: JSON.stringify({
+        //         code,
+        //     }),
+        // });
+        // router.replace("?");
+        // setCode("");
     }
 
     if (hasTx && data) {
@@ -75,7 +90,7 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-teal-500">
+                    <CardTitle className="text-lg text-teal-500">
                         Transaction details
                     </CardTitle>
                     <CardDescription>
@@ -136,7 +151,12 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
                     >
                         Reject
                     </Button>
-                    <Button size="lg" disabled={!hasEnoughBalance}>
+                    <Button
+                        size="lg"
+                        disabled={!hasEnoughBalance}
+                        variant="success"
+                        onClick={handleAcceptClick}
+                    >
                         Approve
                     </Button>
                 </CardFooter>

@@ -1,8 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { LogoutResponse } from "@/app/api/logout/route";
 import { useAtomValue, useSetAtom } from "jotai";
 
+import { fetcher } from "@/lib/fetchers";
 import { web3AuthAtom, web3AuthProviderAtom } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 
@@ -21,7 +23,7 @@ export function LogoutButton({ children, disabled = false }) {
             try {
                 const userInfo = await web3auth.getUserInfo();
                 await web3auth.logout();
-                await fetch(`/api/logout`, {
+                await fetcher<LogoutResponse>(`/api/logout`, {
                     method: "POST",
                     body: JSON.stringify({
                         token: userInfo.oAuthAccessToken,
