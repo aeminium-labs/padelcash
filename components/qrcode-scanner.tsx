@@ -78,6 +78,9 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
 
             const signedTx = await rpc.signTransaction(tx);
             const sendTxRes = await sendTx(signedTx);
+
+            alert(sendTxRes.txSignature);
+            router.replace("?");
         }
     }
 
