@@ -19,7 +19,7 @@ export function MainFooter() {
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
 
     return (
-        <footer className="container w-full fixed bottom-0 bg-slate-900 border-t border-t-slate-700 py-4">
+        <footer className="container w-full fixed bottom-0 bg-slate-900 border-t border-t-slate-700 py-4 px-4">
             <div className="flex flex-col items-center justify-start gap-4 md:flex-row ">
                 {accountAddress ? (
                     <Link

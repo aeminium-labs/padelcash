@@ -69,6 +69,9 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
             usd: formatValue(padelToken?.amountUSD),
         };
 
+        const parsedAmount = parseInt(amount);
+        const hasEnoughBalance = padelBalance.native - parsedAmount > 0;
+
         return (
             <Card>
                 <CardHeader>
@@ -94,7 +97,7 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
                                 Amount (PADEL)
                             </p>
                             <p className="text-sm font-medium leading-none">
-                                {formatValue(parseInt(amount))}
+                                {formatValue(parsedAmount)}
                             </p>
                         </div>
                         <div className="flex flex-col gap-1 grow text-left">
@@ -102,10 +105,7 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
                                 Amount (USD)
                             </p>
                             <p className="text-sm font-medium leading-none">
-                                $
-                                {formatValue(
-                                    parseInt(amount) * PADEL_TOKEN_VALUE
-                                )}
+                                ${formatValue(parsedAmount * PADEL_TOKEN_VALUE)}
                             </p>
                         </div>
                         <div className="flex flex-col gap-1 grow text-left">
@@ -122,7 +122,7 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
                             </p>
                             <p className="text-sm font-medium leading-none">
                                 {formatValue(
-                                    padelBalance.native - parseInt(amount)
+                                    padelBalance.native - parsedAmount
                                 )}
                             </p>
                         </div>
@@ -136,7 +136,9 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
                     >
                         Reject
                     </Button>
-                    <Button size="lg">Approve</Button>
+                    <Button size="lg" disabled={!hasEnoughBalance}>
+                        Approve
+                    </Button>
                 </CardFooter>
             </Card>
         );
