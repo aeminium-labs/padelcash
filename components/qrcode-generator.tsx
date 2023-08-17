@@ -40,7 +40,7 @@ function AmountButton({
             <span className="flex flex-col gap-0 text-center">
                 <span className="">{value} PADEL</span>
                 <span className="text-xs text-muted-foreground">
-                    ~${value * PADEL_TOKEN_VALUE}
+                    ${value * PADEL_TOKEN_VALUE}
                 </span>
             </span>
         </Button>

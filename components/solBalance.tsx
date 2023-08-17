@@ -37,7 +37,7 @@ export async function SolBalance({ data, label = "SOL balance" }: Props) {
 
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-teal-500">
                     {label}
                 </CardTitle>
@@ -48,7 +48,7 @@ export async function SolBalance({ data, label = "SOL balance" }: Props) {
                     <span className="text-muted text-2xl">SOL</span>
                 </div>
                 <p className="text-xs text-muted-foreground mb-6">
-                    ~ ${formatValue(account.balances.nativeBalanceUSD)} USDC
+                    ${formatValue(account.balances.nativeBalanceUSD)} USDC
                 </p>
                 <Sheet>
                     <SheetTrigger className="w-full">

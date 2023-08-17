@@ -75,7 +75,7 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                             {`${txSign}${formatValue(tx.tokenAmount)}`}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                            ~ $
+                            $
                             {`${formatValue(
                                 tx.tokenAmount * PADEL_TOKEN_VALUE
                             )}`}{" "}
@@ -134,7 +134,7 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                             Amount (USDC)
                         </p>
                         <p className="text-sm font-medium leading-none">
-                            ~${formatValue(tx.tokenAmount * PADEL_TOKEN_VALUE)}
+                            ${formatValue(tx.tokenAmount * PADEL_TOKEN_VALUE)}
                         </p>
                     </div>
                 </div>

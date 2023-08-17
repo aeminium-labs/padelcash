@@ -1,6 +1,6 @@
 import { AccountBalances } from "@/app/account/[address]/page";
 
-import { PADEL_TOKEN, PADEL_TOKEN_VALUE } from "@/lib/constants";
+import { PADEL_TOKEN } from "@/lib/constants";
 import { formatValue } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -23,7 +23,7 @@ export async function PadelBalance({
 
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-teal-500">
                     {label}
                 </CardTitle>
@@ -34,7 +34,7 @@ export async function PadelBalance({
                     <span className="text-muted text-2xl">PADEL</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                    ~ ${padelBalance.usd?.toString()} USDC
+                    ${padelBalance.usd?.toString()} USDC
                 </p>
             </CardContent>
         </Card>
