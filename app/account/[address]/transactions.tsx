@@ -139,7 +139,7 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                     </div>
                 </div>
                 <SheetFooter>
-                    <SheetClose>
+                    <SheetClose asChild>
                         <Button className="w-full">Close</Button>
                     </SheetClose>
                 </SheetFooter>

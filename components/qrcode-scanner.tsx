@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { AccountBalances } from "@/app/account/[address]/page";
 import { Transaction } from "@solana/web3.js";
@@ -8,7 +8,12 @@ import { QrScanner } from "@yudiel/react-qr-scanner";
 import { useAtomValue } from "jotai";
 
 import { PADEL_TOKEN, PADEL_TOKEN_VALUE } from "@/lib/constants";
-import { createTx, retrievePaymentParams, sendTx } from "@/lib/fetchers";
+import {
+    confirmTx,
+    createTx,
+    retrievePaymentParams,
+    sendTx,
+} from "@/lib/fetchers";
 import { RPC } from "@/lib/rpc";
 import { web3AuthProviderAtom } from "@/lib/store";
 import { formatValue, trimWalletAddress } from "@/lib/utils";
@@ -21,20 +26,34 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
+import { useToast } from "@/components/ui/use-toast";
 
 function ViewFinder() {
     return <></>;
 }
 
-export function QrCodeScanner({ data }: { data: AccountBalances }) {
+export function QrCodeScanner({
+    balancesData,
+}: {
+    balancesData: AccountBalances;
+}) {
     const [code, setCode] = useState<string>("");
-    const [status, setStatus] = useState<
-        "idle" | "sending" | "success" | "error"
-    >("idle");
+    const [step, setStep] = useState<number>(0);
+    const [currentTx, setCurrentTx] = useState<string>("");
+    const lastTx = useRef<string>(currentTx);
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
     const provider = useAtomValue(web3AuthProviderAtom);
+    const { toast } = useToast();
 
     const from = params.address;
     const to = searchParams.get("to");
@@ -56,12 +75,36 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
         }
     }, [code]);
 
+    useEffect(() => {
+        async function getConfirmation() {
+            const txStatus = await confirmTx(currentTx);
+
+            if (txStatus.confirmed) {
+                toast({
+                    title: "Your transaction was completed",
+                });
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "There was a problem completing your transaction",
+                });
+            }
+        }
+
+        if (currentTx !== lastTx.current) {
+            getConfirmation();
+            lastTx.current = currentTx;
+        }
+    }, [currentTx]);
+
     function handleRejectClick() {
         router.replace("?");
         setCode("");
     }
 
     async function handleAcceptClick() {
+        setStep(1);
+
         // Create new transaction from API
         const createTxRes = await createTx({
             senderAddress: Array.isArray(from) ? from[0] : from,
@@ -69,23 +112,33 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
             amount: parseFloat(amount || "0"),
         });
 
+        setStep(2);
+
         // Rebuild tx in client
         const tx = Transaction.from(Buffer.from(createTxRes.tx, "base64"));
 
         // Sign transaction
         if (provider) {
             const rpc = new RPC(provider);
-
             const signedTx = await rpc.signTransaction(tx);
+
+            setStep(3);
+
             const sendTxRes = await sendTx(signedTx);
 
-            alert(sendTxRes.txSignature);
-            router.replace("?");
+            setCurrentTx(sendTxRes.txSignature);
+            setStep(4);
+
+            setTimeout(() => {
+                router.replace("?");
+                setCode("");
+                setStep(0);
+            }, 500);
         }
     }
 
-    if (hasTx && data) {
-        const padelToken = data.account.balances.tokens.find(
+    if (hasTx && balancesData) {
+        const padelToken = balancesData.account.balances.tokens.find(
             (token) => token.mint === PADEL_TOKEN
         );
 
@@ -96,6 +149,12 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
 
         const parsedAmount = parseInt(amount);
         const hasEnoughBalance = padelBalance.native - parsedAmount > 0;
+        const labels = [
+            "Preparing",
+            "Signing",
+            "Sending",
+            `🎉 Sent ${amount} PADEL 🎉`,
+        ];
 
         return (
             <Card>
@@ -158,18 +217,38 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
                         variant="destructive"
                         size="lg"
                         onClick={handleRejectClick}
-                        disabled={status !== "idle"}
+                        disabled={step > 0}
                     >
                         Reject
                     </Button>
-                    <Button
-                        size="lg"
-                        disabled={!hasEnoughBalance || status !== "idle"}
-                        variant="success"
-                        onClick={handleAcceptClick}
-                    >
-                        Approve
-                    </Button>
+                    <Sheet open={step > 0}>
+                        <SheetTrigger asChild>
+                            <Button
+                                size="lg"
+                                disabled={!hasEnoughBalance || step > 0}
+                                variant="success"
+                                onClick={handleAcceptClick}
+                            >
+                                Approve
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="bottom">
+                            <SheetHeader>
+                                <SheetTitle className="text-teal-500">
+                                    Sending your transaction
+                                </SheetTitle>
+                            </SheetHeader>
+                            <div className="flex flex-col gap-4 my-6">
+                                <Progress
+                                    value={step * 25}
+                                    className="w-full"
+                                />
+                                <p className="text-muted-foreground text-center">
+                                    {labels[step - 1]}
+                                </p>
+                            </div>
+                        </SheetContent>
+                    </Sheet>
                 </CardFooter>
             </Card>
         );
@@ -181,7 +260,7 @@ export function QrCodeScanner({ data }: { data: AccountBalances }) {
                 onDecode={(result) => {
                     setCode(result);
                 }}
-                onError={(error) => console.log(error?.message)}
+                onError={() => {}}
                 viewFinder={ViewFinder}
                 containerStyle={{ height: 500 }}
                 videoStyle={{ objectFit: "cover" }}

@@ -44,7 +44,7 @@ export default async function PaymentsPage({ params, searchParams }: Props) {
         defaultTab = "send";
     }
 
-    const data = await getBalances(params.address);
+    const balancesData = await getBalances(params.address);
 
     return (
         <AuthChecker address={params.address}>
@@ -62,7 +62,7 @@ export default async function PaymentsPage({ params, searchParams }: Props) {
                         <QrCodeGenerator to={params.address} />
                     </TabsContent>
                     <TabsContent value="send">
-                        <QrCodeScanner data={data} />
+                        <QrCodeScanner balancesData={balancesData} />
                     </TabsContent>
                 </Tabs>
             </Container>

@@ -2,6 +2,7 @@ import { PayCreateResponse } from "@/app/api/pay/create/route";
 import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
 import { GetAtaResponse } from "@/app/api/rpc/getAta/route";
 import { GetTokenInfoResponse } from "@/app/api/rpc/getTokenInfo/route";
+import { TxConfirmResponse } from "@/app/api/tx/confirm/route";
 import { TxCreateResponse } from "@/app/api/tx/create/route";
 import { TxSendResponse } from "@/app/api/tx/send/route";
 import { RpcResponseAndContext } from "@solana/web3.js";
@@ -100,6 +101,17 @@ export async function sendTx(signedTx: string) {
         method: "POST",
         body: JSON.stringify({
             signedTx,
+        }),
+    });
+}
+
+export async function confirmTx(txSignature: string) {
+    const baseUrl = getBaseUrl();
+
+    return fetcher<TxConfirmResponse>(`${baseUrl}/api/tx/confirm`, {
+        method: "POST",
+        body: JSON.stringify({
+            txSignature,
         }),
     });
 }
