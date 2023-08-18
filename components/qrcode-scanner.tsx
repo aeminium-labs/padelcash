@@ -12,7 +12,7 @@ import {
     confirmTx,
     createTx,
     retrievePaymentParams,
-    sendTx,
+    signRelayerTx,
 } from "@/lib/fetchers";
 import { RPC } from "@/lib/rpc";
 import { web3AuthProviderAtom } from "@/lib/store";
@@ -76,12 +76,12 @@ export function QrCodeScanner({
     }, [code]);
 
     useEffect(() => {
-        async function getConfirmation() {
-            const txStatus = await confirmTx(currentTx);
+        async function getConfirmation(tx: string) {
+            const txStatus = await confirmTx(tx);
 
             if (txStatus.confirmed) {
                 toast({
-                    title: "Your transaction was completed",
+                    title: "Your transaction is confirmed!",
                 });
             } else {
                 toast({
@@ -89,10 +89,12 @@ export function QrCodeScanner({
                     title: "There was a problem completing your transaction",
                 });
             }
+
+            setCurrentTx("");
         }
 
-        if (currentTx !== lastTx.current) {
-            getConfirmation();
+        if (currentTx !== lastTx.current && currentTx.length > 0) {
+            getConfirmation(currentTx);
             lastTx.current = currentTx;
         }
     }, [currentTx]);
@@ -120,20 +122,20 @@ export function QrCodeScanner({
         // Sign transaction
         if (provider) {
             const rpc = new RPC(provider);
+
             const signedTx = await rpc.signTransaction(tx);
 
             setStep(3);
 
-            const sendTxRes = await sendTx(signedTx);
+            const relayerTx = await signRelayerTx(signedTx);
 
-            setCurrentTx(sendTxRes.txSignature);
+            setCurrentTx(relayerTx.signedTx);
             setStep(4);
 
             setTimeout(() => {
                 router.replace("?");
                 setCode("");
-                setStep(0);
-            }, 500);
+            }, 1500);
         }
     }
 
@@ -155,6 +157,8 @@ export function QrCodeScanner({
             "Sending",
             `🎉 Sent ${amount} PADEL 🎉`,
         ];
+        const shouldBeDisabled =
+            !hasEnoughBalance || step > 0 || currentTx.length > 0;
 
         return (
             <Card>
@@ -225,14 +229,14 @@ export function QrCodeScanner({
                         <SheetTrigger asChild>
                             <Button
                                 size="lg"
-                                disabled={!hasEnoughBalance || step > 0}
+                                disabled={shouldBeDisabled}
                                 variant="success"
                                 onClick={handleAcceptClick}
                             >
                                 Approve
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="bottom">
+                        <SheetContent side="bottom" hideCloseButton>
                             <SheetHeader>
                                 <SheetTitle className="text-teal-500">
                                     Sending your transaction
@@ -252,6 +256,10 @@ export function QrCodeScanner({
                 </CardFooter>
             </Card>
         );
+    }
+
+    if (step > 0) {
+        setStep(0);
     }
 
     return (

@@ -102,9 +102,11 @@ export class RPC {
 
             const signedTx = await solanaWallet.signTransaction(transaction);
 
-            const signedTxSerialized = signedTx.serialize().toString("base64");
-
-            return signedTxSerialized;
+            return signedTx
+                .serialize({
+                    requireAllSignatures: false,
+                })
+                .toString("base64");
         } catch (error) {
             return error as string;
         }
