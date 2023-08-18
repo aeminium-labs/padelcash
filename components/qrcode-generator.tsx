@@ -113,7 +113,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
                                 }
                             />
                             <SheetFooter>
-                                <SheetClose>
+                                <SheetClose asChild>
                                     <Button
                                         variant="default"
                                         className="w-full col-span-2"

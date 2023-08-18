@@ -89,13 +89,12 @@ export function QrCodeScanner({
                     title: "There was a problem completing your transaction",
                 });
             }
-
-            setCurrentTx("");
         }
 
         if (currentTx !== lastTx.current && currentTx.length > 0) {
             getConfirmation(currentTx);
             lastTx.current = currentTx;
+            setCurrentTx("");
         }
     }, [currentTx]);
 
