@@ -61,7 +61,7 @@ export default function IndexPage() {
                         </li>
                     </ul>
                 </div>
-                <div className="flex gap-4 pt-4 md:flex-row">
+                <div className="flex gap-4 pb-4 md:flex-row">
                     <Link
                         href="https://bristle-citron-418.notion.site/3d9aecc3248d4861a98b83bf8ef1959b"
                         target="_blank"
