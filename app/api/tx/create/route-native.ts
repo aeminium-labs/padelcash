@@ -6,8 +6,8 @@ import {
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 
 import { FEE_PAYER_ADDRESS, PADEL_TOKEN } from "@/lib/constants";
-import { getPadelAta, getTokenInfo } from "@/lib/fetchers";
-import { getBaseUrl } from "@/lib/utils";
+import { getPadelAta, getTokenInfo } from "@/lib/server/fetchers";
+import { getBaseUrl } from "@/lib/server/utils";
 
 export type TxCreateResponse = {
     tx: string;

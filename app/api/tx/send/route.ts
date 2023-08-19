@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Connection, Transaction } from "@solana/web3.js";
 
-import { getBaseUrl } from "@/lib/utils";
+import { getBaseUrl } from "@/lib/server/utils";
 
 export type TxSendResponse = {
     txSignature: string;

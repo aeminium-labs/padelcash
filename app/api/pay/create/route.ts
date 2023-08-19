@@ -25,7 +25,6 @@ export async function POST(req: NextRequest) {
 
             return NextResponse.json({ code: encryptedData });
         } catch (e) {
-            console.log(e);
             return NextResponse.json({
                 error: "not able to create code",
                 status: 500,

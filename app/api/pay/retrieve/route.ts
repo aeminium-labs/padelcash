@@ -12,19 +12,27 @@ export async function POST(req: NextRequest) {
     const key = process.env.ENCRYPTION_KEY;
 
     if (body.code && key && iv) {
-        const decipher = crypto.createDecipheriv(
-            "aes-256-cbc",
-            Buffer.from(key, "hex"),
-            Buffer.from(iv, "hex")
-        );
+        try {
+            const decipher = crypto.createDecipheriv(
+                "aes-256-cbc",
+                Buffer.from(key, "hex"),
+                Buffer.from(iv, "hex")
+            );
 
-        let decryptedData = decipher.update(body.code, "hex", "utf-8");
+            let decryptedData = decipher.update(body.code, "hex", "utf-8");
 
-        decryptedData += decipher.final("utf8");
+            decryptedData += decipher.final("utf8");
 
-        return NextResponse.json<PayRetrieveResponse>({
-            params: decryptedData,
-        });
+            return NextResponse.json<PayRetrieveResponse>({
+                params: decryptedData,
+            });
+        } catch (e) {
+            console.log(e);
+            return NextResponse.json({
+                error: "not able to retrieve url",
+                status: 500,
+            });
+        }
     }
 
     return NextResponse.json({

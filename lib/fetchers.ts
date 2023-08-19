@@ -1,16 +1,10 @@
-import { BadgesResponse } from "@/app/api/[address]/badges/route";
 import { PayCreateResponse } from "@/app/api/pay/create/route";
 import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
-import { GetAtaResponse } from "@/app/api/rpc/getAta/route";
-import { GetTokenInfoResponse } from "@/app/api/rpc/getTokenInfo/route";
 import { TxConfirmResponse } from "@/app/api/tx/confirm/route";
 import { TxCreateResponse } from "@/app/api/tx/create/route";
 import { TxSendResponse } from "@/app/api/tx/send/route";
 import { TxSignResponse } from "@/app/api/tx/sign/route";
 import { RpcResponseAndContext } from "@solana/web3.js";
-
-import { PADEL_TOKEN } from "@/lib/constants";
-import { getBaseUrl } from "@/lib/utils";
 
 export type RpcHttpResponse<T> = {
     jsonrpc: "string";
@@ -28,36 +22,8 @@ export async function fetcher<T>(url: string, options?: RequestInit) {
     return (await res.json()) as T;
 }
 
-export async function getPadelAta(address: string) {
-    const baseUrl = getBaseUrl();
-
-    return fetcher<GetAtaResponse>(`${baseUrl}/api/rpc/getAta`, {
-        method: "POST",
-        body: JSON.stringify({
-            address,
-            mint: PADEL_TOKEN,
-        }),
-    });
-}
-
-export async function getTokenInfo(mint: string) {
-    const baseUrl = getBaseUrl();
-
-    return await fetcher<GetTokenInfoResponse>(
-        `${baseUrl}/api/rpc/getTokenInfo`,
-        {
-            method: "POST",
-            body: JSON.stringify({
-                mint,
-            }),
-        }
-    );
-}
-
 export async function retrievePaymentParams(code: string) {
-    const baseUrl = getBaseUrl();
-
-    return fetcher<PayRetrieveResponse>(`${baseUrl}/api/pay/retrieve`, {
+    return fetcher<PayRetrieveResponse>("/api/pay/retrieve", {
         method: "POST",
         body: JSON.stringify({
             code,
@@ -66,9 +32,7 @@ export async function retrievePaymentParams(code: string) {
 }
 
 export async function createPaymentCode(params: string) {
-    const baseUrl = getBaseUrl();
-
-    return fetcher<PayCreateResponse>(`${baseUrl}/api/pay/create`, {
+    return fetcher<PayCreateResponse>("/api/pay/create", {
         method: "POST",
         body: JSON.stringify({
             params,
@@ -86,8 +50,7 @@ export async function createTx({
     receiverAddress: string;
     amount: number;
 }) {
-    const baseUrl = getBaseUrl();
-    return fetcher<TxCreateResponse>(`${baseUrl}/api/tx/create`, {
+    return fetcher<TxCreateResponse>("/api/tx/create", {
         method: "POST",
         body: JSON.stringify({
             senderAddress,
@@ -98,9 +61,7 @@ export async function createTx({
 }
 
 export async function sendTx(signedTx: string) {
-    const baseUrl = getBaseUrl();
-
-    return fetcher<TxSendResponse>(`${baseUrl}/api/tx/send`, {
+    return fetcher<TxSendResponse>("/api/tx/send", {
         method: "POST",
         body: JSON.stringify({
             signedTx,
@@ -109,9 +70,7 @@ export async function sendTx(signedTx: string) {
 }
 
 export async function confirmTx(txSignature: string) {
-    const baseUrl = getBaseUrl();
-
-    return fetcher<TxConfirmResponse>(`${baseUrl}/api/tx/confirm`, {
+    return fetcher<TxConfirmResponse>("/api/tx/confirm", {
         method: "POST",
         body: JSON.stringify({
             txSignature,
@@ -120,21 +79,10 @@ export async function confirmTx(txSignature: string) {
 }
 
 export async function signRelayerTx(signedTx: string) {
-    const baseUrl = getBaseUrl();
-
-    return fetcher<TxSignResponse>(`${baseUrl}/api/tx/sign`, {
+    return fetcher<TxSignResponse>("/api/tx/sign", {
         method: "POST",
         body: JSON.stringify({
             signedTx,
         }),
-    });
-}
-
-export async function getBadges(address: string) {
-    const baseUrl = getBaseUrl();
-
-    return fetcher<BadgesResponse>(`${baseUrl}/api/${address}/badges`, {
-        method: "POST",
-        cache: "no-store",
     });
 }

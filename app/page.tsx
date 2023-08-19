@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import QRCode from "react-qr-code";
 
-import { getBaseUrl } from "@/lib/utils";
+import { getAppUrl } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Container } from "@/components/shared/container";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ const MainFooter = dynamic(
 );
 
 export default function IndexPage() {
-    const baseUrl = getBaseUrl();
+    const appUrl = getAppUrl();
     return (
         <>
             <Container className="gap-10">
@@ -93,7 +93,7 @@ export default function IndexPage() {
                             </DialogHeader>
                             <div className="rounded-xl bg-primary py-12">
                                 <QRCode
-                                    value={`${baseUrl}/?pswutlzoq=install`}
+                                    value={`${appUrl}/?pswutlzoq=install`}
                                     className="w-full"
                                     size={300}
                                 />

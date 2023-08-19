@@ -1,6 +1,6 @@
 import { AuthChecker } from "@/app/auth-checker";
 
-import { getBadges } from "@/lib/fetchers";
+import { getBadges } from "@/lib/server/fetchers";
 import { Badge } from "@/components/badge";
 import { Container } from "@/components/shared/container";
 

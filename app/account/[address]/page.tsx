@@ -3,8 +3,8 @@ import { Transactions } from "@/app/account/[address]/transactions";
 import { AuthChecker } from "@/app/auth-checker";
 import { gql } from "graphql-request";
 
-import { getPadelAta } from "@/lib/fetchers";
 import { graphQLClient } from "@/lib/graphql";
+import { getPadelAta } from "@/lib/server/fetchers";
 import { PadelBalance } from "@/components/padelBalance";
 import { Container } from "@/components/shared/container";
 import { ScrollArea } from "@/components/ui/scroll-area";

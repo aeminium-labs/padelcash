@@ -3,7 +3,7 @@ import { getAssociatedTokenAddress } from "@solana/spl-token";
 import { AccountInfo, ParsedAccountData, PublicKey } from "@solana/web3.js";
 
 import { fetcher, RpcHttpResponse } from "@/lib/fetchers";
-import { getBaseUrl } from "@/lib/utils";
+import { getBaseUrl } from "@/lib/server/utils";
 
 export type GetAtaResponse = {
     ata: string;

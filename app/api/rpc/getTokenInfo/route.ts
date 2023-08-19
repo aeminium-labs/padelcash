@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { TokenAmount } from "@solana/web3.js";
 
 import { fetcher, RpcHttpResponse } from "@/lib/fetchers";
-import { getBaseUrl } from "@/lib/utils";
+import { getBaseUrl } from "@/lib/server/utils";
 
 export type GetTokenInfoResponse = {
     mint: string;

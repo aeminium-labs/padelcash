@@ -49,7 +49,7 @@ export function formatDate(
     return date.toLocaleString("en-gb", variants[variant]);
 }
 
-export function getBaseUrl() {
+export function getAppUrl() {
     const vc = process.env.VERCEL_URL;
 
     if (vc) {
