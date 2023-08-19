@@ -1,6 +1,19 @@
-export function Container({ children }: { children: React.ReactNode }) {
+import { cn } from "@/lib/utils";
+
+export function Container({
+    children,
+    className,
+}: {
+    children: React.ReactNode;
+    className?: string;
+}) {
     return (
-        <section className="container flex min-h-screen flex-col justify-start gap-6 px-4 py-20">
+        <section
+            className={cn(
+                "container flex min-h-screen flex-col justify-start gap-6 px-4 py-20",
+                className
+            )}
+        >
             {children}
         </section>
     );

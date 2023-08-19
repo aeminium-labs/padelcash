@@ -50,10 +50,6 @@ export function formatDate(
 }
 
 export function getBaseUrl() {
-    if (typeof window !== "undefined") {
-        return "";
-    }
-
     const vc = process.env.VERCEL_URL;
 
     if (vc) {
