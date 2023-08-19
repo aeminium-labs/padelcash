@@ -73,6 +73,7 @@ export async function createPaymentCode(params: string) {
         body: JSON.stringify({
             params,
         }),
+        cache: "force-cache",
     });
 }
 

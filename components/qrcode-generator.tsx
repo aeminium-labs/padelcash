@@ -1,6 +1,6 @@
 "use client";
 
-import { MouseEventHandler, useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 
 import { PADEL_TOKEN_VALUE } from "@/lib/constants";
@@ -47,8 +47,9 @@ function AmountButton({
 }
 
 export function QrCodeGenerator({ to }: { to: string }) {
-    const [amount, setAmount] = useState(50);
+    const [amount, setAmount] = useState<number>(50);
     const [url, setUrl] = useState<string>("");
+    const prevAmount = useRef<number>(0);
 
     useEffect(() => {
         async function createUrl() {
@@ -59,7 +60,10 @@ export function QrCodeGenerator({ to }: { to: string }) {
             }
         }
 
-        createUrl();
+        if (prevAmount.current !== amount) {
+            createUrl();
+            prevAmount.current = amount;
+        }
     }, [to, amount]);
 
     if (url.length === 0) {
