@@ -6,6 +6,7 @@ import {
 } from "@underdog-protocol/types";
 
 import { fetcher } from "@/lib/fetchers";
+import { getBaseUrl } from "@/lib/utils";
 
 export type RegisterResponse = {
     status: string;
@@ -16,6 +17,7 @@ export async function POST(
     _: NextRequest,
     { params }: { params: { address: string } }
 ) {
+    const baseURL = getBaseUrl();
     try {
         const getNfts = await fetcher<GetNftsResponse>(
             `https://api.underdogprotocol.com/v2/projects/c/2/nfts?page=1&limit=100&ownerAddress=${params.address}`,
@@ -43,13 +45,17 @@ export async function POST(
                     authorization: `Bearer ${process.env.UNDERDOG_API_KEY}`,
                 },
                 body: JSON.stringify({
-                    attributes: { event: "Registration", type: "Pioneer" },
+                    attributes: {
+                        event: "Registration",
+                        type: "Pioneer",
+                        artist: "Padelcash",
+                    },
                     upsert: true, // do upsert just in case so we don't create duplicates
                     name: "Pioneer",
                     description:
                         "Welcome to the Padelcash family! You get this badge when you're one of the first ones to register an account.",
                     symbol: "REG",
-                    image: "https://www.padel.cash/android-chrome-512x512.png",
+                    image: `${baseURL}/badges/pioneer.png`,
                     receiverAddress: params.address,
                 }),
             });
