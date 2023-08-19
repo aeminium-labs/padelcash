@@ -60,7 +60,7 @@ export default async function PaymentsPage({ params, searchParams }: Props) {
                     </TabsList>
                     <TabsContent
                         value="receive"
-                        className="flex grow flex-col "
+                        className="flex grow flex-col data-[state=inactive]:hidden"
                     >
                         <QrCodeGenerator to={params.address} />
                     </TabsContent>
