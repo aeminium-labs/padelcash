@@ -9,6 +9,15 @@ import { Icons } from "@/components/icons";
 import { LoginButtton } from "@/components/shared/login-button";
 import { Button } from "@/components/ui/button";
 
+interface BeforeInstallPromptEvent extends Event {
+    readonly platforms: string[];
+    readonly userChoice: Promise<{
+        outcome: "accepted" | "dismissed";
+        platform: string;
+    }>;
+    prompt(): Promise<void>;
+}
+
 function FooterButton({
     accountAddress,
     shouldBeDisabled,
@@ -16,20 +25,11 @@ function FooterButton({
     accountAddress: string | null;
     shouldBeDisabled: boolean;
 }) {
-    const [status, setStatus] = useState<"init" | "installing" | "installed">(
-        "init"
-    );
-    useEffect(() => {
-        function onInstall() {
-            setStatus("installed");
-        }
-
-        window.addEventListener("install", onInstall);
-
-        return () => {
-            window.removeEventListener("install", onInstall);
-        };
-    }, []);
+    const [status, setStatus] = useState<
+        "init" | "loaded" | "ready" | "installing" | "installed"
+    >("init");
+    const [installEvent, setInstallEvent] =
+        useState<BeforeInstallPromptEvent | null>(null);
 
     const isClientSide = typeof window !== "undefined";
     const hasProgressier = isClientSide && window.progressier;
@@ -40,11 +40,62 @@ function FooterButton({
             ?.classList.contains("progressier-standalone");
 
     const isInstallable =
-        hasProgressier && !isInApp && !window.progressier.native.installed;
+        hasProgressier &&
+        !isInApp &&
+        !window.progressier.native.installed &&
+        window.progressier.native.installable;
 
     const isInstalled =
         status === "installed" ||
         (isClientSide && hasProgressier && window.progressier.native.installed);
+
+    useEffect(() => {
+        function onInstall() {
+            setStatus("installed");
+        }
+
+        if (isClientSide) {
+            window.addEventListener("install", onInstall);
+            return () => window.removeEventListener("install", onInstall);
+        }
+    }, [isClientSide]);
+
+    useEffect(() => {
+        function onInstallReady(e: BeforeInstallPromptEvent) {
+            e.preventDefault();
+            setInstallEvent(e);
+            setStatus("ready");
+        }
+
+        if (isClientSide && status === "loaded") {
+            window.addEventListener("installready", onInstallReady);
+            return () =>
+                window.removeEventListener("installready", onInstallReady);
+        }
+    }, [isClientSide, status]);
+
+    async function handleInstallClick() {
+        if (installEvent) {
+            installEvent.prompt();
+
+            try {
+                const userChoice = await installEvent.userChoice;
+                if (userChoice.outcome === "accepted") {
+                    setStatus("installing");
+                } else {
+                    setStatus("ready");
+                }
+            } catch (e) {
+                setStatus("ready");
+            }
+
+            setInstallEvent(null);
+        } else {
+            if (window.progressier) {
+                window.progressier.install();
+            }
+        }
+    }
 
     if (isInstallable) {
         return (
@@ -52,12 +103,7 @@ function FooterButton({
                 className="flex w-full flex-row items-center gap-2"
                 variant="default"
                 size="lg"
-                onClick={() => {
-                    if (window.progressier) {
-                        window.progressier.install();
-                        setStatus("installing");
-                    }
-                }}
+                onClick={handleInstallClick}
                 disabled={status === "installing"}
             >
                 <Icons.download className="h-4 w-4" /> Install
@@ -67,7 +113,7 @@ function FooterButton({
 
     if (!isInApp && isInstalled) {
         return (
-            <Link href="/go" target={"_blank"} className="w-full">
+            <Link href="/go" target="_blank" className="w-full">
                 <Button
                     className="flex w-full flex-row items-center gap-2"
                     variant="default"
@@ -81,11 +127,7 @@ function FooterButton({
 
     if (accountAddress) {
         return (
-            <Link
-                href={`/account/${accountAddress}/`}
-                target={isInApp ? "_self" : "_blank"}
-                className="w-full"
-            >
+            <Link href={`/account/${accountAddress}/`} className="w-full">
                 <Button
                     variant="default"
                     size="lg"
