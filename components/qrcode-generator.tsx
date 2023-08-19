@@ -116,6 +116,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
                                 <SheetClose asChild>
                                     <Button
                                         variant="default"
+                                        size="lg"
                                         className="w-full col-span-2"
                                     >
                                         Confirm

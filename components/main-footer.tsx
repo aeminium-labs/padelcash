@@ -18,10 +18,30 @@ export function MainFooter() {
     const accountAddress =
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
 
+    const isInstallable =
+        (!document
+            .querySelector("body")
+            ?.classList.contains("progressier-standalone") &&
+            window.progressier) ||
+        false;
+
     return (
-        <footer className="container w-full fixed bottom-0 bg-slate-900 border-t border-t-slate-700 py-4 px-4">
+        <footer className="container w-full fixed bottom-0 bg-slate-900 border-t border-t-slate-700 py-4 px-4 md:hidden">
             <div className="flex flex-col items-center justify-start gap-4 md:flex-row ">
-                {accountAddress ? (
+                {isInstallable ? (
+                    <Button
+                        className="flex flex-row items-center gap-2 w-full"
+                        variant="default"
+                        size="lg"
+                        onClick={() => {
+                            if (window.progressier) {
+                                window.progressier.install();
+                            }
+                        }}
+                    >
+                        <Icons.download className="h-4 w-4" /> Install
+                    </Button>
+                ) : accountAddress ? (
                     <Link
                         href={`/account/${accountAddress}/`}
                         className="w-full"

@@ -34,6 +34,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 
 function ViewFinder() {
@@ -138,7 +139,13 @@ export function QrCodeScanner({
         }
     }
 
-    if (hasTx && balancesData) {
+    // Scanned but not parsed yet
+    if (code.length > 0 && !hasTx) {
+        return <Skeleton className="h-[360px] w-full" />;
+    }
+
+    // Scanned and parsed
+    if (code.length > 0 && hasTx && balancesData) {
         const padelToken = balancesData.account.balances.tokens.find(
             (token) => token.mint === PADEL_TOKEN
         );
@@ -160,7 +167,7 @@ export function QrCodeScanner({
             !hasEnoughBalance || step > 0 || currentTx.length > 0;
 
         return (
-            <Card>
+            <Card className="flex flex-col grow">
                 <CardHeader>
                     <CardTitle className="text-lg text-teal-500">
                         Transaction details
@@ -169,7 +176,7 @@ export function QrCodeScanner({
                         Please verify the details before approving
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="grow">
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-1 grow text-left">
                             <p className="text-xs text-muted-foreground">
@@ -215,7 +222,7 @@ export function QrCodeScanner({
                         </div>
                     </div>
                 </CardContent>
-                <CardFooter className="grid grid-cols-2 gap-2">
+                <CardFooter className="grid grid-cols-3 gap-2">
                     <Button
                         variant="destructive"
                         size="lg"
@@ -231,6 +238,7 @@ export function QrCodeScanner({
                                 disabled={shouldBeDisabled}
                                 variant="success"
                                 onClick={handleAcceptClick}
+                                className="col-span-2"
                             >
                                 Approve
                             </Button>

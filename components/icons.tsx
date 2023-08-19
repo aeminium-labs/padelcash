@@ -8,6 +8,7 @@ import {
     CircleDot,
     Coins,
     Contact,
+    Download,
     Globe2,
     HeartHandshake,
     Landmark,
@@ -64,6 +65,7 @@ export const Icons = {
     book: Book,
     undo: Undo,
     vault: Landmark,
+    download: Download,
     logo: (props: LucideProps) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"
