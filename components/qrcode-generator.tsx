@@ -97,7 +97,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
                             </span>
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="bottom">
+                    <SheetContent side="bottom" className="keyboard-bottom">
                         <SheetHeader className="text-left">
                             <SheetTitle>Enter PADEL amount</SheetTitle>
                         </SheetHeader>

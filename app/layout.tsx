@@ -2,6 +2,7 @@ import { Poppins as FontSans } from "next/font/google";
 
 import "@/styles/globals.css";
 
+import Script from "next/script";
 import { Providers } from "@/app/providers";
 
 import { SiteHeader } from "@/components/site-header";
@@ -37,6 +38,11 @@ export default function RootLayout({ children }: Props) {
                     <Toaster />
                 </Providers>
             </body>
+            <Script>
+                {`if ("virtualKeyboard" in navigator) {
+                    navigator.virtualKeyboard.overlaysContent = true;
+                }`}
+            </Script>
         </html>
     );
 }
