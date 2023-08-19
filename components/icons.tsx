@@ -23,6 +23,7 @@ import {
     MoreVertical,
     Scroll,
     Settings,
+    Smartphone,
     SunMedium,
     Trophy,
     Twitter,
@@ -66,6 +67,7 @@ export const Icons = {
     undo: Undo,
     vault: Landmark,
     download: Download,
+    phone: Smartphone,
     logo: (props: LucideProps) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"

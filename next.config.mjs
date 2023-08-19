@@ -10,6 +10,10 @@ const nextConfig = {
                 source: "/api/rpc-alt",
                 destination: `https://rpc.helius.xyz/?api-key=${process.env.HELIUS_API_KEY}`,
             },
+            {
+                source: "/go",
+                destination: "/",
+            },
         ];
     },
     transpilePackages: ["jotai-devtools"],
