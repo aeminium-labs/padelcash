@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useAtomValue } from "jotai";
 
@@ -8,15 +8,6 @@ import { connectionStatusAtom, loadableAccountsAtom } from "@/lib/store";
 import { Icons } from "@/components/icons";
 import { LoginButtton } from "@/components/shared/login-button";
 import { Button } from "@/components/ui/button";
-
-interface BeforeInstallPromptEvent extends Event {
-    readonly platforms: string[];
-    readonly userChoice: Promise<{
-        outcome: "accepted" | "dismissed";
-        platform: string;
-    }>;
-    prompt(): Promise<void>;
-}
 
 function FooterButton({
     accountAddress,
@@ -28,8 +19,6 @@ function FooterButton({
     const [status, setStatus] = useState<
         "init" | "loaded" | "ready" | "installing" | "installed"
     >("init");
-    const [installEvent, setInstallEvent] =
-        useState<BeforeInstallPromptEvent | null>(null);
 
     const isClientSide = typeof window !== "undefined";
     const hasProgressier = isClientSide && window.progressier;
@@ -49,51 +38,10 @@ function FooterButton({
         status === "installed" ||
         (isClientSide && hasProgressier && window.progressier.native.installed);
 
-    useEffect(() => {
-        function onInstall() {
-            setStatus("installed");
-        }
-
-        if (isClientSide) {
-            window.addEventListener("install", onInstall);
-            return () => window.removeEventListener("install", onInstall);
-        }
-    }, [isClientSide]);
-
-    useEffect(() => {
-        function onInstallReady(e: BeforeInstallPromptEvent) {
-            e.preventDefault();
-            setInstallEvent(e);
-            setStatus("ready");
-        }
-
-        if (isClientSide && status === "loaded") {
-            window.addEventListener("installready", onInstallReady);
-            return () =>
-                window.removeEventListener("installready", onInstallReady);
-        }
-    }, [isClientSide, status]);
-
-    async function handleInstallClick() {
-        if (installEvent) {
-            installEvent.prompt();
-
-            try {
-                const userChoice = await installEvent.userChoice;
-                if (userChoice.outcome === "accepted") {
-                    setStatus("installing");
-                } else {
-                    setStatus("ready");
-                }
-            } catch (e) {
-                setStatus("ready");
-            }
-
-            setInstallEvent(null);
-        } else {
-            if (window.progressier) {
-                window.progressier.install();
-            }
+    function handleInstallClick() {
+        if (window.progressier) {
+            setStatus("installing");
+            window.progressier.install();
         }
     }
 
