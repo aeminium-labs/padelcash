@@ -141,7 +141,7 @@ export function QrCodeScanner({
 
     // Scanned but not parsed yet
     if (code.length > 0 && !hasTx) {
-        return <Skeleton className="h-[360px] w-full" />;
+        return <Skeleton className="w-full grow" />;
     }
 
     // Scanned and parsed
@@ -270,8 +270,8 @@ export function QrCodeScanner({
     }
 
     return (
-        <div className="flex grow flex-col items-center justify-center overflow-hidden rounded-xl">
-            <p className="absolute text-xs">Loading camera</p>
+        <div className="relative flex grow flex-col items-center justify-center overflow-hidden rounded-xl">
+            <Skeleton className="absolute h-full w-full grow" />
             <QrScanner
                 onDecode={(result) => {
                     setCode(result);

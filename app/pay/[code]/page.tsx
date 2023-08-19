@@ -6,8 +6,7 @@ import { useAtomValue } from "jotai";
 
 import { retrievePaymentParams } from "@/lib/fetchers";
 import { connectionStatusAtom, loadableAccountsAtom } from "@/lib/store";
-import { Container } from "@/components/shared/container";
-import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 
 type Props = {
     params: {
@@ -45,9 +44,5 @@ export default function PayPage({ params }: Props) {
         }
     }, [accountAddress, code, isLoading, router]);
 
-    return (
-        <Container>
-            <Skeleton className="h-24 w-full" />
-        </Container>
-    );
+    return <LoadingSkeleton />;
 }

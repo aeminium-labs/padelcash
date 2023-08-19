@@ -10,8 +10,8 @@ import {
 } from "@/lib/store";
 import { Icons } from "@/components/icons";
 import { Container } from "@/components/shared/container";
+import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
     children: React.ReactNode;
@@ -37,11 +37,7 @@ export function AuthChecker({ children, address }: Props) {
         (accountAddress && accountAddress !== address);
 
     if (isLoading) {
-        return (
-            <Container>
-                <Skeleton className="h-36 w-full" />
-            </Container>
-        );
+        return <LoadingSkeleton />;
     }
 
     if (isNotAuthorized) {

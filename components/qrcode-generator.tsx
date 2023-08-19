@@ -63,7 +63,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
     }, [to, amount]);
 
     if (url.length === 0) {
-        return <Skeleton className="h-[360px] w-full" />;
+        return <Skeleton className="w-full grow" />;
     }
 
     const hasOtherAmount = !amounts.includes(amount);

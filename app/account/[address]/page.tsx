@@ -9,7 +9,6 @@ import { PadelBalance } from "@/components/padelBalance";
 import { Container } from "@/components/shared/container";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export type AccountBalances = {
     account: {
@@ -108,4 +107,4 @@ export const metadata = {
     title: "Accounts",
 };
 
-export const revalidate = 30;
+export const revalidate = 0;
