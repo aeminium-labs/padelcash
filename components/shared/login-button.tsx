@@ -123,6 +123,7 @@ export function LoginButtton({ children }: Props) {
                         <div className="grid grid-cols-2 gap-4">
                             <Button
                                 variant="secondary"
+                                size="lg"
                                 onClick={onProviderClick("twitter")}
                                 disabled={shouldBeDisabled}
                             >
@@ -131,6 +132,7 @@ export function LoginButtton({ children }: Props) {
                             </Button>
                             <Button
                                 variant="secondary"
+                                size="lg"
                                 onClick={onProviderClick("discord")}
                                 disabled={shouldBeDisabled}
                             >
