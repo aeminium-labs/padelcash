@@ -19,11 +19,13 @@ export function MainFooter() {
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
 
     const isInstallable =
-        (!document
-            .querySelector("body")
-            ?.classList.contains("progressier-standalone") &&
-            window.progressier) ||
-        false;
+        !(
+            typeof window !== "undefined" &&
+            document
+                .querySelector("body")
+                ?.classList.contains("progressier-standalone") &&
+            window?.progressier
+        ) || false;
 
     return (
         <footer className="container w-full fixed bottom-0 bg-slate-900 border-t border-t-slate-700 py-4 px-4 md:hidden">
