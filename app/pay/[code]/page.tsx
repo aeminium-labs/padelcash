@@ -43,7 +43,7 @@ export default function PayPage({ params }: Props) {
         if (code.length > 0) {
             checkData();
         }
-    }, [accountAddress, code, isLoading]);
+    }, [accountAddress, code, isLoading, router]);
 
     return (
         <Container>

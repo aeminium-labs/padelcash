@@ -43,11 +43,11 @@ export async function SolBalance({ data, label = "SOL balance" }: Props) {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="text-4xl font-bold mb-1">
+                <div className="mb-1 text-4xl font-bold">
                     {solBalance.toString()}{" "}
-                    <span className="text-muted text-2xl">SOL</span>
+                    <span className="text-2xl text-muted">SOL</span>
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">
+                <p className="mb-6 text-xs text-muted-foreground">
                     ${formatValue(account.balances.nativeBalanceUSD)} USDC
                 </p>
                 <Sheet>
@@ -57,7 +57,7 @@ export async function SolBalance({ data, label = "SOL balance" }: Props) {
                             size="lg"
                             className="w-full"
                         >
-                            PADEL <Icons.transfer className="h-4 w-4 mx-4" />{" "}
+                            PADEL <Icons.transfer className="mx-4 h-4 w-4" />{" "}
                             SOL
                         </Button>
                     </SheetTrigger>

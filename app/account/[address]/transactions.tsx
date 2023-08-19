@@ -62,7 +62,7 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
         <Sheet>
             <SheetTrigger>
                 <div className="flex items-center p-4">
-                    <div className="flex flex-col gap-1 grow text-left">
+                    <div className="flex grow flex-col gap-1 text-left">
                         <p className="text-sm font-medium leading-none">
                             {trimWalletAddress(account)}
                         </p>
@@ -90,8 +90,8 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                         Transaction details
                     </SheetTitle>
                 </SheetHeader>
-                <div className="flex flex-col gap-4 my-6">
-                    <div className="flex flex-col gap-1 grow text-left">
+                <div className="my-6 flex flex-col gap-4">
+                    <div className="flex grow flex-col gap-1 text-left">
                         <p className="text-xs text-muted-foreground">
                             Signature
                         </p>
@@ -99,13 +99,13 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                             {trimWalletAddress(tx.signature, 15)}
                         </p>
                     </div>
-                    <div className="flex flex-col gap-1 grow text-left">
+                    <div className="flex grow flex-col gap-1 text-left">
                         <p className="text-xs text-muted-foreground">Date</p>
                         <p className="text-sm font-medium leading-none">
                             {formatDate(tx.dateUTC, "long")}
                         </p>
                     </div>
-                    <div className="flex flex-col gap-1 grow text-left">
+                    <div className="flex grow flex-col gap-1 text-left">
                         <p className="text-xs text-muted-foreground">
                             Sender account
                         </p>
@@ -113,7 +113,7 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                             {trimWalletAddress(tx.fromUserAccount, 15)}
                         </p>
                     </div>
-                    <div className="flex flex-col gap-1 grow text-left">
+                    <div className="flex grow flex-col gap-1 text-left">
                         <p className="text-xs text-muted-foreground">
                             Receiver account
                         </p>
@@ -121,7 +121,7 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                             {trimWalletAddress(tx.toUserAccount, 15)}
                         </p>
                     </div>
-                    <div className="flex flex-col gap-1 grow text-left">
+                    <div className="flex grow flex-col gap-1 text-left">
                         <p className="text-xs text-muted-foreground">
                             Amount (PADEL)
                         </p>
@@ -129,7 +129,7 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                             {formatValue(tx.tokenAmount)}
                         </p>
                     </div>
-                    <div className="flex flex-col gap-1 grow text-left">
+                    <div className="flex grow flex-col gap-1 text-left">
                         <p className="text-xs text-muted-foreground">
                             Amount (USDC)
                         </p>

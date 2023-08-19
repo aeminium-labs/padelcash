@@ -16,7 +16,7 @@ export default async function BadgesPage({ params }: Props) {
     return (
         <AuthChecker address={params.address}>
             <Container>
-                <div className="grid grid-flow-row gap-3 grid-cols-2">
+                <div className="grid grid-flow-row grid-cols-2 gap-3">
                     {badges.totalResults === 0 ? (
                         <p className="text-xs">No badges yet!</p>
                     ) : (

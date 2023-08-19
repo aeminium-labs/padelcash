@@ -29,9 +29,9 @@ export async function PadelBalance({
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="text-4xl font-bold mb-1">
+                <div className="mb-1 text-4xl font-bold">
                     {padelBalance.native.toString()}{" "}
-                    <span className="text-muted text-2xl">PADEL</span>
+                    <span className="text-2xl text-muted">PADEL</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
                     ${padelBalance.usd?.toString()} USDC

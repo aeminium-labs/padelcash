@@ -101,13 +101,13 @@ export function QrCodeGenerator({ to }: { to: string }) {
                         <SheetHeader className="text-left">
                             <SheetTitle>Enter PADEL amount</SheetTitle>
                         </SheetHeader>
-                        <div className="flex flex-col gap-2 mt-4">
+                        <div className="mt-4 flex flex-col gap-2">
                             <Input
                                 id="amount"
                                 type="number"
                                 value={amount}
                                 autoComplete="off"
-                                className="text-lg h-12"
+                                className="h-12 text-lg"
                                 onChange={(e) =>
                                     setAmount(parseInt(e.target.value))
                                 }
@@ -117,7 +117,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
                                     <Button
                                         variant="default"
                                         size="lg"
-                                        className="w-full col-span-2"
+                                        className="col-span-2 w-full"
                                     >
                                         Confirm
                                     </Button>

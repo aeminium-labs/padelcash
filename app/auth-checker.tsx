@@ -59,7 +59,7 @@ export function AuthChecker({ children, address }: Props) {
                 <Button
                     variant="default"
                     size="lg"
-                    className="flex flex-row items-center gap-2 w-full mt-8"
+                    className="mt-8 flex w-full flex-row items-center gap-2"
                     onClick={() => {
                         router.push("/");
                     }}

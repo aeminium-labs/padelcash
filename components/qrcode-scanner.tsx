@@ -74,7 +74,7 @@ export function QrCodeScanner({
         if (code.length > 0) {
             getUrl();
         }
-    }, [code]);
+    }, [router, code]);
 
     useEffect(() => {
         async function getConfirmation(tx: string) {
@@ -97,7 +97,7 @@ export function QrCodeScanner({
             lastTx.current = currentTx;
             setCurrentTx("");
         }
-    }, [currentTx]);
+    }, [toast, currentTx]);
 
     function handleRejectClick() {
         router.replace("?");
@@ -167,7 +167,7 @@ export function QrCodeScanner({
             !hasEnoughBalance || step > 0 || currentTx.length > 0;
 
         return (
-            <Card className="flex flex-col grow">
+            <Card className="flex grow flex-col">
                 <CardHeader>
                     <CardTitle className="text-lg text-teal-500">
                         Transaction details
@@ -178,7 +178,7 @@ export function QrCodeScanner({
                 </CardHeader>
                 <CardContent className="grow">
                     <div className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-1 grow text-left">
+                        <div className="flex grow flex-col gap-1 text-left">
                             <p className="text-xs text-muted-foreground">
                                 Receiver account
                             </p>
@@ -186,7 +186,7 @@ export function QrCodeScanner({
                                 {trimWalletAddress(to, 15)}
                             </p>
                         </div>
-                        <div className="flex flex-col gap-1 grow text-left">
+                        <div className="flex grow flex-col gap-1 text-left">
                             <p className="text-xs text-muted-foreground">
                                 Amount (PADEL)
                             </p>
@@ -194,7 +194,7 @@ export function QrCodeScanner({
                                 {formatValue(parsedAmount)}
                             </p>
                         </div>
-                        <div className="flex flex-col gap-1 grow text-left">
+                        <div className="flex grow flex-col gap-1 text-left">
                             <p className="text-xs text-muted-foreground">
                                 Amount (USD)
                             </p>
@@ -202,7 +202,7 @@ export function QrCodeScanner({
                                 ${formatValue(parsedAmount * PADEL_TOKEN_VALUE)}
                             </p>
                         </div>
-                        <div className="flex flex-col gap-1 grow text-left">
+                        <div className="flex grow flex-col gap-1 text-left">
                             <p className="text-xs text-muted-foreground">
                                 Current balance (PADEL)
                             </p>
@@ -210,7 +210,7 @@ export function QrCodeScanner({
                                 {formatValue(padelBalance.native)}
                             </p>
                         </div>
-                        <div className="flex flex-col gap-1 grow text-left">
+                        <div className="flex grow flex-col gap-1 text-left">
                             <p className="text-xs text-muted-foreground">
                                 Balance after transaction (PADEL)
                             </p>
@@ -249,12 +249,12 @@ export function QrCodeScanner({
                                     Sending your transaction
                                 </SheetTitle>
                             </SheetHeader>
-                            <div className="flex flex-col gap-4 my-6">
+                            <div className="my-6 flex flex-col gap-4">
                                 <Progress
                                     value={step * 25}
                                     className="w-full"
                                 />
-                                <p className="text-muted-foreground text-center">
+                                <p className="text-center text-muted-foreground">
                                     {labels[step - 1]}
                                 </p>
                             </div>
@@ -270,7 +270,7 @@ export function QrCodeScanner({
     }
 
     return (
-        <div className="rounded-xl overflow-hidden flex flex-col grow justify-center items-center">
+        <div className="flex grow flex-col items-center justify-center overflow-hidden rounded-xl">
             <p className="absolute text-xs">Loading camera</p>
             <QrScanner
                 onDecode={(result) => {

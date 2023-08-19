@@ -26,9 +26,9 @@ export async function UsdcBalance({ data, label = "USDC balance" }: Props) {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="text-4xl font-bold mb-6">
+                <div className="mb-6 text-4xl font-bold">
                     ${usdcBalance.toString()}{" "}
-                    <span className="text-muted text-2xl">USDC</span>
+                    <span className="text-2xl text-muted">USDC</span>
                 </div>
                 <Sheet>
                     <SheetTrigger className="w-full">
@@ -37,7 +37,7 @@ export async function UsdcBalance({ data, label = "USDC balance" }: Props) {
                             size="lg"
                             className="w-full"
                         >
-                            PADEL <Icons.transfer className="h-4 w-4 mx-4" />{" "}
+                            PADEL <Icons.transfer className="mx-4 h-4 w-4" />{" "}
                             USDC
                         </Button>
                     </SheetTrigger>

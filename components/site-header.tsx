@@ -142,11 +142,11 @@ export function SiteHeader() {
     const hasProgressier = isClientSide && window.progressier;
 
     return (
-        <header className="fixed top-0 w-full border-b border-b-teal-700 bg-slate-900/30 backdrop-blur-xl z-10">
-            <div className="container px-4 flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
+        <header className="fixed top-0 z-10 w-full border-b border-b-teal-700 bg-slate-900/30 backdrop-blur-xl">
+            <div className="container flex h-16 items-center space-x-4 px-4 sm:justify-between sm:space-x-0">
                 <Link
                     href="/"
-                    className="items-center space-x-2 text-teal-500 flex"
+                    className="flex items-center space-x-2 text-teal-500"
                 >
                     <Icons.logo className="h-6 w-6" />
                     <span className="font-bold sm:inline-block">

@@ -27,7 +27,7 @@ export function NavbarLink({
     const button = (
         <Button
             variant={isActive ? "default" : "ghost"}
-            className="w-full flex flex-col h-auto text-xs rounded-none"
+            className="flex h-auto w-full flex-col rounded-none text-xs"
             disabled={disabled}
         >
             {children}

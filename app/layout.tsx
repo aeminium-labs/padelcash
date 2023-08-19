@@ -38,7 +38,7 @@ export default function RootLayout({ children }: Props) {
                     <Toaster />
                 </Providers>
             </body>
-            <Script>
+            <Script id="virtual-keyboard">
                 {`if ("virtualKeyboard" in navigator) {
                     navigator.virtualKeyboard.overlaysContent = true;
                 }`}

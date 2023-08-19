@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAtomValue } from "jotai";
 
@@ -15,6 +16,21 @@ function FooterButton({
     accountAddress: string | null;
     shouldBeDisabled: boolean;
 }) {
+    const [status, setStatus] = useState<"init" | "installing" | "installed">(
+        "init"
+    );
+    useEffect(() => {
+        function onInstall() {
+            setStatus("installed");
+        }
+
+        window.addEventListener("install", onInstall);
+
+        return () => {
+            window.removeEventListener("install", onInstall);
+        };
+    }, []);
+
     const isClientSide = typeof window !== "undefined";
     const hasProgressier = isClientSide && window.progressier;
     const isInApp =
@@ -27,19 +43,22 @@ function FooterButton({
         hasProgressier && !isInApp && !window.progressier.native.installed;
 
     const isInstalled =
-        isClientSide && hasProgressier && window.progressier.native.installed;
+        status === "installed" ||
+        (isClientSide && hasProgressier && window.progressier.native.installed);
 
     if (isInstallable) {
         return (
             <Button
-                className="flex flex-row items-center gap-2 w-full"
+                className="flex w-full flex-row items-center gap-2"
                 variant="default"
                 size="lg"
                 onClick={() => {
                     if (window.progressier) {
                         window.progressier.install();
+                        setStatus("installing");
                     }
                 }}
+                disabled={status === "installing"}
             >
                 <Icons.download className="h-4 w-4" /> Install
             </Button>
@@ -50,7 +69,7 @@ function FooterButton({
         return (
             <Link href="/go" target={"_blank"} className="w-full">
                 <Button
-                    className="flex flex-row items-center gap-2 w-full"
+                    className="flex w-full flex-row items-center gap-2"
                     variant="default"
                     size="lg"
                 >
@@ -70,7 +89,7 @@ function FooterButton({
                 <Button
                     variant="default"
                     size="lg"
-                    className="flex flex-row items-center gap-2 w-full"
+                    className="flex w-full flex-row items-center gap-2"
                 >
                     <Icons.app className="h-4 w-4" /> Launch app
                 </Button>
@@ -83,7 +102,7 @@ function FooterButton({
             <Button
                 variant="default"
                 size="lg"
-                className="flex flex-row items-center gap-2 w-full"
+                className="flex w-full flex-row items-center gap-2"
                 disabled={shouldBeDisabled}
             >
                 <Icons.login className="h-4 w-4" /> Login
@@ -103,7 +122,7 @@ export function MainFooter() {
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
 
     return (
-        <footer className="container w-full fixed bottom-0 bg-slate-900 border-t border-t-slate-700 py-4 px-4 md:hidden">
+        <footer className="container fixed bottom-0 w-full border-t border-t-slate-700 bg-slate-900 p-4 md:hidden">
             <div className="flex flex-col items-center justify-start gap-4 md:flex-row ">
                 <FooterButton
                     accountAddress={accountAddress}

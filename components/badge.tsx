@@ -24,17 +24,17 @@ export function Badge({ image, name, description, attributes }: Props) {
         <Sheet>
             <SheetTrigger>
                 <Card className="bg-primary text-primary-foreground">
-                    <CardContent className="p-1 flex flex-col gap-1">
+                    <CardContent className="flex flex-col gap-1 p-1">
                         <div className="overflow-hidden rounded-xl">
                             <Image
                                 src={image}
                                 alt={name}
                                 width={150}
                                 height={150}
-                                className="h-auto w-auto object-cover aspect-square"
+                                className="aspect-square h-auto w-auto object-cover"
                             />
                         </div>
-                        <div className="py-2 text-sm text-center">
+                        <div className="py-2 text-center text-sm">
                             <p className="font-medium leading-none">{name}</p>
                         </div>
                     </CardContent>
@@ -46,9 +46,9 @@ export function Badge({ image, name, description, attributes }: Props) {
                     <SheetDescription>{description}</SheetDescription>
                 </SheetHeader>
                 {attributes && (
-                    <div className="flex flex-col gap-4 my-6">
+                    <div className="my-6 flex flex-col gap-4">
                         {Object.entries(attributes).map(([key, value]) => (
-                            <div className="flex flex-col gap-1 grow text-left">
+                            <div className="flex grow flex-col gap-1 text-left">
                                 <p className="text-xs text-muted-foreground">
                                     {key}
                                 </p>

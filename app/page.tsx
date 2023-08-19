@@ -44,7 +44,7 @@ export default function IndexPage() {
                         </li>
                     </ul>
                 </div>
-                <div className="flex flex-col gap-4 md:flex-row pb-4">
+                <div className="flex flex-col gap-4 pb-4 md:flex-row">
                     <Link
                         href="https://bristle-citron-418.notion.site/3d9aecc3248d4861a98b83bf8ef1959b"
                         target="_blank"
@@ -52,7 +52,7 @@ export default function IndexPage() {
                         <Button
                             variant="secondary"
                             size="lg"
-                            className="flex flex-row items-center gap-2 w-full"
+                            className="flex w-full flex-row items-center gap-2"
                         >
                             <Icons.book className="h-4 w-4" /> Learn more
                         </Button>

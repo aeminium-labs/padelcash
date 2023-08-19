@@ -105,7 +105,7 @@ export function LoginButtton({ children }: Props) {
                         create a new one.
                     </SheetDescription>
                 </SheetHeader>
-                <div className="flex flex-col gap-8 mt-8">
+                <div className="mt-8 flex flex-col gap-8">
                     <div className="flex flex-col gap-4">
                         <Button
                             variant="secondary"
