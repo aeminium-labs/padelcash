@@ -12,17 +12,25 @@ export async function POST(req: NextRequest) {
     const key = process.env.ENCRYPTION_KEY;
 
     if (body.params && key && iv) {
-        let cipher = crypto.createCipheriv(
-            "aes-256-cbc",
-            Buffer.from(key, "hex"),
-            Buffer.from(iv, "hex")
-        );
+        try {
+            let cipher = crypto.createCipheriv(
+                "aes-256-cbc",
+                Buffer.from(key, "hex"),
+                Buffer.from(iv, "hex")
+            );
 
-        let encryptedData = cipher.update(body.params, "utf-8", "hex");
+            let encryptedData = cipher.update(body.params, "utf-8", "hex");
 
-        encryptedData += cipher.final("hex");
+            encryptedData += cipher.final("hex");
 
-        return NextResponse.json({ code: encryptedData });
+            return NextResponse.json({ code: encryptedData });
+        } catch (e) {
+            console.log(e);
+            return NextResponse.json({
+                error: "not able to create code",
+                status: 500,
+            });
+        }
     }
 
     return NextResponse.json({ error: "not able to create code", status: 500 });
