@@ -70,7 +70,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="rounded-md bg-primary p-8">
+            <div className="rounded-xl bg-primary p-8">
                 <QRCode value={url} className="w-full" size={300} />
             </div>
             <div className="grid grid-cols-2 gap-2">

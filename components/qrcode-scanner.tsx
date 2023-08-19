@@ -262,14 +262,15 @@ export function QrCodeScanner({
     }
 
     return (
-        <div className="rounded-md overflow-hidden">
+        <div className="rounded-xl overflow-hidden flex flex-col grow justify-center items-center">
+            <p className="absolute text-xs">Loading camera</p>
             <QrScanner
                 onDecode={(result) => {
                     setCode(result);
                 }}
                 onError={() => {}}
                 viewFinder={ViewFinder}
-                containerStyle={{ height: 500 }}
+                containerStyle={{ display: "flex", flexGrow: 1 }}
                 videoStyle={{ objectFit: "cover" }}
             />
         </div>

@@ -27,6 +27,7 @@
     "@radix-ui/react-tooltip": "^1.0.6",
     "@solana/spl-token": "^0.3.8",
     "@solana/web3.js": "^1.78.4",
+    "@underdog-protocol/types": "^0.5.21",
     "@web3auth/base": "^6.1.7",
     "@web3auth/modal": "^6.1.7",
     "@web3auth/no-modal": "^6.1.7",

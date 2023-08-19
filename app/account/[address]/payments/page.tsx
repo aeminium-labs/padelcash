@@ -49,7 +49,7 @@ export default async function PaymentsPage({ params, searchParams }: Props) {
     return (
         <AuthChecker address={params.address}>
             <Container>
-                <Tabs defaultValue={defaultTab}>
+                <Tabs defaultValue={defaultTab} className="flex flex-col grow">
                     <TabsList className="w-full mb-2">
                         <TabsTrigger value="receive" className="w-full">
                             Receive
@@ -61,7 +61,7 @@ export default async function PaymentsPage({ params, searchParams }: Props) {
                     <TabsContent value="receive">
                         <QrCodeGenerator to={params.address} />
                     </TabsContent>
-                    <TabsContent value="send">
+                    <TabsContent value="send" className="flex flex-col grow">
                         <QrCodeScanner balancesData={balancesData} />
                     </TabsContent>
                 </Tabs>

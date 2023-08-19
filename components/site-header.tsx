@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LogoutResponse } from "@/app/api/logout/route";
@@ -55,26 +54,12 @@ function SiteHeaderLoggedIn() {
     const accounts = useAtomValue(loadableAccountsAtom);
     const web3auth = useAtomValue(web3AuthAtom);
     const setProvider = useSetAtom(web3AuthProviderAtom);
-    const isConnected = useAtomValue(isConnectedAtom);
     const setConnectionStatus = useSetAtom(connectionStatusAtom);
 
     const router = useRouter();
 
     const accountAddress =
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : "";
-
-    useEffect(() => {
-        async function registerUser() {
-            await fetcher(`/api/${accountAddress}/register`, {
-                method: "POST",
-                body: JSON.stringify({}),
-            });
-        }
-
-        if (isConnected && accountAddress.length > 0) {
-            registerUser();
-        }
-    }, [accountAddress, web3auth, isConnected]);
 
     const onLogoutClick = async () => {
         if (web3auth) {

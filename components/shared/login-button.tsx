@@ -5,6 +5,8 @@ import { WALLET_ADAPTERS } from "@web3auth/base";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
 
+import { fetcher } from "@/lib/fetchers";
+import { RPC } from "@/lib/rpc";
 import {
     connectionStatusAtom,
     web3AuthAtom,
@@ -58,9 +60,18 @@ export function LoginButtton({ children }: Props) {
                             extraLoginOptions: extra,
                         }
                     );
-                    if (web3auth.connected) {
+
+                    if (web3auth.connected && web3authProvider) {
                         setOpen(false);
                         setProvider(web3authProvider);
+
+                        // Register user
+                        const rpc = new RPC(web3authProvider);
+                        const accounts = await rpc.getAccounts();
+
+                        await fetcher(`/api/${accounts[0]}/register`, {
+                            method: "POST",
+                        });
                     }
                 } catch (e) {
                     console.log(e);

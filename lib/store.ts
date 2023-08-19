@@ -44,17 +44,6 @@ const accountsAtom = atom(async (get) => {
 });
 accountsAtom.debugLabel = "accountsAtom";
 
-const balanceAtom = atom(async (get) => {
-    const rpc = get(rpcAtom);
-
-    if (!rpc) {
-        return null;
-    }
-
-    return rpc.getBalance();
-});
-balanceAtom.debugLabel = "balanceAtom";
-
 const rpcAtom = atom((get) => {
     const provider = get(web3AuthProviderAtom);
 
@@ -64,10 +53,7 @@ const rpcAtom = atom((get) => {
 
     return new RPC(provider);
 });
-balanceAtom.debugLabel = "rpcAtom";
+rpcAtom.debugLabel = "rpcAtom";
 
 export const loadableAccountsAtom = loadable(accountsAtom);
 loadableAccountsAtom.debugLabel = "loadableAccountsAtom";
-
-export const loadableBalanceAtom = loadable(balanceAtom);
-loadableBalanceAtom.debugLabel = "loadableBalanceAtom";

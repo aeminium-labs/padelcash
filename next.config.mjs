@@ -12,8 +12,23 @@ const nextConfig = {
             },
         ];
     },
-
     transpilePackages: ["jotai-devtools"],
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "dev.updg8.com",
+                port: "",
+                pathname: "/imgdata/**",
+            },
+            {
+                protocol: "https",
+                hostname: "updg8.com",
+                port: "",
+                pathname: "/imgdata/**",
+            },
+        ],
+    },
 };
 
 export default nextConfig;

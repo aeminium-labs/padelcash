@@ -1,3 +1,4 @@
+import { BadgesResponse } from "@/app/api/[address]/badges/route";
 import { PayCreateResponse } from "@/app/api/pay/create/route";
 import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
 import { GetAtaResponse } from "@/app/api/rpc/getAta/route";
@@ -125,5 +126,14 @@ export async function signRelayerTx(signedTx: string) {
         body: JSON.stringify({
             signedTx,
         }),
+    });
+}
+
+export async function getBadges(address: string) {
+    const baseUrl = getBaseUrl();
+
+    return fetcher<BadgesResponse>(`${baseUrl}/api/${address}/badges`, {
+        method: "POST",
+        cache: "no-store",
     });
 }

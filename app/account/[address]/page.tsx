@@ -91,33 +91,14 @@ export default function OverviewPage({ params }: Props) {
                 <Suspense fallback={<Skeleton className="h-36 w-full" />}>
                     <PadelBalance data={getBalances(params.address)} />
                 </Suspense>
-                <Tabs defaultValue="activity">
-                    <TabsList>
-                        <TabsTrigger value="activity">
-                            Recent Activity
-                        </TabsTrigger>
-                        <TabsTrigger value="requests" disabled>
-                            Requests
-                        </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="activity">
-                        <Suspense
-                            fallback={<Skeleton className="h-80 w-full" />}
-                        >
-                            <ScrollArea className="h-80 border rounded-xl ">
-                                <Transactions
-                                    data={getTransfers(params.address)}
-                                    accountAddress={params.address}
-                                />
-                            </ScrollArea>
-                        </Suspense>
-                    </TabsContent>
-                    <TabsContent value="requests">
-                        <div className="flex flex-col pt-2 px-2 gap-2">
-                            Soon
-                        </div>
-                    </TabsContent>
-                </Tabs>
+                <Suspense fallback={<Skeleton className="h-80 w-full" />}>
+                    <ScrollArea className="h-96 border rounded-xl grow flex">
+                        <Transactions
+                            data={getTransfers(params.address)}
+                            accountAddress={params.address}
+                        />
+                    </ScrollArea>
+                </Suspense>
             </Container>
         </AuthChecker>
     );
