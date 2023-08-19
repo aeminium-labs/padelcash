@@ -133,6 +133,14 @@ export function SiteHeader() {
 
     const isConnected = useAtomValue(isConnectedAtom);
 
+    const isClientSide = typeof window !== "undefined";
+    const isInApp =
+        isClientSide &&
+        document
+            .querySelector("body")
+            ?.classList.contains("progressier-standalone");
+    const hasProgressier = isClientSide && window.progressier;
+
     return (
         <header className="fixed top-0 w-full border-b border-b-teal-700 bg-slate-900/30 backdrop-blur-xl z-10">
             <div className="container px-4 flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
@@ -147,7 +155,7 @@ export function SiteHeader() {
                 </Link>
                 <div className="flex flex-1 items-center justify-end space-x-4">
                     <nav className="flex items-center space-x-2">
-                        {isConnected ? (
+                        {isConnected && (isInApp || !hasProgressier) ? (
                             <SiteHeaderLoggedIn />
                         ) : (
                             <SiteHeaderLoggedOut />
