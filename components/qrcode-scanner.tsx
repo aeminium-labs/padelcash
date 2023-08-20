@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { AccountBalances } from "@/app/account/[address]/page";
 import { Transaction } from "@solana/web3.js";
 import { QrScanner } from "@yudiel/react-qr-scanner";
+import { gql } from "graphql-request";
 import { useAtomValue } from "jotai";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
@@ -18,6 +19,7 @@ import {
     retrievePaymentParams,
     signRelayerTx,
 } from "@/lib/fetchers";
+import { graphQLClient } from "@/lib/graphql";
 import { RPC } from "@/lib/rpc";
 import { web3AuthProviderAtom } from "@/lib/store";
 import {
@@ -25,6 +27,7 @@ import {
     formatValue,
     trimWalletAddress,
 } from "@/lib/utils";
+import { PadelBalance } from "@/components/padelBalance";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -48,6 +51,25 @@ import { useToast } from "@/components/ui/use-toast";
 function ViewFinder() {
     return <></>;
 }
+
+const getBalances = async (address: string) => {
+    const query = gql`
+        query getBalances($address: String!) {
+            account(address: $address) {
+                balances {
+                    tokens {
+                        amount
+                        amountUSD
+                        decimals
+                        mint
+                    }
+                }
+            }
+        }
+    `;
+
+    return graphQLClient.request<AccountBalances>(query, { address });
+};
 
 export function QrCodeScanner({
     balancesData,
@@ -319,17 +341,22 @@ export function QrCodeScanner({
     }
 
     return (
-        <div className="relative flex grow flex-col items-center justify-center overflow-hidden rounded-xl">
-            <Skeleton className="absolute h-full w-full grow" />
-            <QrScanner
-                onDecode={(result) => {
-                    setCode(result);
-                }}
-                onError={() => {}}
-                viewFinder={ViewFinder}
-                containerStyle={{ display: "flex", flexGrow: 1 }}
-                videoStyle={{ objectFit: "cover" }}
-            />
+        <div className="flex grow flex-col gap-4">
+            <Suspense fallback={<Skeleton className="h-20 w-full" />}>
+                <PadelBalance variant="small" data={getBalances(from)} />
+            </Suspense>
+            <div className="relative flex w-full grow flex-col overflow-hidden rounded-xl">
+                <Skeleton className="absolute h-full w-full grow" />
+                <QrScanner
+                    onDecode={(result) => {
+                        setCode(result);
+                    }}
+                    onError={() => {}}
+                    viewFinder={ViewFinder}
+                    containerStyle={{ display: "flex", flexGrow: 1 }}
+                    videoStyle={{ objectFit: "cover" }}
+                />
+            </div>
         </div>
     );
 }
