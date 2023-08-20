@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const amounts = [50, 100, 250, 500, 1000];
+const amounts = ["50", "100", "250", "500", "1000"];
 
 function AmountButton({
     value,
@@ -47,9 +47,9 @@ function AmountButton({
 }
 
 export function QrCodeGenerator({ to }: { to: string }) {
-    const [amount, setAmount] = useState<number>(50);
+    const [amount, setAmount] = useState<string>("50");
     const [url, setUrl] = useState<string>("");
-    const prevAmount = useRef<number>(0);
+    const prevAmount = useRef<string>("");
 
     useEffect(() => {
         async function createUrl() {
@@ -60,7 +60,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
             }
         }
 
-        if (prevAmount.current !== amount) {
+        if (prevAmount.current !== amount && parseFloat(amount) > 0) {
             createUrl();
             prevAmount.current = amount;
         }
@@ -80,7 +80,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
             <div className="grid grid-cols-2 gap-2">
                 {amounts.map((value) => (
                     <AmountButton
-                        value={value}
+                        value={parseFloat(value)}
                         onClick={() => setAmount(value)}
                         isActive={value === amount}
                         key={`amount-button-${value}`}
@@ -112,9 +112,9 @@ export function QrCodeGenerator({ to }: { to: string }) {
                                 value={amount}
                                 autoComplete="off"
                                 className="h-12 text-lg"
-                                onChange={(e) =>
-                                    setAmount(parseInt(e.target.value))
-                                }
+                                onChange={(e) => {
+                                    setAmount(e.target.value);
+                                }}
                             />
                             <SheetFooter>
                                 <SheetClose asChild>

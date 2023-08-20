@@ -160,7 +160,7 @@ export function QrCodeScanner({
             usd: formatValue(padelToken?.amountUSD),
         };
 
-        const parsedAmount = parseInt(amount);
+        const parsedAmount = parseFloat(amount);
         const hasEnoughBalance = padelBalance.native - parsedAmount > 0;
         const labels = [
             "Preparing",
