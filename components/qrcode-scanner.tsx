@@ -193,7 +193,7 @@ export function QrCodeScanner({
                 "Preparing",
                 "Signing",
                 "Sending",
-                `Sent ${formatValue(amount)} PADEL`,
+                `Sent ${formatAdjustedValue(amount)} PADEL`,
             ];
             const shouldBeDisabled =
                 !hasEnoughBalance ||
