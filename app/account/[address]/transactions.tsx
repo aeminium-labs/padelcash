@@ -1,7 +1,11 @@
 import Link from "next/link";
 
-import { PADEL_TOKEN, PADEL_TOKEN_VALUE } from "@/lib/constants";
-import { formatDate, formatValue, trimWalletAddress } from "@/lib/utils";
+import { PADEL_TOKEN } from "@/lib/constants";
+import {
+    formatAdjustedValue,
+    formatDate,
+    trimWalletAddress,
+} from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
     Sheet,
@@ -74,14 +78,7 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                     </div>
                     <div className="flex flex-col gap-1 text-right">
                         <p className={"text-md font-medium leading-none"}>
-                            {`${txSign}${formatValue(tx.tokenAmount)}`}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                            $
-                            {`${formatValue(
-                                tx.tokenAmount * PADEL_TOKEN_VALUE
-                            )}`}{" "}
-                            USDC
+                            {`${txSign}${formatAdjustedValue(tx.tokenAmount)}`}
                         </p>
                     </div>
                 </div>
@@ -129,19 +126,9 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                         </p>
                     </div>
                     <div className="flex grow flex-col gap-1 text-left">
-                        <p className="text-xs text-muted-foreground">
-                            Amount (PADEL)
-                        </p>
+                        <p className="text-xs text-muted-foreground">Amount</p>
                         <p className="text-sm font-medium leading-none">
-                            {formatValue(tx.tokenAmount)}
-                        </p>
-                    </div>
-                    <div className="flex grow flex-col gap-1 text-left">
-                        <p className="text-xs text-muted-foreground">
-                            Amount (USDC)
-                        </p>
-                        <p className="text-sm font-medium leading-none">
-                            ${formatValue(tx.tokenAmount * PADEL_TOKEN_VALUE)}
+                            {formatAdjustedValue(tx.tokenAmount)} PADEL
                         </p>
                     </div>
                 </div>

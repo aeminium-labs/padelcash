@@ -1,7 +1,7 @@
 import { AccountBalances } from "@/app/account/[address]/page";
 
 import { PADEL_TOKEN } from "@/lib/constants";
-import { formatValue } from "@/lib/utils";
+import { formatAdjustedValue, formatValue } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Props = { data: Promise<AccountBalances>; label?: string };
@@ -17,7 +17,7 @@ export async function PadelBalance({
     );
 
     const padelBalance = {
-        native: formatValue(padelToken?.amount, padelToken?.decimals),
+        native: formatAdjustedValue(padelToken?.amount, padelToken?.decimals),
         usd: formatValue(padelToken?.amountUSD),
     };
 

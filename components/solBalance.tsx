@@ -1,6 +1,5 @@
 import { AccountBalances } from "@/app/account/[address]/page";
 
-import { PADEL_TOKEN, PADEL_TOKEN_VALUE } from "@/lib/constants";
 import { formatValue } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
@@ -22,18 +21,6 @@ export async function SolBalance({ data, label = "SOL balance" }: Props) {
         account.balances.nativeBalance,
         account.balances.nativeBalanceDecimals
     );
-
-    const padelToken = account.balances.tokens.find(
-        (token) => token.mint === PADEL_TOKEN
-    );
-
-    const padelBalance = {
-        native: formatValue(padelToken?.amount, padelToken?.decimals),
-        usd: formatValue(
-            (padelToken?.amount || 0) * PADEL_TOKEN_VALUE,
-            padelToken?.decimals
-        ),
-    };
 
     return (
         <Card>

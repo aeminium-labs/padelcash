@@ -1,6 +1,7 @@
 import { BadgeType } from "@/app/api/badges/create/route";
 import { PayCreateResponse } from "@/app/api/pay/create/route";
 import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
+import { GetPriceResponse } from "@/app/api/prices/token/route";
 import { TxConfirmResponse } from "@/app/api/tx/confirm/route";
 import { TxCreateResponse } from "@/app/api/tx/create/route";
 import { TxSendResponse } from "@/app/api/tx/send/route";
@@ -94,6 +95,16 @@ export async function createBadge(address: string, badgeType: BadgeType) {
         body: JSON.stringify({
             address,
             badgeType,
+        }),
+    });
+}
+
+export async function getTokenPrice(amount: number = 1, token?: string) {
+    return fetcher<GetPriceResponse>(`/api/prices/token`, {
+        method: "POST",
+        body: JSON.stringify({
+            amount,
+            token,
         }),
     });
 }

@@ -9,21 +9,22 @@ import { useAtomValue } from "jotai";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
 
-import {
-    PADEL_TOKEN,
-    PADEL_TOKEN_VALUE,
-    TOKEN_MULTIPLIER,
-} from "@/lib/constants";
+import { PADEL_TOKEN, TOKEN_MULTIPLIER } from "@/lib/constants";
 import {
     confirmTx,
     createBadge,
     createTx,
+    getTokenPrice,
     retrievePaymentParams,
     signRelayerTx,
 } from "@/lib/fetchers";
 import { RPC } from "@/lib/rpc";
 import { web3AuthProviderAtom } from "@/lib/store";
-import { formatValue, trimWalletAddress } from "@/lib/utils";
+import {
+    formatAdjustedValue,
+    formatValue,
+    trimWalletAddress,
+} from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -63,6 +64,7 @@ export function QrCodeScanner({
     const provider = useAtomValue(web3AuthProviderAtom);
     const { toast } = useToast();
     const { width, height } = useWindowSize();
+    const [usdcValue, setUsdcValue] = useState(0);
 
     const from = Array.isArray(params.address)
         ? params.address[0]
@@ -111,6 +113,20 @@ export function QrCodeScanner({
             setCurrentTx("");
         }
     }, [toast, currentTx, from]);
+
+    useEffect(() => {
+        async function getUsdcPrice(amount: number) {
+            const res = await getTokenPrice(amount);
+
+            if (res.value) {
+                setUsdcValue(res.value);
+            }
+        }
+
+        if (amount > 0) {
+            getUsdcPrice(amount);
+        }
+    }, [amount]);
 
     function handleRejectClick() {
         router.replace("?");
@@ -165,7 +181,7 @@ export function QrCodeScanner({
 
         if (padelToken) {
             const padelBalance = {
-                native: formatValue(
+                native: formatAdjustedValue(
                     padelToken.amount * TOKEN_MULTIPLIER,
                     padelToken?.decimals
                 ),
@@ -210,7 +226,7 @@ export function QrCodeScanner({
                                     Amount (PADEL)
                                 </p>
                                 <p className="text-sm font-medium leading-none">
-                                    {formatValue(amount)}
+                                    {formatAdjustedValue(amount)}
                                 </p>
                             </div>
                             <div className="flex grow flex-col gap-1 text-left">
@@ -218,7 +234,7 @@ export function QrCodeScanner({
                                     Amount (USD)
                                 </p>
                                 <p className="text-sm font-medium leading-none">
-                                    ${formatValue(amount * PADEL_TOKEN_VALUE)}
+                                    ${formatValue(usdcValue)}
                                 </p>
                             </div>
                             <div className="flex grow flex-col gap-1 text-left">
@@ -226,7 +242,7 @@ export function QrCodeScanner({
                                     Current balance (PADEL)
                                 </p>
                                 <p className="text-sm font-medium leading-none">
-                                    {formatValue(padelBalance.native)}
+                                    {formatAdjustedValue(padelBalance.native)}
                                 </p>
                             </div>
                             <div className="flex grow flex-col gap-1 text-left">
@@ -234,7 +250,9 @@ export function QrCodeScanner({
                                     Balance after transaction (PADEL)
                                 </p>
                                 <p className="text-sm font-medium leading-none">
-                                    {formatValue(padelBalance.native - amount)}
+                                    {formatAdjustedValue(
+                                        padelBalance.native - amount
+                                    )}
                                 </p>
                             </div>
                         </div>

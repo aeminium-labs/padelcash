@@ -3,7 +3,6 @@
 import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 
-import { PADEL_TOKEN_VALUE } from "@/lib/constants";
 import { createPaymentCode } from "@/lib/fetchers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const amounts = ["50", "100", "250", "500", "1000"];
+const amounts = ["5", "10", "25", "50", "100"];
 
 function AmountButton({
     value,
@@ -38,9 +37,6 @@ function AmountButton({
         >
             <span className="flex flex-col gap-0 text-center">
                 <span className="">{value} PADEL</span>
-                <span className="text-xs text-muted-foreground">
-                    ${value * PADEL_TOKEN_VALUE}
-                </span>
             </span>
         </Button>
     );

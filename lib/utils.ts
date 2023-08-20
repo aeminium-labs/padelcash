@@ -21,11 +21,15 @@ export function trimWalletAddress(address: string, chars: number = 5) {
 export function formatValue(value: number = 0, decimals: number = 0) {
     const res = value / 10 ** decimals;
 
-    // ATTENTION we only do this adjustment during pilot because we're using BONK
-    // 1 PADEL = 500.000 BONK
-    const adjustedValue = res / TOKEN_MULTIPLIER;
+    return Math.round((res + Number.EPSILON) * 10000) / 10000;
+}
 
-    return Math.round((adjustedValue + Number.EPSILON) * 10000) / 10000;
+// ATTENTION we only do this adjustment during pilot because we're using BONK
+export function formatAdjustedValue(value: number = 0, decimals: number = 0) {
+    // 1 PADEL = 500.000 BONK
+    const adjustedValue = value / TOKEN_MULTIPLIER;
+
+    return formatValue(adjustedValue, decimals);
 }
 
 export function formatDate(
