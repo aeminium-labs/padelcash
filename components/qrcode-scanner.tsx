@@ -164,7 +164,10 @@ export function QrCodeScanner({
             `🎉 Sent ${amount} PADEL 🎉`,
         ];
         const shouldBeDisabled =
-            !hasEnoughBalance || step > 0 || currentTx.length > 0;
+            !hasEnoughBalance ||
+            to === from ||
+            step > 0 ||
+            currentTx.length > 0;
 
         return (
             <Card className="flex grow flex-col">
