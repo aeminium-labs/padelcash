@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
                     from_address: senderAddress,
                     to_address: receiverAddress,
                     token_address: PADEL_TOKEN,
-                    amount,
+                    amount, // we don't need to add the decimals because the API handles that
                     fee_payer: FEE_PAYER_ADDRESS,
                 }),
                 redirect: "follow",

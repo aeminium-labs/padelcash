@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import { TOKEN_MULTIPLIER } from "@/lib/constants";
+
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
@@ -18,7 +20,12 @@ export function trimWalletAddress(address: string, chars: number = 5) {
 
 export function formatValue(value: number = 0, decimals: number = 0) {
     const res = value / 10 ** decimals;
-    return Math.round((res + Number.EPSILON) * 10000) / 10000;
+
+    // ATTENTION we only do this adjustment during pilot because we're using BONK
+    // 1 PADEL = 500.000 BONK
+    const adjustedValue = res / TOKEN_MULTIPLIER;
+
+    return Math.round((adjustedValue + Number.EPSILON) * 10000) / 10000;
 }
 
 export function formatDate(

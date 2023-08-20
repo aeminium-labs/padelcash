@@ -3,3 +3,4 @@ export const PADEL_TOKEN = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"; //"5M
 export const USDC_TOKEN = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 export const PADEL_TOKEN_VALUE = 0.1;
 export const FEE_PAYER_ADDRESS = "5yuR5hQ8k8Z78RCBTbifkFchZHrXMsWeyW8E3zN39ZdM";
+export const TOKEN_MULTIPLIER = 500000; // TODO: this is just used during pilot because we're using BONK. 1 $PADEL = 500.000 $BONK

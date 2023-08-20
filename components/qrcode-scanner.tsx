@@ -6,8 +6,14 @@ import { AccountBalances } from "@/app/account/[address]/page";
 import { Transaction } from "@solana/web3.js";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { useAtomValue } from "jotai";
+import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
 
-import { PADEL_TOKEN, PADEL_TOKEN_VALUE } from "@/lib/constants";
+import {
+    PADEL_TOKEN,
+    PADEL_TOKEN_VALUE,
+    TOKEN_MULTIPLIER,
+} from "@/lib/constants";
 import {
     confirmTx,
     createBadge,
@@ -56,14 +62,16 @@ export function QrCodeScanner({
     const searchParams = useSearchParams();
     const provider = useAtomValue(web3AuthProviderAtom);
     const { toast } = useToast();
+    const { width, height } = useWindowSize();
 
     const from = Array.isArray(params.address)
         ? params.address[0]
         : params.address;
     const to = searchParams.get("to");
-    const amount = searchParams.get("amount");
+    const amount =
+        parseFloat(searchParams.get("amount") || "0") * TOKEN_MULTIPLIER;
 
-    const hasTx = to && amount;
+    const hasTx = to && amount > 0;
 
     useEffect(() => {
         async function getUrl() {
@@ -116,7 +124,7 @@ export function QrCodeScanner({
         const createTxRes = await createTx({
             senderAddress: Array.isArray(from) ? from[0] : from,
             receiverAddress: Array.isArray(to) ? to[0] : to,
-            amount: parseFloat(amount || "0"),
+            amount,
         });
 
         setStep(2);
@@ -160,13 +168,12 @@ export function QrCodeScanner({
             usd: formatValue(padelToken?.amountUSD),
         };
 
-        const parsedAmount = parseFloat(amount);
-        const hasEnoughBalance = padelBalance.native - parsedAmount > 0;
+        const hasEnoughBalance = padelBalance.native - amount > 0;
         const labels = [
             "Preparing",
             "Signing",
             "Sending",
-            `🎉 Sent ${amount} PADEL 🎉`,
+            `Sent ${formatValue(amount)} PADEL`,
         ];
         const shouldBeDisabled =
             !hasEnoughBalance ||
@@ -199,7 +206,7 @@ export function QrCodeScanner({
                                 Amount (PADEL)
                             </p>
                             <p className="text-sm font-medium leading-none">
-                                {formatValue(parsedAmount)}
+                                {formatValue(amount)}
                             </p>
                         </div>
                         <div className="flex grow flex-col gap-1 text-left">
@@ -207,7 +214,7 @@ export function QrCodeScanner({
                                 Amount (USD)
                             </p>
                             <p className="text-sm font-medium leading-none">
-                                ${formatValue(parsedAmount * PADEL_TOKEN_VALUE)}
+                                ${formatValue(amount * PADEL_TOKEN_VALUE)}
                             </p>
                         </div>
                         <div className="flex grow flex-col gap-1 text-left">
@@ -223,9 +230,7 @@ export function QrCodeScanner({
                                 Balance after transaction (PADEL)
                             </p>
                             <p className="text-sm font-medium leading-none">
-                                {formatValue(
-                                    padelBalance.native - parsedAmount
-                                )}
+                                {formatValue(padelBalance.native - amount)}
                             </p>
                         </div>
                     </div>
@@ -265,6 +270,9 @@ export function QrCodeScanner({
                                 <p className="text-center text-muted-foreground">
                                     {labels[step - 1]}
                                 </p>
+                                {step === 4 && (
+                                    <Confetti width={width} height={height} />
+                                )}
                             </div>
                         </SheetContent>
                     </Sheet>
