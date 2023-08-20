@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { fetcher } from "@/lib/fetchers";
-
-type Data = { message: String };
-
-const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-const DISCORD_SECRET_KEY = process.env.DISCORD_SECRET_KEY;
+import { discordLogOut } from "@/lib/server/fetchers";
 
 export type LogoutResponse = {
     message: string;
@@ -19,15 +14,7 @@ export async function POST(req: NextRequest) {
         data.append("token", body.token);
 
         try {
-            await fetcher("https://discord.com/api/oauth2/token/revoke", {
-                method: "POST",
-                body: data,
-                headers: {
-                    Authorization: `Basic ${Buffer.from(
-                        `${DISCORD_CLIENT_ID}:${DISCORD_SECRET_KEY}`
-                    ).toString("base64")}`,
-                },
-            });
+            await discordLogOut(data);
 
             return NextResponse.json({ message: "success" }, { status: 200 });
         } catch (e) {

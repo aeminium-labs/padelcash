@@ -1,4 +1,4 @@
-import { BadgesResponse } from "@/app/api/[address]/badges/route";
+import { BadgesResponse } from "@/app/api/badges/route";
 import { GetAtaResponse } from "@/app/api/rpc/getAta/route";
 import { GetTokenInfoResponse } from "@/app/api/rpc/getTokenInfo/route";
 
@@ -11,9 +11,12 @@ import "server-only";
 export async function getBadges(address: string) {
     const baseUrl = getBaseUrl();
 
-    return fetcher<BadgesResponse>(`${baseUrl}/api/${address}/badges`, {
+    return fetcher<BadgesResponse>(`${baseUrl}/api/badges`, {
         method: "POST",
         cache: "no-store",
+        body: JSON.stringify({
+            address,
+        }),
     });
 }
 
@@ -30,6 +33,7 @@ export async function getTokenInfo(mint: string) {
         }
     );
 }
+
 export async function getPadelAta(address: string) {
     const baseUrl = getBaseUrl();
 
@@ -39,5 +43,17 @@ export async function getPadelAta(address: string) {
             address,
             mint: PADEL_TOKEN,
         }),
+    });
+}
+
+export async function discordLogOut(data: FormData) {
+    return fetcher("https://discord.com/api/oauth2/token/revoke", {
+        method: "POST",
+        body: data,
+        headers: {
+            Authorization: `Basic ${Buffer.from(
+                `${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_SECRET_KEY}`
+            ).toString("base64")}`,
+        },
     });
 }

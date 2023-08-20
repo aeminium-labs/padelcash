@@ -31,7 +31,7 @@ export async function UsdcBalance({ data, label = "USDC balance" }: Props) {
                     <span className="text-2xl text-muted">USDC</span>
                 </div>
                 <Sheet>
-                    <SheetTrigger className="w-full">
+                    <SheetTrigger className="w-full" asChild>
                         <Button
                             variant="secondary"
                             size="lg"

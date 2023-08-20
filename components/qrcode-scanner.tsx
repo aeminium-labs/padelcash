@@ -10,6 +10,7 @@ import { useAtomValue } from "jotai";
 import { PADEL_TOKEN, PADEL_TOKEN_VALUE } from "@/lib/constants";
 import {
     confirmTx,
+    createBadge,
     createTx,
     retrievePaymentParams,
     signRelayerTx,
@@ -56,7 +57,9 @@ export function QrCodeScanner({
     const provider = useAtomValue(web3AuthProviderAtom);
     const { toast } = useToast();
 
-    const from = params.address;
+    const from = Array.isArray(params.address)
+        ? params.address[0]
+        : params.address;
     const to = searchParams.get("to");
     const amount = searchParams.get("amount");
 
@@ -84,6 +87,8 @@ export function QrCodeScanner({
                 toast({
                     title: "Your transaction is confirmed!",
                 });
+
+                await createBadge(from, "firstTransaction");
             } else {
                 toast({
                     variant: "destructive",
@@ -97,7 +102,7 @@ export function QrCodeScanner({
             lastTx.current = currentTx;
             setCurrentTx("");
         }
-    }, [toast, currentTx]);
+    }, [toast, currentTx, from]);
 
     function handleRejectClick() {
         router.replace("?");

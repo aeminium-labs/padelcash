@@ -22,7 +22,7 @@ const fontSans = FontSans({
 
 export default function RootLayout({ children }: Props) {
     return (
-        <html lang="en" className={fontSans.variable}>
+        <html lang="en" className={`${fontSans.variable} dark`}>
             <head>
                 {process.env.NODE_ENV === "production" && (
                     <script

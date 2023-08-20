@@ -1,3 +1,4 @@
+import { BadgeType } from "@/app/api/badges/create/route";
 import { PayCreateResponse } from "@/app/api/pay/create/route";
 import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
 import { TxConfirmResponse } from "@/app/api/tx/confirm/route";
@@ -83,6 +84,16 @@ export async function signRelayerTx(signedTx: string) {
         method: "POST",
         body: JSON.stringify({
             signedTx,
+        }),
+    });
+}
+
+export async function createBadge(address: string, badgeType: BadgeType) {
+    return fetcher(`/api/badges/create`, {
+        method: "POST",
+        body: JSON.stringify({
+            address,
+            badgeType,
         }),
     });
 }

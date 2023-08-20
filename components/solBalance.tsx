@@ -51,7 +51,7 @@ export async function SolBalance({ data, label = "SOL balance" }: Props) {
                     ${formatValue(account.balances.nativeBalanceUSD)} USDC
                 </p>
                 <Sheet>
-                    <SheetTrigger className="w-full">
+                    <SheetTrigger className="w-full" asChild>
                         <Button
                             variant="secondary"
                             size="lg"

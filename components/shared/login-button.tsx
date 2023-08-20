@@ -6,7 +6,7 @@ import { WALLET_ADAPTERS } from "@web3auth/base";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
 
-import { fetcher } from "@/lib/fetchers";
+import { createBadge } from "@/lib/fetchers";
 import { RPC } from "@/lib/rpc";
 import {
     connectionStatusAtom,
@@ -72,9 +72,7 @@ export function LoginButtton({ children }: Props) {
 
                         router.push(`/account/${accounts[0]}`);
 
-                        await fetcher(`/api/${accounts[0]}/register`, {
-                            method: "POST",
-                        });
+                        await createBadge(accounts[0], "registration");
                     }
                 } catch (e) {
                     console.log(e);

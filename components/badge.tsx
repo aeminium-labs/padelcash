@@ -22,7 +22,7 @@ type Props = {
 export function Badge({ image, name, description, attributes }: Props) {
     return (
         <Sheet>
-            <SheetTrigger>
+            <SheetTrigger asChild>
                 <Card className="bg-primary text-primary-foreground">
                     <CardContent className="flex flex-col gap-1 p-1">
                         <div className="overflow-hidden rounded-xl">
@@ -48,7 +48,10 @@ export function Badge({ image, name, description, attributes }: Props) {
                 {attributes && (
                     <div className="my-6 flex flex-col gap-4">
                         {Object.entries(attributes).map(([key, value]) => (
-                            <div className="flex grow flex-col gap-1 text-left">
+                            <div
+                                className="flex grow flex-col gap-1 text-left"
+                                key={`attributes-${key}`}
+                            >
                                 <p className="text-xs text-muted-foreground">
                                     {key}
                                 </p>
