@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { PADEL_TOKEN, PADEL_TOKEN_VALUE } from "@/lib/constants";
 import { formatDate, formatValue, trimWalletAddress } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -96,7 +98,12 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                             Signature
                         </p>
                         <p className="text-sm font-medium leading-none">
-                            {trimWalletAddress(tx.signature, 15)}
+                            <Link
+                                href={`https://xray.helius.xyz/tx/${tx.signature}`}
+                                target="_blank"
+                            >
+                                {trimWalletAddress(tx.signature, 15)}
+                            </Link>
                         </p>
                     </div>
                     <div className="flex grow flex-col gap-1 text-left">

@@ -148,7 +148,7 @@ export function QrCodeScanner({
             setTimeout(() => {
                 router.replace("?");
                 setCode("");
-            }, 1500);
+            }, 2000);
         }
     }
 
@@ -163,122 +163,136 @@ export function QrCodeScanner({
             (token) => token.mint === PADEL_TOKEN
         );
 
-        const padelBalance = {
-            native: formatValue(padelToken?.amount, padelToken?.decimals),
-            usd: formatValue(padelToken?.amountUSD),
-        };
+        if (padelToken) {
+            const padelBalance = {
+                native: formatValue(
+                    padelToken.amount * TOKEN_MULTIPLIER,
+                    padelToken?.decimals
+                ),
+                usd: formatValue(padelToken.amountUSD),
+            };
 
-        const hasEnoughBalance = padelBalance.native - amount > 0;
-        const labels = [
-            "Preparing",
-            "Signing",
-            "Sending",
-            `Sent ${formatValue(amount)} PADEL`,
-        ];
-        const shouldBeDisabled =
-            !hasEnoughBalance ||
-            to === from ||
-            step > 0 ||
-            currentTx.length > 0;
+            const hasEnoughBalance = padelBalance.native - amount > 0;
+            const labels = [
+                "Preparing",
+                "Signing",
+                "Sending",
+                `Sent ${formatValue(amount)} PADEL`,
+            ];
+            const shouldBeDisabled =
+                !hasEnoughBalance ||
+                to === from ||
+                step > 0 ||
+                currentTx.length > 0;
 
-        return (
-            <Card className="flex grow flex-col">
-                <CardHeader>
-                    <CardTitle className="text-lg text-teal-500">
-                        Transaction details
-                    </CardTitle>
-                    <CardDescription>
-                        Please verify the details before approving
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="grow">
-                    <div className="flex flex-col gap-4">
-                        <div className="flex grow flex-col gap-1 text-left">
-                            <p className="text-xs text-muted-foreground">
-                                Receiver account
-                            </p>
-                            <p className="text-sm font-medium leading-none">
-                                {trimWalletAddress(to, 15)}
-                            </p>
-                        </div>
-                        <div className="flex grow flex-col gap-1 text-left">
-                            <p className="text-xs text-muted-foreground">
-                                Amount (PADEL)
-                            </p>
-                            <p className="text-sm font-medium leading-none">
-                                {formatValue(amount)}
-                            </p>
-                        </div>
-                        <div className="flex grow flex-col gap-1 text-left">
-                            <p className="text-xs text-muted-foreground">
-                                Amount (USD)
-                            </p>
-                            <p className="text-sm font-medium leading-none">
-                                ${formatValue(amount * PADEL_TOKEN_VALUE)}
-                            </p>
-                        </div>
-                        <div className="flex grow flex-col gap-1 text-left">
-                            <p className="text-xs text-muted-foreground">
-                                Current balance (PADEL)
-                            </p>
-                            <p className="text-sm font-medium leading-none">
-                                {formatValue(padelBalance.native)}
-                            </p>
-                        </div>
-                        <div className="flex grow flex-col gap-1 text-left">
-                            <p className="text-xs text-muted-foreground">
-                                Balance after transaction (PADEL)
-                            </p>
-                            <p className="text-sm font-medium leading-none">
-                                {formatValue(padelBalance.native - amount)}
-                            </p>
-                        </div>
-                    </div>
-                </CardContent>
-                <CardFooter className="grid grid-cols-3 gap-2">
-                    <Button
-                        variant="destructive"
-                        size="lg"
-                        onClick={handleRejectClick}
-                        disabled={step > 0}
-                    >
-                        Reject
-                    </Button>
-                    <Sheet open={step > 0}>
-                        <SheetTrigger asChild>
-                            <Button
-                                size="lg"
-                                disabled={shouldBeDisabled}
-                                variant="success"
-                                onClick={handleAcceptClick}
-                                className="col-span-2"
-                            >
-                                Approve
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="bottom" hideCloseButton>
-                            <SheetHeader>
-                                <SheetTitle className="text-teal-500">
-                                    Sending your transaction
-                                </SheetTitle>
-                            </SheetHeader>
-                            <div className="my-6 flex flex-col gap-4">
-                                <Progress
-                                    value={step * 25}
-                                    className="w-full"
-                                />
-                                <p className="text-center text-muted-foreground">
-                                    {labels[step - 1]}
+            return (
+                <Card className="flex grow flex-col">
+                    <CardHeader>
+                        <CardTitle className="text-lg text-teal-500">
+                            Transaction details
+                        </CardTitle>
+                        <CardDescription>
+                            Please verify the details before approving
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="grow">
+                        <div className="flex flex-col gap-4">
+                            <div className="flex grow flex-col gap-1 text-left">
+                                <p className="text-xs text-muted-foreground">
+                                    Receiver account
                                 </p>
-                                {step === 4 && (
-                                    <Confetti width={width} height={height} />
-                                )}
+                                <p className="text-sm font-medium leading-none">
+                                    {trimWalletAddress(to, 15)}
+                                </p>
                             </div>
-                        </SheetContent>
-                    </Sheet>
-                </CardFooter>
-            </Card>
-        );
+                            <div className="flex grow flex-col gap-1 text-left">
+                                <p className="text-xs text-muted-foreground">
+                                    Amount (PADEL)
+                                </p>
+                                <p className="text-sm font-medium leading-none">
+                                    {formatValue(amount)}
+                                </p>
+                            </div>
+                            <div className="flex grow flex-col gap-1 text-left">
+                                <p className="text-xs text-muted-foreground">
+                                    Amount (USD)
+                                </p>
+                                <p className="text-sm font-medium leading-none">
+                                    ${formatValue(amount * PADEL_TOKEN_VALUE)}
+                                </p>
+                            </div>
+                            <div className="flex grow flex-col gap-1 text-left">
+                                <p className="text-xs text-muted-foreground">
+                                    Current balance (PADEL)
+                                </p>
+                                <p className="text-sm font-medium leading-none">
+                                    {formatValue(padelBalance.native)}
+                                </p>
+                            </div>
+                            <div className="flex grow flex-col gap-1 text-left">
+                                <p className="text-xs text-muted-foreground">
+                                    Balance after transaction (PADEL)
+                                </p>
+                                <p className="text-sm font-medium leading-none">
+                                    {formatValue(padelBalance.native - amount)}
+                                </p>
+                            </div>
+                        </div>
+                    </CardContent>
+                    <CardFooter className="grid grid-cols-3 gap-2">
+                        <Button
+                            variant="destructive"
+                            size="lg"
+                            onClick={handleRejectClick}
+                            disabled={step > 0}
+                        >
+                            Reject
+                        </Button>
+                        <Sheet open={step > 0}>
+                            <SheetTrigger asChild>
+                                <Button
+                                    size="lg"
+                                    disabled={shouldBeDisabled}
+                                    variant="success"
+                                    onClick={handleAcceptClick}
+                                    className="col-span-2"
+                                >
+                                    Approve
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="bottom" hideCloseButton>
+                                <SheetHeader>
+                                    <SheetTitle className="text-teal-500">
+                                        Sending your transaction
+                                    </SheetTitle>
+                                </SheetHeader>
+                                <div className="my-6 flex flex-col gap-4">
+                                    <Progress
+                                        value={step * 25}
+                                        className="w-full"
+                                    />
+                                    <p className="text-center text-muted-foreground">
+                                        {labels[step - 1]}
+                                    </p>
+                                    {step === 4 && (
+                                        <Confetti
+                                            width={width}
+                                            height={height}
+                                            confettiSource={{
+                                                x: 0,
+                                                y: 0,
+                                                w: width,
+                                                h: height,
+                                            }}
+                                        />
+                                    )}
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                    </CardFooter>
+                </Card>
+            );
+        }
     }
 
     if (step > 0) {
