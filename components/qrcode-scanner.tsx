@@ -138,7 +138,7 @@ export function QrCodeScanner({
 
         // Create new transaction from API
         const createTxRes = await createTx({
-            senderAddress: Array.isArray(from) ? from[0] : from,
+            senderAddress: from,
             receiverAddress: Array.isArray(to) ? to[0] : to,
             amount,
         });
@@ -161,8 +161,9 @@ export function QrCodeScanner({
             setCurrentTx(relayerTx.signedTx);
             setStep(4);
 
+            // Cleanup and redirect to home
             setTimeout(() => {
-                router.replace("?");
+                router.push(`/account/${from}`);
                 setCode("");
             }, 2000);
         }

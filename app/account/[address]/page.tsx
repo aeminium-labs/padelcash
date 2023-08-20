@@ -47,13 +47,13 @@ const getBalances = async (address: string) => {
     return graphQLClient.request<AccountBalances>(query, { address });
 };
 
-const getTransfers = async (address: string) => {
+const getTransactions = async (address: string) => {
     const account = await getPadelAta(address);
 
     const query = gql`
         query getTransfers($address: String!) {
             account(address: $address) {
-                transactions(type: "TRANSFER") {
+                transactions(type: "TRANSFER", commitment: "confirmed") {
                     signature
                     timestamp
                     dateUTC
@@ -93,7 +93,7 @@ export default function OverviewPage({ params }: Props) {
                 <Suspense fallback={<Skeleton className="h-80 w-full" />}>
                     <ScrollArea className="flex h-96 grow rounded-xl border">
                         <Transactions
-                            data={getTransfers(params.address)}
+                            data={getTransactions(params.address)}
                             accountAddress={params.address}
                         />
                     </ScrollArea>
