@@ -80,7 +80,6 @@ export async function POST(req: NextRequest) {
                     },
                     body: JSON.stringify({
                         ...configMap[body.badgeType],
-                        upsert: true, // do upsert just in case so we don't create duplicates
                         receiverAddress: body.address,
                     }),
                 });
