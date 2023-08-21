@@ -2,10 +2,9 @@
 
 import {
     Connection,
-    LAMPORTS_PER_SOL,
     PublicKey,
-    SystemProgram,
     Transaction,
+    VersionedTransaction,
 } from "@solana/web3.js";
 import { CustomChainConfig, SafeEventEmitterProvider } from "@web3auth/base";
 import { SolanaWallet } from "@web3auth/solana-provider";
@@ -63,29 +62,6 @@ export class RPC {
         try {
             const solanaWallet = new SolanaWallet(this.provider);
 
-            // const accounts = await solanaWallet.requestAccounts();
-
-            // const connectionConfig =
-            //     await solanaWallet.request<CustomChainConfig>({
-            //         method: "solana_provider_config",
-            //         params: [],
-            //     });
-            // const connection = new Connection(connectionConfig.rpcTarget);
-
-            // const block = await connection.getLatestBlockhash("finalized");
-
-            // const TransactionInstruction = SystemProgram.transfer({
-            //     fromPubkey: new PublicKey(accounts[0]),
-            //     toPubkey: new PublicKey(accounts[0]),
-            //     lamports: 0.01 * LAMPORTS_PER_SOL,
-            // });
-
-            // const transaction = new Transaction({
-            //     blockhash: block.blockhash,
-            //     lastValidBlockHeight: block.lastValidBlockHeight,
-            //     feePayer: new PublicKey(accounts[0]),
-            // }).add(transactionInstruction);
-
             const { signature } = await solanaWallet.signAndSendTransaction(
                 transaction
             );
@@ -107,6 +83,27 @@ export class RPC {
                     requireAllSignatures: false,
                 })
                 .toString("base64");
+        } catch (error) {
+            return error as string;
+        }
+    };
+
+    signVersionedTransaction = async (
+        transaction: VersionedTransaction
+    ): Promise<string> => {
+        try {
+            const solanaWallet = new SolanaWallet(this.provider);
+
+            const signedTx = await solanaWallet.signTransaction(transaction);
+
+            const serializedTx = signedTx.serialize();
+            const buffer = Buffer.from(
+                serializedTx.buffer,
+                serializedTx.byteOffset,
+                serializedTx.byteLength
+            );
+
+            return buffer.toString("base64");
         } catch (error) {
             return error as string;
         }

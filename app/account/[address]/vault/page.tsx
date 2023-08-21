@@ -46,10 +46,15 @@ export default async function BadgesPage({ params }: Props) {
         <AuthChecker address={params.address}>
             <Container>
                 <Suspense fallback={<Skeleton className="w-full grow" />}>
-                    <PadelBalance data={balances} label="Wallet balance" />
-                    <Separator />
-                    <UsdcBalance data={balances} label="USDC balance" />
-                    <SolBalance data={balances} label="SOL balance" />
+                    <PadelBalance data={balances} label="Wallet" />
+                    <div className="relative py-4">
+                        <Separator />
+                        <span className="absolute left-1/2 top-1 -translate-x-1/2 bg-slate-900 p-1 text-xs uppercase text-slate-700">
+                            Vaults
+                        </span>
+                    </div>
+                    <UsdcBalance data={balances} label="USDC Vault" />
+                    <SolBalance data={balances} label="SOL Vault" />
                 </Suspense>
             </Container>
         </AuthChecker>

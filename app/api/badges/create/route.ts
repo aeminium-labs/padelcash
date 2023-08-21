@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import {
     createNonTransferableNftResponse,
     GetNftsResponse,
-    UpsertNftResponse,
 } from "@underdog-protocol/types";
 
 import { fetcher } from "@/lib/fetchers";
@@ -69,20 +68,21 @@ export async function POST(req: NextRequest) {
             );
 
             if (!hasNFT) {
-                const mintNft = await fetcher<
-                    createNonTransferableNftResponse | UpsertNftResponse
-                >("https://api.underdogprotocol.com/v2/projects/c/2/nfts", {
-                    method: "POST",
-                    headers: {
-                        accept: "application/json",
-                        "content-type": "application/json",
-                        authorization: `Bearer ${process.env.UNDERDOG_API_KEY}`,
-                    },
-                    body: JSON.stringify({
-                        ...configMap[body.badgeType],
-                        receiverAddress: body.address,
-                    }),
-                });
+                const mintNft = await fetcher<createNonTransferableNftResponse>(
+                    "https://api.underdogprotocol.com/v2/projects/c/2/nfts",
+                    {
+                        method: "POST",
+                        headers: {
+                            accept: "application/json",
+                            "content-type": "application/json",
+                            authorization: `Bearer ${process.env.UNDERDOG_API_KEY}`,
+                        },
+                        body: JSON.stringify({
+                            ...configMap[body.badgeType],
+                            receiverAddress: body.address,
+                        }),
+                    }
+                );
 
                 const { status, id } = Array.isArray(mintNft)
                     ? mintNft[0]

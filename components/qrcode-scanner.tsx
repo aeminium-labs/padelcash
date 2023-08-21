@@ -7,7 +7,6 @@ import { Transaction } from "@solana/web3.js";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { gql } from "graphql-request";
 import { useAtomValue } from "jotai";
-import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
 
 import { PADEL_TOKEN, TOKEN_MULTIPLIER } from "@/lib/constants";
@@ -28,6 +27,7 @@ import {
     trimWalletAddress,
 } from "@/lib/utils";
 import { PadelBalance } from "@/components/padelBalance";
+import { ConfirmationPanel } from "@/components/shared/confirmation-panel";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -37,14 +37,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -85,7 +77,6 @@ export function QrCodeScanner({
     const searchParams = useSearchParams();
     const provider = useAtomValue(web3AuthProviderAtom);
     const { toast } = useToast();
-    const { width, height } = useWindowSize();
     const [usdcValue, setUsdcValue] = useState(0);
 
     const from = Array.isArray(params.address)
@@ -183,10 +174,9 @@ export function QrCodeScanner({
             setCurrentTx(relayerTx.signedTx);
             setStep(4);
 
-            // Cleanup and redirect to home
+            // Redirect to home when done
             setTimeout(() => {
                 router.push(`/account/${from}`);
-                setCode("");
             }, 2000);
         }
     }
@@ -289,47 +279,17 @@ export function QrCodeScanner({
                         >
                             Reject
                         </Button>
-                        <Sheet open={step > 0}>
-                            <SheetTrigger asChild>
-                                <Button
-                                    size="lg"
-                                    disabled={shouldBeDisabled}
-                                    variant="success"
-                                    onClick={handleAcceptClick}
-                                    className="col-span-2"
-                                >
-                                    Approve
-                                </Button>
-                            </SheetTrigger>
-                            <SheetContent side="bottom" hideCloseButton>
-                                <SheetHeader>
-                                    <SheetTitle className="text-teal-500">
-                                        Sending your transaction
-                                    </SheetTitle>
-                                </SheetHeader>
-                                <div className="my-6 flex flex-col gap-4">
-                                    <Progress
-                                        value={step * 25}
-                                        className="w-full"
-                                    />
-                                    <p className="text-center text-muted-foreground">
-                                        {labels[step - 1]}
-                                    </p>
-                                    {step === 4 && (
-                                        <Confetti
-                                            width={width}
-                                            height={height}
-                                            confettiSource={{
-                                                x: 0,
-                                                y: 0,
-                                                w: width,
-                                                h: height,
-                                            }}
-                                        />
-                                    )}
-                                </div>
-                            </SheetContent>
-                        </Sheet>
+                        <ConfirmationPanel step={step} labels={labels}>
+                            <Button
+                                size="lg"
+                                disabled={shouldBeDisabled}
+                                variant="success"
+                                onClick={handleAcceptClick}
+                                className="col-span-2"
+                            >
+                                Approve
+                            </Button>
+                        </ConfirmationPanel>
                     </CardFooter>
                 </Card>
             );
@@ -343,7 +303,11 @@ export function QrCodeScanner({
     return (
         <div className="flex grow flex-col gap-4">
             <Suspense fallback={<Skeleton className="h-20 w-full" />}>
-                <PadelBalance variant="small" data={getBalances(from)} />
+                <PadelBalance
+                    variant="small"
+                    data={getBalances(from)}
+                    label="Wallet"
+                />
             </Suspense>
             <div className="relative flex w-full grow flex-col overflow-hidden rounded-xl">
                 <Skeleton className="absolute h-full w-full grow" />

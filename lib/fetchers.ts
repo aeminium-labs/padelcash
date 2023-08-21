@@ -1,7 +1,12 @@
 import { BadgeType } from "@/app/api/badges/create/route";
 import { PayCreateResponse } from "@/app/api/pay/create/route";
 import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
-import { GetPriceResponse } from "@/app/api/prices/token/route";
+import { GetPriceResponse } from "@/app/api/token/price/route";
+import {
+    GetQuoteResponse,
+    JupiterSwapQuoteResponse,
+} from "@/app/api/token/quote/route";
+import { GetSwapResponse } from "@/app/api/token/swap/route";
 import { TxConfirmResponse } from "@/app/api/tx/confirm/route";
 import { TxCreateResponse } from "@/app/api/tx/create/route";
 import { TxSendResponse } from "@/app/api/tx/send/route";
@@ -100,11 +105,46 @@ export async function createBadge(address: string, badgeType: BadgeType) {
 }
 
 export async function getTokenPrice(amount: number = 1, token?: string) {
-    return fetcher<GetPriceResponse>(`/api/prices/token`, {
+    return fetcher<GetPriceResponse>(`/api/token/price`, {
         method: "POST",
         body: JSON.stringify({
             amount,
             token,
+        }),
+    });
+}
+
+export async function getTokenQuote({
+    fromToken,
+    toToken,
+    amount,
+}: {
+    fromToken: string;
+    toToken: string;
+    amount: number;
+}) {
+    return fetcher<GetQuoteResponse>(`/api/token/quote`, {
+        method: "POST",
+        body: JSON.stringify({
+            fromToken,
+            toToken,
+            amount,
+        }),
+    });
+}
+
+export async function getTokenSwapTransaction({
+    quote,
+    address,
+}: {
+    quote: JupiterSwapQuoteResponse;
+    address: string;
+}) {
+    return fetcher<GetSwapResponse>(`/api/token/swap`, {
+        method: "POST",
+        body: JSON.stringify({
+            quote,
+            address,
         }),
     });
 }

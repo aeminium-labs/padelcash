@@ -1,26 +1,31 @@
 import { AccountBalances } from "@/app/account/[address]/page";
 
-import { formatValue } from "@/lib/utils";
-import { Icons } from "@/components/icons";
-import { Button } from "@/components/ui/button";
+import { PADEL_TOKEN } from "@/lib/constants";
+import { formatAdjustedValue, formatValue } from "@/lib/utils";
+import { SolSwap } from "@/components/sol-swap";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet";
 
 type Props = { data: Promise<AccountBalances>; label?: string };
 
 export async function SolBalance({ data, label = "SOL balance" }: Props) {
     const { account } = await data;
 
-    const solBalance = formatValue(
-        account.balances.nativeBalance,
-        account.balances.nativeBalanceDecimals
+    const padelToken = account.balances.tokens.find(
+        (token) => token.mint === PADEL_TOKEN
     );
+
+    const padelBalance = {
+        native: formatAdjustedValue(padelToken?.amount, padelToken?.decimals),
+        usd: formatValue(padelToken?.amountUSD),
+    };
+
+    const solBalance = {
+        native: formatValue(
+            account.balances.nativeBalance,
+            account.balances.nativeBalanceDecimals
+        ),
+        usd: formatValue(account.balances.nativeBalanceUSD),
+    };
 
     return (
         <Card>
@@ -31,31 +36,13 @@ export async function SolBalance({ data, label = "SOL balance" }: Props) {
             </CardHeader>
             <CardContent>
                 <div className="mb-1 text-4xl font-bold">
-                    {solBalance.toString()}{" "}
+                    {solBalance.native}{" "}
                     <span className="text-2xl text-muted">SOL</span>
                 </div>
                 <p className="mb-6 text-xs text-muted-foreground">
-                    ${formatValue(account.balances.nativeBalanceUSD)} USDC
+                    ${solBalance.usd} USDC
                 </p>
-                <Sheet>
-                    <SheetTrigger className="w-full" asChild>
-                        <Button
-                            variant="secondary"
-                            size="lg"
-                            className="w-full"
-                        >
-                            PADEL <Icons.transfer className="mx-4 h-4 w-4" />{" "}
-                            SOL
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="bottom">
-                        <SheetHeader className="text-left">
-                            <SheetTitle className="text-teal-500 ">
-                                Convert PADEL / SOL
-                            </SheetTitle>
-                        </SheetHeader>
-                    </SheetContent>
-                </Sheet>
+                <SolSwap padelBalance={padelBalance} solBalance={solBalance} />
             </CardContent>
         </Card>
     );

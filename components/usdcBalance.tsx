@@ -1,11 +1,9 @@
 import { AccountBalances } from "@/app/account/[address]/page";
 
-import { USDC_TOKEN } from "@/lib/constants";
-import { formatValue } from "@/lib/utils";
-import { Icons } from "@/components/icons";
-import { Button } from "@/components/ui/button";
+import { PADEL_TOKEN, USDC_TOKEN } from "@/lib/constants";
+import { formatAdjustedValue, formatValue } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { UsdcSwap } from "@/components/usdc-swap";
 
 type Props = { data: Promise<AccountBalances>; label?: string };
 
@@ -16,7 +14,18 @@ export async function UsdcBalance({ data, label = "USDC balance" }: Props) {
         (token) => token.mint === USDC_TOKEN
     );
 
-    const usdcBalance = formatValue(usdcToken?.amount, usdcToken?.decimals);
+    const padelToken = account.balances.tokens.find(
+        (token) => token.mint === PADEL_TOKEN
+    );
+
+    const padelBalance = {
+        native: formatAdjustedValue(padelToken?.amount, padelToken?.decimals),
+        usd: formatValue(padelToken?.amountUSD),
+    };
+
+    const usdcBalance = {
+        native: formatValue(usdcToken?.amount, usdcToken?.decimals),
+    };
 
     return (
         <Card>
@@ -27,22 +36,13 @@ export async function UsdcBalance({ data, label = "USDC balance" }: Props) {
             </CardHeader>
             <CardContent>
                 <div className="mb-6 text-4xl font-bold">
-                    ${usdcBalance.toString()}{" "}
+                    ${usdcBalance.native.toString()}{" "}
                     <span className="text-2xl text-muted">USDC</span>
                 </div>
-                <Sheet>
-                    <SheetTrigger className="w-full" asChild>
-                        <Button
-                            variant="secondary"
-                            size="lg"
-                            className="w-full"
-                        >
-                            PADEL <Icons.transfer className="mx-4 h-4 w-4" />{" "}
-                            USDC
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="bottom">test</SheetContent>
-                </Sheet>
+                <UsdcSwap
+                    padelBalance={padelBalance}
+                    usdcBalance={usdcBalance}
+                />
             </CardContent>
         </Card>
     );
