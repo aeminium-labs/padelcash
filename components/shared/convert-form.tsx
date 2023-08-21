@@ -9,6 +9,7 @@ import { useAtomValue } from "jotai";
 import { PADEL_TOKEN, TOKEN_MULTIPLIER } from "@/lib/constants";
 import {
     confirmTx,
+    createBadge,
     getTokenQuote,
     getTokenSwapTransaction,
     signRelayerTx,
@@ -105,7 +106,7 @@ export function ConvertForm({
                     title: "Your transaction is confirmed!",
                 });
 
-                // await createBadge(from, "firstTransaction");
+                await createBadge(address, "firstDeposit");
             } else {
                 toast({
                     variant: "destructive",

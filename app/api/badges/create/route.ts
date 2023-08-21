@@ -11,7 +11,7 @@ export type RegisterResponse = {
     id?: string;
 };
 
-export type BadgeType = "registration" | "firstTransaction";
+export type BadgeType = "registration" | "firstTransaction" | "firstDeposit";
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
     const symbolsMap: Record<BadgeType, string> = {
         registration: "REG",
         firstTransaction: "FIRST_TX",
+        firstDeposit: "DEPOSIT",
     };
 
     const configMap: Record<BadgeType, Object> = {
@@ -46,6 +47,18 @@ export async function POST(req: NextRequest) {
                 "Woohoo you got your first transaction in! Did it feel... instant?!",
             symbol: symbolsMap.firstTransaction,
             image: `https://${baseURL}/badges/first-transaction.png`,
+        },
+        firstDeposit: {
+            attributes: {
+                event: "Deposit",
+                type: "First",
+                artist: "Padelcash",
+            },
+            name: "First deposit",
+            description:
+                "You've just opened your new savings account and it didn't even cost you a pennie!",
+            symbol: symbolsMap.firstTransaction,
+            image: `https://${baseURL}/badges/first-deposit.png`,
         },
     };
 
