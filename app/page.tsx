@@ -62,18 +62,6 @@ export default function IndexPage() {
                     </ul>
                 </div>
                 <div className="flex gap-4 pb-4 md:flex-row">
-                    <Link
-                        href="https://bristle-citron-418.notion.site/3d9aecc3248d4861a98b83bf8ef1959b"
-                        target="_blank"
-                    >
-                        <Button
-                            variant="secondary"
-                            size="lg"
-                            className="flex w-full flex-row items-center gap-2"
-                        >
-                            <Icons.book className="h-4 w-4" /> Learn more
-                        </Button>
-                    </Link>
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button

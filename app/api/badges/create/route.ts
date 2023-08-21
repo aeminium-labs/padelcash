@@ -15,7 +15,7 @@ export type BadgeType = "registration" | "firstTransaction" | "firstDeposit";
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    const baseURL = process.env.VERCEL_URL || "opos.padel.cash";
+    const baseURL = process.env.VERCEL_URL || "www.padel.cash";
 
     const symbolsMap: Record<BadgeType, string> = {
         registration: "REG",

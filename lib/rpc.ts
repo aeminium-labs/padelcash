@@ -108,12 +108,4 @@ export class RPC {
             return error as string;
         }
     };
-
-    getPrivateKey = async (): Promise<string> => {
-        const privateKey = await this.provider.request({
-            method: "solanaPrivateKey",
-        });
-
-        return privateKey as string;
-    };
 }
