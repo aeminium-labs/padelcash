@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
             name: "First deposit",
             description:
                 "You've just opened your new savings account and it didn't even cost you a pennie!",
-            symbol: symbolsMap.firstTransaction,
+            symbol: symbolsMap.firstDeposit,
             image: `https://${baseURL}/badges/first-deposit.png`,
         },
     };
