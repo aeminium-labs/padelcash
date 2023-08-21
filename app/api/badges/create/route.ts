@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-    createNonTransferableNftResponse,
+    CreateCompressedNftResponse,
     GetNftsResponse,
 } from "@underdog-protocol/types";
 
 import { fetcher } from "@/lib/fetchers";
-import { getBaseUrl } from "@/lib/server/utils";
 
 export type RegisterResponse = {
     status: string;
@@ -16,7 +15,7 @@ export type BadgeType = "registration" | "firstTransaction";
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    const baseURL = getBaseUrl();
+    const baseURL = process.env.VERCEL_URL || "opos.padel.cash";
 
     const symbolsMap: Record<BadgeType, string> = {
         registration: "REG",
@@ -34,7 +33,7 @@ export async function POST(req: NextRequest) {
             description:
                 "Welcome to the Padelcash family! You get this badge when you're one of the first ones to register an account.",
             symbol: symbolsMap.registration,
-            image: `${baseURL}/badges/pioneer.png`,
+            image: `https://${baseURL}/badges/pioneer.png`,
         },
         firstTransaction: {
             attributes: {
@@ -46,7 +45,7 @@ export async function POST(req: NextRequest) {
             description:
                 "Woohoo you got your first transaction in! Did it feel... instant?!",
             symbol: symbolsMap.firstTransaction,
-            image: `${baseURL}/badges/first-transaction.png`,
+            image: `https://${baseURL}/badges/first-transaction.png`,
         },
     };
 
@@ -68,7 +67,7 @@ export async function POST(req: NextRequest) {
             );
 
             if (!hasNFT) {
-                const mintNft = await fetcher<createNonTransferableNftResponse>(
+                const mintNft = await fetcher<CreateCompressedNftResponse>(
                     "https://api.underdogprotocol.com/v2/projects/c/2/nfts",
                     {
                         method: "POST",
@@ -84,10 +83,10 @@ export async function POST(req: NextRequest) {
                     }
                 );
 
-                const { status, id } = Array.isArray(mintNft)
-                    ? mintNft[0]
-                    : mintNft;
-                return NextResponse.json({ status, id });
+                return NextResponse.json({
+                    status: "success",
+                    id: mintNft.transactionId,
+                });
             }
 
             return NextResponse.json({ status: "pass" });

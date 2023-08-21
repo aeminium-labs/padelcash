@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PublicKey, Transaction } from "@solana/web3.js";
+import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 
 import { FEE_PAYER_ADDRESS } from "@/lib/constants";
 import { fetcher } from "@/lib/fetchers";
+import { getBaseUrl } from "@/lib/server/utils";
 
 export type JupiterSwapInstructionResponse = {
     swapTransaction: string;
@@ -13,8 +14,11 @@ export type GetSwapResponse = JupiterSwapInstructionResponse;
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
+    const baseUrl = getBaseUrl();
 
     const { quote, address } = body;
+
+    const connection = new Connection(`${baseUrl}/api/rpc`);
 
     if (quote && address) {
         try {
@@ -34,11 +38,15 @@ export async function POST(req: NextRequest) {
                 }
             );
 
+            const blockHash = (await connection.getLatestBlockhash("finalized"))
+                .blockhash;
+
             const tx = Transaction.from(
                 Buffer.from(swapTx.swapTransaction, "base64")
             );
 
             tx.feePayer = new PublicKey(FEE_PAYER_ADDRESS);
+            tx.recentBlockhash = blockHash;
 
             const serializedTransaction = tx.serialize({
                 requireAllSignatures: false,
