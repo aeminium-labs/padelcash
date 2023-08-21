@@ -41,13 +41,8 @@ export async function POST(req: NextRequest) {
             });
         }
     } catch (e) {
-        console.log(e);
+        throw new Error(e);
     }
 
-    return NextResponse.json<TxSignResponse>(
-        {
-            signedTx: "",
-        },
-        { status: 200 }
-    );
+    return NextResponse.json({}, { status: 500 });
 }

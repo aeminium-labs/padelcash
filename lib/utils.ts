@@ -61,10 +61,8 @@ export function formatDate(
 }
 
 export function getAppUrl() {
-    const vc = process.env.VERCEL_URL;
-
-    if (vc) {
-        return `https://${vc}`;
+    if (typeof window !== "undefined") {
+        return `${window.location.protocol}//${window.location.host}`;
     }
 
     return "http://localhost:3000";

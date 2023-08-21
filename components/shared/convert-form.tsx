@@ -120,7 +120,7 @@ export function ConvertForm({
             lastTx.current = currentTx;
             setCurrentTx("");
         }
-    }, [toast, currentTx]);
+    }, [toast, currentTx, address]);
 
     function handlePercentageClick(amount: number) {
         return () => {
