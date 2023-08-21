@@ -112,7 +112,7 @@ export function MainFooter() {
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
 
     return (
-        <footer className="container fixed bottom-0 w-full border-t border-t-slate-700 bg-slate-900 p-4 md:hidden">
+        <footer className="container fixed bottom-0 w-full border-t border-t-slate-700  bg-slate-900/40 p-4 backdrop-blur-xl md:hidden">
             <div className="flex flex-col items-center justify-start gap-4 md:flex-row ">
                 <FooterButton
                     accountAddress={accountAddress}

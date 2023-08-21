@@ -28,7 +28,7 @@ export default function IndexPage() {
         <>
             <Container className="gap-10">
                 <div className="flex flex-col items-start gap-2">
-                    <h1 className="max-w-[1000px] text-5xl font-extrabold leading-tight lg:text-6xl lg:leading-snug">
+                    <h1 className="max-w-[1000px] text-4xl font-extrabold leading-tight lg:text-6xl lg:leading-snug">
                         Taking the World&apos;s fastest-growing sport into the{" "}
                         <span className="text-teal-500">next digital era</span>.
                     </h1>

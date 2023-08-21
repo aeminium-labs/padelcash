@@ -114,6 +114,7 @@ export function LoginButtton({ children }: Props) {
                             onClick={onProviderClick("google")}
                             size="lg"
                             disabled={shouldBeDisabled}
+                            className="px-4"
                         >
                             <Icons.google className="mr-2 h-4 w-4" /> Login with
                             Google
@@ -124,6 +125,7 @@ export function LoginButtton({ children }: Props) {
                                 size="lg"
                                 onClick={onProviderClick("twitter")}
                                 disabled={shouldBeDisabled}
+                                className="px-4"
                             >
                                 <Icons.twitter className="mr-2 h-4 w-4" />
                                 Twitter
@@ -133,6 +135,7 @@ export function LoginButtton({ children }: Props) {
                                 size="lg"
                                 onClick={onProviderClick("discord")}
                                 disabled={shouldBeDisabled}
+                                className="px-4"
                             >
                                 <Icons.discord className="mr-2 h-4 w-4" />
                                 Discord
@@ -171,6 +174,7 @@ export function LoginButtton({ children }: Props) {
                             size="lg"
                             disabled={shouldBeDisabled || !hasEmail}
                             type="submit"
+                            className="px-4"
                         >
                             <Icons.mail className="mr-2 h-4 w-4" />
                             Login with Email
