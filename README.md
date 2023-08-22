@@ -49,7 +49,7 @@ The Padelcash platform is under active development at the moment so expect thing
 
 -   Speed and transaction cost
 -   Solana as the database (on-chain records, compressed NFTs, global access)
--   Constant innovation (DeFi in particular)
+-   Great ecosystem with constant innovation (DeFi in particular)
 -   "Real world" applications (SolanaPay, Cupcake, TipLink)
 
 ### 5. Core Team

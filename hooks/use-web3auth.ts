@@ -50,7 +50,7 @@ export function useWeb3Auth() {
                     const openloginAdapter = new OpenloginAdapter({
                         privateKeyProvider,
                         loginSettings: {
-                            mfaLevel: "mandatory",
+                            mfaLevel: "optional",
                         },
                         adapterSettings: {
                             whiteLabel: {
