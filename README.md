@@ -1,30 +1,39 @@
 <br/>
 
-![logo-graphqlana-narrow](https://www.padel.cash/android-chrome-192x192.png)
+![logo-padelcash](https://www.padel.cash/android-chrome-192x192.png)
 
 # Padelcash
 
-We're building a new Padel economy with the Padelcash platform enabling P2P payments, on-chain rewards, online shopping and "real-life" utility powered by Solana blockchain.
+We're building a new padel economy with the Padelcash platform enabling P2P payments, on-chain rewards, online shopping and "real-life" utility powered by Solana blockchain.
+
+### Getting started
+
+1. Go to https://www.padel.cash and install the app on your phone
+2. Reach out to https://twitter.com/padelcash so we can get you some $PADEL to get started!
 
 ```
-The Padelcash platform is under active development at the moment so expect things to be moving fast.
+The Padelcash platform is under active development at the moment so expect things to be moving fast (and break sometimes)
 ```
 
 ## FAQ
 
 ### 1. What is Padelcash?
 
--   Platform for paying padel lessons, buying padel equipment, book courts, etc
+-   Decentralized platform that creates a micro-economy for the padel ecosystem
+-   3 core pillars: pay, earn and grow
+-   Pay for lessons, book courts, buy equipment
+-   Earn by using club facilities, playing padel or participating in events
+-   Grow your money with DeFi solutions, staking and other investment opportunities
 -   Backed by $PADEL
--   Powered by Solana but invisible to users (Web 2.5)
--   Integration with e-commerce shops and booking applications
+-   Powered by Solana but invisible to users
 
 ### 2. What is Padel?
 
 -   Fastest growing sport in the World
--   30 million players in more than 90 countries
--   3 professional circuits
--   Annual spend forecasted around $400M
+-   25 million players in more than 110 countries
+-   40.000 courts worldwide
+-   Total market size of over $350 million
+-   3 professional circuits with over $8M in prize money
 -   Watch intro video - https://www.youtube.com/watch?v=5m8ncaq6pcM
 
 ### 3. Problems we're solving
@@ -38,16 +47,16 @@ The Padelcash platform is under active development at the moment so expect thing
 
 ### 4. Why Solana?
 
--   Speed and transaction cost (firedancer, compressed NFTs)
--   Solana as the database (on-chain record, tooling, global access)
+-   Speed and transaction cost
+-   Solana as the database (on-chain records, compressed NFTs, global access)
 -   Constant innovation (DeFi in particular)
 -   "Real world" applications (SolanaPay, Cupcake, TipLink)
 
 ### 5. Core Team
 
 -   Bernardo Raposo (0xDistro) - https://twitter.com/0xDistro_
-    -   Platform development and Solana integration
-    -   MonkeDAO, FFF, DAA, Grim Syndicate
+    -   Product and Technology
+    -   MonkeDAO, FFF, DAA, OKB, GGSG, Grim Syndicate
     -   Engineering Manager at SingleStore (15+ years of experience)
     -   Founder of aeminium labs web3 studio (NextJS Solana starter kit, GraphQLana) - https://www.aeminium.xyz/
     -   UK top 30 padel player
