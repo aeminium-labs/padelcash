@@ -6,6 +6,7 @@ import {
     CheckCircle,
     ChevronRight,
     CircleDot,
+    ClipboardCopy,
     Coins,
     Contact,
     Download,
@@ -68,6 +69,7 @@ export const Icons = {
     vault: Landmark,
     download: Download,
     phone: Smartphone,
+    copy: ClipboardCopy,
     logo: (props: LucideProps) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"

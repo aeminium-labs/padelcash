@@ -26,6 +26,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
 
 function SiteHeaderLoggedOut() {
     return (
@@ -55,6 +56,7 @@ function SiteHeaderLoggedIn() {
     const web3auth = useAtomValue(web3AuthAtom);
     const setProvider = useSetAtom(web3AuthProviderAtom);
     const setConnectionStatus = useSetAtom(connectionStatusAtom);
+    const { toast } = useToast();
 
     const router = useRouter();
 
@@ -102,6 +104,26 @@ function SiteHeaderLoggedIn() {
                         >
                             <Icons.app className="mr-2 h-4 w-4" />
                             Padelcash App
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={async () => {
+                                try {
+                                    await navigator.clipboard.writeText(
+                                        accountAddress
+                                    );
+
+                                    toast({
+                                        title: "Wallet address copied to clipboard",
+                                    });
+                                } catch (e) {
+                                    toast({
+                                        title: "Error copying address",
+                                    });
+                                }
+                            }}
+                        >
+                            <Icons.copy className="mr-2 h-4 w-4" />
+                            Copy wallet address
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             onClick={() =>

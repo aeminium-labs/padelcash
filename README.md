@@ -1,6 +1,6 @@
 <br/>
 
-![logo-padelcash](https://www.padel.cash/android-chrome-192x192.png)
+![logo-padelcash](https://www.padel.cash/logo-big.png)
 
 # Padelcash
 

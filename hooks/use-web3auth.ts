@@ -56,9 +56,8 @@ export function useWeb3Auth() {
                             whiteLabel: {
                                 name: "Padelcash",
                                 logoLight:
-                                    "https://www.padel.cash/android-chrome-192x192.png",
-                                logoDark:
-                                    "https://www.padel.cash/android-chrome-192x192.png",
+                                    "https://www.padel.cash/logo-big.png",
+                                logoDark: "https://www.padel.cash/logo-big.png",
                                 defaultLanguage: "en",
                                 dark: true,
                             },
