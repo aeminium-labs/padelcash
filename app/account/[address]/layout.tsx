@@ -1,19 +1,43 @@
-import { Sidebar } from "@/app/account/sidebar";
+import { Icons } from "@/components/icons";
+import { NavbarLink } from "@/components/shared/navbar-link";
 
-type Props = {
+export default function AccountLayout({
+    children,
+    params,
+}: {
     children: React.ReactNode;
     params: {
         address: string;
     };
-};
-
-export default function AccountLayout({ children, params }: Props) {
+}) {
+    const { address } = params;
     return (
-        <section className="container grid grid-cols-4 items-center gap-2 xl:grid-cols-5">
-            <div className="col-span-3 self-stretch border-r border-r-slate-700 xl:col-span-4">
-                <div className="h-full py-4 pr-2">{children}</div>
-            </div>
-            <Sidebar accountAddress={params.address} />
-        </section>
+        <>
+            {children}
+            <footer className="fixed bottom-0 w-full border-t border-t-teal-700 bg-slate-900/40 backdrop-blur-xl">
+                <div className="grid grid-cols-5 divide-x">
+                    <NavbarLink href={`/account/${address}`}>
+                        <Icons.wallet className="mb-2 h-6 w-6" />
+                        Wallet
+                    </NavbarLink>
+                    <NavbarLink href={`/account/${address}/vault`}>
+                        <Icons.vault className="mb-2 h-6 w-6" />
+                        Vault
+                    </NavbarLink>
+                    <NavbarLink href={`/account/${address}/payments`}>
+                        <Icons.coins className="mb-2 h-6 w-6" />
+                        Payments
+                    </NavbarLink>
+                    <NavbarLink href={`/account/${address}/badges`}>
+                        <Icons.award className="mb-2 h-6 w-6" />
+                        Badges
+                    </NavbarLink>
+                    <NavbarLink>
+                        <Icons.moreHorizontal className="mb-2 h-6 w-6" />
+                        More
+                    </NavbarLink>
+                </div>
+            </footer>
+        </>
     );
 }

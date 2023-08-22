@@ -1,21 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { LogoutResponse } from "@/app/api/logout/route";
 import { useWeb3Auth } from "@/hooks/use-web3auth";
 import { useAtomValue, useSetAtom } from "jotai";
 
 import { siteConfig } from "@/config/site";
+import { fetcher } from "@/lib/fetchers";
 import {
-    authProviderAtom,
+    connectionStatusAtom,
+    isConnectedAtom,
     loadableAccountsAtom,
     web3AuthAtom,
+    web3AuthProviderAtom,
 } from "@/lib/store";
 import { trimWalletAddress } from "@/lib/utils";
 import { Icons } from "@/components/icons";
-import { MainNav } from "@/components/main-nav";
-import { LoginButtton } from "@/components/shared/login-button";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -45,9 +46,6 @@ function SiteHeaderLoggedOut() {
                     <span className="sr-only">Twitter</span>
                 </div>
             </Link>
-            <LoginButtton>
-                <Button variant="default">Login / Register</Button>
-            </LoginButtton>
         </>
     );
 }
@@ -55,35 +53,31 @@ function SiteHeaderLoggedOut() {
 function SiteHeaderLoggedIn() {
     const accounts = useAtomValue(loadableAccountsAtom);
     const web3auth = useAtomValue(web3AuthAtom);
-    const setProvider = useSetAtom(authProviderAtom);
+    const setProvider = useSetAtom(web3AuthProviderAtom);
+    const setConnectionStatus = useSetAtom(connectionStatusAtom);
+
     const router = useRouter();
 
     const accountAddress =
-        accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
-
-    useEffect(() => {
-        async function registerUser() {
-            if (accountAddress && accountAddress.length > 0 && web3auth) {
-                const userInfo = await web3auth.getUserInfo();
-                await fetch(`/api/register/${accountAddress}`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                        email: userInfo.email,
-                        name: userInfo.name,
-                    }),
-                });
-            }
-        }
-
-        registerUser();
-    }, [accountAddress, web3auth]);
+        accounts.state === "hasData" && accounts.data ? accounts.data[0] : "";
 
     const onLogoutClick = async () => {
         if (web3auth) {
             try {
+                const userInfo = await web3auth.getUserInfo();
+
+                router.push("/");
+
+                setConnectionStatus("init");
                 await web3auth.logout();
                 setProvider(null);
-                router.push("/");
+
+                await fetcher<LogoutResponse>(`/api/logout`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        token: userInfo.oAuthAccessToken,
+                    }),
+                });
             } catch (e) {
                 console.log(e);
             }
@@ -94,9 +88,9 @@ function SiteHeaderLoggedIn() {
         return (
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline">
+                    <Button variant="secondary" className="px-3">
                         {trimWalletAddress(accountAddress)}
-                        <Icons.moreVertical className="ml-2 h-4 w-4" />
+                        <Icons.moreVertical className="ml-3 h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end">
@@ -135,17 +129,33 @@ function SiteHeaderLoggedIn() {
 }
 
 export function SiteHeader() {
-    const provider = useAtomValue(authProviderAtom);
-
     useWeb3Auth();
 
+    const isConnected = useAtomValue(isConnectedAtom);
+
+    const isClientSide = typeof window !== "undefined";
+    const isInApp =
+        isClientSide &&
+        document
+            .querySelector("body")
+            ?.classList.contains("progressier-standalone");
+    const hasProgressier = isClientSide && window.progressier;
+
     return (
-        <header className="w-full border-b border-b-teal-200 bg-white dark:border-b-teal-700 dark:bg-slate-900">
-            <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
-                <MainNav items={siteConfig.mainNav} />
+        <header className="fixed top-0 z-10 w-full border-b border-b-teal-700 bg-slate-900/30 backdrop-blur-xl">
+            <div className="container flex h-16 items-center space-x-4 px-4 sm:justify-between sm:space-x-0">
+                <Link
+                    href="/"
+                    className="flex items-center space-x-2 text-teal-500"
+                >
+                    <Icons.logo className="h-6 w-6" />
+                    <span className="font-bold sm:inline-block">
+                        {siteConfig.name}
+                    </span>
+                </Link>
                 <div className="flex flex-1 items-center justify-end space-x-4">
                     <nav className="flex items-center space-x-2">
-                        {provider ? (
+                        {isConnected && (isInApp || !hasProgressier) ? (
                             <SiteHeaderLoggedIn />
                         ) : (
                             <SiteHeaderLoggedOut />

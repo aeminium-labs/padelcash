@@ -6,5 +6,6 @@ export const graphQLClient = new GraphQLClient(
         headers: {
             authorization: `Bearer ${process.env.GRAPHQLANA_API_KEY}`,
         },
+        cache: "no-store",
     }
 );
