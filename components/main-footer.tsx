@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { useAtomValue } from "jotai";
 
@@ -16,10 +15,6 @@ function FooterButton({
     accountAddress: string | null;
     shouldBeDisabled: boolean;
 }) {
-    const [status, setStatus] = useState<
-        "init" | "loaded" | "ready" | "installing" | "installed"
-    >("init");
-
     const isClientSide = typeof window !== "undefined";
     const hasProgressier = isClientSide && window.progressier;
     const bodyClasses = isClientSide && document.querySelector("body");
@@ -37,27 +32,18 @@ function FooterButton({
         window.progressier.native.installable;
 
     const isInstalled =
-        status === "installed" ||
-        (isClientSide && hasProgressier && window.progressier.native.installed);
-
-    function handleInstallClick() {
-        if (window.progressier) {
-            setStatus("installing");
-            window.progressier.install();
-        }
-    }
+        isClientSide && hasProgressier && window.progressier.native.installed;
 
     if (isInstallable) {
         return (
             <Button
-                className="flex w-full flex-row items-center gap-2"
+                className="progressier-install-button flex w-full flex-row items-center gap-2"
                 variant="default"
                 size="lg"
-                onClick={handleInstallClick}
-                disabled={status === "installing"}
-            >
-                <Icons.download className="h-4 w-4" /> Install
-            </Button>
+                data-icons="false"
+                data-install="Install app"
+                data-installed="Launch app"
+            />
         );
     }
 
