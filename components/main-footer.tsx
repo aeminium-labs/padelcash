@@ -114,12 +114,20 @@ export function MainFooter() {
     const hasProgressier = isClientSide && window.progressier;
 
     useEffect(() => {
-        const checkIsInApp =
-            document
-                .querySelector("body")
-                ?.classList.contains("progressier-standalone") || false;
+        function checkIsInAp() {
+            const inAppStatus =
+                document
+                    .querySelector("body")
+                    ?.classList.contains("progressier-standalone") || false;
 
-        setIsInApp(checkIsInApp);
+            setIsInApp(inAppStatus);
+        }
+
+        window.addEventListener("load", checkIsInAp);
+
+        return () => {
+            window.removeEventListener("load", checkIsInAp);
+        };
     }, []);
 
     const isInstallable =
