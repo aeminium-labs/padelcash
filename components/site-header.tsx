@@ -175,7 +175,8 @@ export function SiteHeader() {
                 {isConnected ? "true" : "false"}/{isInApp ? "true" : "false"}/
                 {hasProgressier ? "true" : "false"}/
                 {isClientSide ? "true" : "false"}/
-                {document
+                {document &&
+                document
                     .querySelector("body")
                     ?.classList.contains("progressier-standalone")
                     ? "true"
