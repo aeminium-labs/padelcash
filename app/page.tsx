@@ -33,6 +33,14 @@ export default function IndexPage() {
         <>
             <Container className="gap-10">
                 <>{Array.from(classes).join(" / ")}</>
+                {bodyClasses &&
+                bodyClasses.classList.contains("progressier-standalone")
+                    ? "true"
+                    : "false"}{" "}
+                /{" "}
+                {Array.from(classes).includes("progressier-standalone")
+                    ? "true"
+                    : "false"}
                 <div className="flex flex-col items-start gap-2">
                     <h1 className="max-w-[1000px] text-4xl font-extrabold leading-tight lg:text-6xl lg:leading-snug">
                         Taking the World&apos;s fastest-growing sport into the{" "}
