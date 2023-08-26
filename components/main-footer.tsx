@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAtomValue } from "jotai";
 
@@ -102,6 +102,7 @@ function FooterButton({
 export function MainFooter() {
     const accounts = useAtomValue(loadableAccountsAtom);
     const connectionStatus = useAtomValue(connectionStatusAtom);
+    const [isInApp, setIsInApp] = useState(false);
 
     const shouldBeDisabled =
         connectionStatus !== "ready" && connectionStatus !== "errored";
@@ -111,11 +112,15 @@ export function MainFooter() {
 
     const isClientSide = typeof window !== "undefined";
     const hasProgressier = isClientSide && window.progressier;
-    const bodyClasses = isClientSide && document.querySelector("body");
-    const isInApp =
-        bodyClasses && bodyClasses.classList.contains("progressier-standalone");
-    const classes = (bodyClasses && bodyClasses.classList.values()) || [];
-    const inApp = Array.from(classes).includes("progressier-standalone");
+
+    useEffect(() => {
+        const checkIsInApp =
+            document
+                .querySelector("body")
+                ?.classList.contains("progressier-standalone") || false;
+
+        setIsInApp(checkIsInApp);
+    }, []);
 
     const isInstallable =
         hasProgressier &&
@@ -132,7 +137,6 @@ export function MainFooter() {
                 {isInstalled ? "true" : "false"}/
                 {isInstallable ? "true" : "false"}/
                 {accountAddress ? "true" : "false"}/{isInApp ? "true" : "false"}
-                /{inApp ? "true" : "false"}
                 <FooterButton
                     accountAddress={accountAddress}
                     shouldBeDisabled={shouldBeDisabled}
