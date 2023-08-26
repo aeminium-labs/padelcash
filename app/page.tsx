@@ -23,11 +23,16 @@ const MainFooter = dynamic(
 
 export default function IndexPage() {
     const appUrl = getAppUrl();
+
+    const bodyClasses =
+        typeof window !== "undefined" && document.querySelector("body");
+
+    const classes = (bodyClasses && bodyClasses.classList.values()) || [];
+
     return (
         <>
             <Container className="gap-10">
-                {typeof window !== "undefined" &&
-                    document.querySelector("body")?.classList}
+                <>{Array.from(classes).join(" / ")}</>
                 <div className="flex flex-col items-start gap-2">
                     <h1 className="max-w-[1000px] text-4xl font-extrabold leading-tight lg:text-6xl lg:leading-snug">
                         Taking the World&apos;s fastest-growing sport into the{" "}
