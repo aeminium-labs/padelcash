@@ -10,7 +10,7 @@ export function Container({
     return (
         <section
             className={cn(
-                "container flex h-screen flex-col justify-start gap-4 px-4 py-20",
+                "container flex h-[100dvh] flex-col justify-start gap-4 px-4 py-20",
                 className
             )}
         >
