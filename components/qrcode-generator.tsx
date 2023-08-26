@@ -108,6 +108,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
                                 value={amount}
                                 autoComplete="off"
                                 className="h-12 text-lg"
+                                autoFocus
                                 onChange={(e) => {
                                     setAmount(e.target.value);
                                 }}
