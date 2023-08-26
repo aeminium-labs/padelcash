@@ -36,7 +36,7 @@ export function UsdcSwap({ padelBalance, usdcBalance }: Props) {
                     PADEL <Icons.transfer className="mx-4 h-4 w-4" /> USDC
                 </Button>
             </SheetTrigger>
-            <SheetContent side="bottom">
+            <SheetContent side="bottom" className="keyboard-bottom">
                 <SheetHeader className="text-left">
                     <SheetTitle className="text-teal-500 ">
                         USDC Vault

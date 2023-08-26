@@ -12,6 +12,7 @@ import {
     web3AuthAtom,
     web3AuthProviderAtom,
 } from "@/lib/store";
+import { getAppUrl } from "@/lib/utils";
 
 const clientId = process.env.NEXT_PUBLIC_WEB3AUTH_KEY;
 
@@ -19,6 +20,7 @@ export function useWeb3Auth() {
     const [web3Auth, setWeb3Auth] = useAtom(web3AuthAtom);
     const setProvider = useSetAtom(web3AuthProviderAtom);
     const setConnectionStatus = useSetAtom(connectionStatusAtom);
+    const url = getAppUrl();
 
     // Login for connecting to wallet
     useEffect(() => {
@@ -53,6 +55,9 @@ export function useWeb3Auth() {
                             mfaLevel: "optional",
                         },
                         adapterSettings: {
+                            uxMode: "redirect",
+                            replaceUrlOnRedirect: false,
+                            redirectUrl: `${url}/account?firstTime=true`,
                             whiteLabel: {
                                 name: "Padelcash",
                                 logoLight:
@@ -113,7 +118,7 @@ export function useWeb3Auth() {
         };
 
         init();
-    }, []);
+    }, [setConnectionStatus, setProvider, setWeb3Auth, url]);
 
     // Subscribe to adapter events
     useEffect(() => {
@@ -178,5 +183,5 @@ export function useWeb3Auth() {
                 });
             }
         };
-    }, [web3Auth]);
+    }, [web3Auth, setConnectionStatus]);
 }

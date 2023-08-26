@@ -1,13 +1,10 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import { WALLET_ADAPTERS } from "@web3auth/base";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
 
-import { createBadge } from "@/lib/fetchers";
-import { RPC } from "@/lib/rpc";
 import {
     connectionStatusAtom,
     web3AuthAtom,
@@ -38,7 +35,6 @@ export function LoginButtton({ children }: Props) {
     const web3auth = useAtomValue(web3AuthAtom);
     const setProvider = useSetAtom(web3AuthProviderAtom);
     const connectionStatus = useAtomValue(connectionStatusAtom);
-    const router = useRouter();
 
     // Local state
     const { register, getValues, handleSubmit, watch } = useForm<Inputs>();
@@ -62,18 +58,7 @@ export function LoginButtton({ children }: Props) {
                         }
                     );
 
-                    if (web3auth.connected && web3authProvider) {
-                        setOpen(false);
-                        setProvider(web3authProvider);
-
-                        // Register user
-                        const rpc = new RPC(web3authProvider);
-                        const accounts = await rpc.getAccounts();
-
-                        router.push(`/account/${accounts[0]}`);
-
-                        await createBadge(accounts[0], "registration");
-                    }
+                    setProvider(web3authProvider);
                 } catch (e) {
                     console.log(e);
                 }

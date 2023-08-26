@@ -1,11 +1,10 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import Link from "next/link";
 import QRCode from "react-qr-code";
 
 import { getAppUrl } from "@/lib/utils";
 import { Icons } from "@/components/icons";
+import { MainFooter } from "@/components/main-footer";
 import { Container } from "@/components/shared/container";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,13 +16,9 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
-const MainFooter = dynamic(
-    () => import("@/components/main-footer").then((mod) => mod.MainFooter),
-    { ssr: false }
-);
-
 export default function IndexPage() {
     const appUrl = getAppUrl();
+
     return (
         <>
             <Container className="gap-10">

@@ -46,7 +46,7 @@ export function ConvertForm({
     onCloseClick,
 }: Props) {
     const [fromValue, setFromValue] = useState<string>(`${fromBalance.native}`);
-    const [quote, setQuote] = useState<GetQuoteResponse | null>(null);
+    const [tokenQuote, setTokenQuote] = useState<GetQuoteResponse | null>(null);
     const params = useParams();
     const provider = useAtomValue(web3AuthProviderAtom);
     const [step, setStep] = useState<number>(0);
@@ -60,29 +60,27 @@ export function ConvertForm({
 
     useEffect(() => {
         async function fetchQuote(amount: number) {
-            const quote = await getTokenQuote({
+            const tokenQuote = await getTokenQuote({
                 fromToken,
                 toToken,
                 amount,
             });
 
-            if (quote.value > 0) {
-                // ATTENTION: need to use multiplier if using BONK as base token for pilot
-                const parsedQuote = {
-                    value:
-                        toToken === PADEL_TOKEN
-                            ? formatAdjustedValue(quote.value)
-                            : formatValue(quote.value),
-                    minimumValue:
-                        toToken === PADEL_TOKEN
-                            ? formatAdjustedValue(quote.minimumValue)
-                            : formatValue(quote.minimumValue),
-                    priceImpact: formatValue(quote.priceImpact),
-                    quote: quote.quote,
-                };
+            // ATTENTION: need to use multiplier if using BONK as base token for pilot
+            const parsedQuote = {
+                value:
+                    toToken === PADEL_TOKEN
+                        ? formatAdjustedValue(tokenQuote.value)
+                        : formatValue(tokenQuote.value),
+                minimumValue:
+                    toToken === PADEL_TOKEN
+                        ? formatAdjustedValue(tokenQuote.minimumValue)
+                        : formatValue(tokenQuote.minimumValue),
+                priceImpact: formatValue(tokenQuote.priceImpact),
+                quote: tokenQuote.quote,
+            };
 
-                setQuote(parsedQuote);
-            }
+            setTokenQuote(parsedQuote);
         }
 
         // ATTENTION: need to use multiplier if using BONK as base token for pilot
@@ -92,8 +90,10 @@ export function ConvertForm({
                 : parseFloat(fromValue);
 
         if (parsedFromValue > 0) {
-            setQuote(null);
+            setTokenQuote(null);
             fetchQuote(parsedFromValue);
+        } else {
+            setTokenQuote(null);
         }
     }, [fromValue, fromToken, toToken, address]);
 
@@ -131,11 +131,11 @@ export function ConvertForm({
     async function handleConfirmClick() {
         setStep(1);
 
-        if (quote) {
+        if (tokenQuote) {
             // Create new transaction with current quote
             const getSwapTx = await getTokenSwapTransaction({
                 address,
-                quote: quote?.quote,
+                quote: tokenQuote.quote,
             });
 
             // Rebuild tx in client
@@ -181,7 +181,8 @@ export function ConvertForm({
         fromToken === PADEL_TOKEN ? "Deposit completed" : "Withdraw completed",
     ];
 
-    const shouldBeDisabled = !quote;
+    const shouldBeDisabled =
+        !tokenQuote || fromBalance.native < parseFloat(fromValue);
 
     return (
         <div className="flex flex-col gap-6">
@@ -230,9 +231,9 @@ export function ConvertForm({
                     <p className="text-md font-bold text-muted-foreground">
                         {toInputLabel}
                     </p>
-                    {quote ? (
+                    {tokenQuote ? (
                         <p className="text-md h-4 font-medium leading-none">
-                            {quote?.value} {toLabel}
+                            {tokenQuote.value} {toLabel}
                         </p>
                     ) : (
                         <Skeleton className="h-4 w-1/3" />
@@ -242,9 +243,9 @@ export function ConvertForm({
                     <p className="text-xs text-muted-foreground">
                         Minium guaranteed
                     </p>
-                    {quote ? (
+                    {tokenQuote ? (
                         <p className="h-4 text-sm font-medium leading-none">
-                            {quote?.minimumValue} {toLabel}
+                            {tokenQuote.minimumValue} {toLabel}
                         </p>
                     ) : (
                         <Skeleton className="h-4 w-1/3" />
@@ -254,9 +255,9 @@ export function ConvertForm({
                     <p className="text-xs text-muted-foreground">
                         Price impact
                     </p>
-                    {quote ? (
+                    {tokenQuote ? (
                         <p className="h-4 text-sm font-medium leading-none">
-                            {quote?.priceImpact}%
+                            {tokenQuote.priceImpact}%
                         </p>
                     ) : (
                         <Skeleton className="h-4 w-1/3" />

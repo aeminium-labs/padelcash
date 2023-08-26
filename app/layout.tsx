@@ -79,4 +79,11 @@ export const metadata = {
         locale: "en-US",
         type: "website",
     },
+    viewport: {
+        width: "device-width",
+        initialScale: 1,
+        interactiveWidget: "resizes-visual",
+        userScalable: false,
+        maximumScale: 1,
+    },
 };

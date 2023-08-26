@@ -156,12 +156,14 @@ export function SiteHeader() {
     const isConnected = useAtomValue(isConnectedAtom);
 
     const isClientSide = typeof window !== "undefined";
-    const isInApp =
-        isClientSide &&
-        document
-            .querySelector("body")
-            ?.classList.contains("progressier-standalone");
+    const bodyClasses = isClientSide && document.querySelector("body");
     const hasProgressier = isClientSide && window.progressier;
+    const isInApp =
+        (bodyClasses &&
+            bodyClasses.classList.contains("progressier-standalone")) ||
+        (isClientSide &&
+            hasProgressier &&
+            window.progressier.native.standalone);
 
     return (
         <header className="fixed top-0 z-10 w-full border-b border-b-teal-700 bg-slate-900/30 backdrop-blur-xl">
@@ -171,9 +173,6 @@ export function SiteHeader() {
                     className="flex items-center space-x-2 text-teal-500"
                 >
                     <Icons.logo className="h-6 w-6" />
-                    <span className="font-bold sm:inline-block">
-                        {siteConfig.name}
-                    </span>
                 </Link>
                 <div className="flex flex-1 items-center justify-end space-x-4">
                     <nav className="flex items-center space-x-2">
