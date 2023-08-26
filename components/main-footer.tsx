@@ -22,11 +22,9 @@ function FooterButton({
 
     const isClientSide = typeof window !== "undefined";
     const hasProgressier = isClientSide && window.progressier;
+    const bodyClasses = isClientSide && document.querySelector("body");
     const isInApp =
-        isClientSide &&
-        document
-            .querySelector("body")
-            ?.classList.contains("progressier-standalone");
+        bodyClasses && bodyClasses.classList.contains("progressier-standalone");
 
     const isInstallable =
         hasProgressier &&

@@ -156,11 +156,9 @@ export function SiteHeader() {
     const isConnected = useAtomValue(isConnectedAtom);
 
     const isClientSide = typeof window !== "undefined";
+    const bodyClasses = isClientSide && document.querySelector("body");
     const isInApp =
-        isClientSide &&
-        document
-            .querySelector("body")
-            ?.classList.contains("progressier-standalone");
+        bodyClasses && bodyClasses.classList.contains("progressier-standalone");
     const hasProgressier = isClientSide && window.progressier;
 
     return (
