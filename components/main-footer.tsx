@@ -113,9 +113,17 @@ export function MainFooter() {
     const accountAddress =
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
 
+    const isClientSide = typeof window !== "undefined";
+    const hasProgressier = isClientSide && window.progressier;
+    const isInstalled =
+        isClientSide && hasProgressier && window.progressier.native.installed;
+
     return (
         <footer className="container fixed bottom-0 w-full border-t border-t-slate-700  bg-slate-900/40 p-4 backdrop-blur-xl md:hidden">
             <div className="flex flex-col items-center justify-start gap-4 md:flex-row ">
+                {isInstalled && window.progressier.native.installed
+                    ? "true"
+                    : "false"}
                 <FooterButton
                     accountAddress={accountAddress}
                     shouldBeDisabled={shouldBeDisabled}

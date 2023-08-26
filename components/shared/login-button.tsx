@@ -66,6 +66,8 @@ export function LoginButtton({ children }: Props) {
                         setOpen(false);
                         setProvider(web3authProvider);
 
+                        console.log("ASDAD");
+
                         // Register user
                         const rpc = new RPC(web3authProvider);
                         const accounts = await rpc.getAccounts();
