@@ -28,11 +28,14 @@ export default function IndexPage() {
         typeof window !== "undefined" && document.querySelector("body");
 
     const classes = (bodyClasses && bodyClasses.classList.values()) || [];
+    const classesArray = Array.from(classes);
+    console.log(classesArray);
 
     return (
         <>
             <Container className="gap-10">
-                <>{Array.from(classes).join(" / ")}</>
+                <>{classesArray.join(" / ")}</>
+                <br />
                 {bodyClasses &&
                 bodyClasses.classList.contains("progressier-standalone")
                     ? "true"

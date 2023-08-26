@@ -114,6 +114,8 @@ export function MainFooter() {
     const bodyClasses = isClientSide && document.querySelector("body");
     const isInApp =
         bodyClasses && bodyClasses.classList.contains("progressier-standalone");
+    const classes = (bodyClasses && bodyClasses.classList.values()) || [];
+    const inApp = Array.from(classes).includes("progressier-standalone");
 
     const isInstallable =
         hasProgressier &&
@@ -130,6 +132,7 @@ export function MainFooter() {
                 {isInstalled ? "true" : "false"}/
                 {isInstallable ? "true" : "false"}/
                 {accountAddress ? "true" : "false"}/{isInApp ? "true" : "false"}
+                /{inApp ? "true" : "false"}
                 <FooterButton
                     accountAddress={accountAddress}
                     shouldBeDisabled={shouldBeDisabled}
