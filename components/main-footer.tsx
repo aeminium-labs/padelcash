@@ -123,10 +123,10 @@ export function MainFooter() {
             setIsInApp(inAppStatus);
         }
 
-        window.addEventListener("load", checkIsInAp);
+        window.addEventListener("load", () => checkIsInAp());
 
         return () => {
-            window.removeEventListener("load", checkIsInAp);
+            window.removeEventListener("load", () => checkIsInAp());
         };
     }, []);
 
@@ -146,7 +146,9 @@ export function MainFooter() {
                 {isInstallable ? "true" : "false"}/
                 {accountAddress ? "true" : "false"}/{isInApp ? "true" : "false"}
                 /
-                {isClientSide && window.progressier.native.standalone
+                {isClientSide &&
+                hasProgressier &&
+                window.progressier.native.standalone
                     ? "true"
                     : "false"}
                 <FooterButton
