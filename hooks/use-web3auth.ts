@@ -53,6 +53,7 @@ export function useWeb3Auth() {
                             mfaLevel: "optional",
                         },
                         adapterSettings: {
+                            uxMode: "redirect",
                             whiteLabel: {
                                 name: "Padelcash",
                                 logoLight:
@@ -113,7 +114,7 @@ export function useWeb3Auth() {
         };
 
         init();
-    }, []);
+    }, [setConnectionStatus, setProvider, setWeb3Auth]);
 
     // Subscribe to adapter events
     useEffect(() => {
@@ -178,5 +179,5 @@ export function useWeb3Auth() {
                 });
             }
         };
-    }, [web3Auth]);
+    }, [web3Auth, setConnectionStatus]);
 }
