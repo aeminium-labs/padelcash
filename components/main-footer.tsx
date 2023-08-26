@@ -145,6 +145,10 @@ export function MainFooter() {
                 {isInstalled ? "true" : "false"}/
                 {isInstallable ? "true" : "false"}/
                 {accountAddress ? "true" : "false"}/{isInApp ? "true" : "false"}
+                /
+                {isClientSide && window.progressier.native.standalone
+                    ? "true"
+                    : "false"}
                 <FooterButton
                     accountAddress={accountAddress}
                     shouldBeDisabled={shouldBeDisabled}
