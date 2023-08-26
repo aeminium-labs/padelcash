@@ -82,7 +82,7 @@ export const metadata = {
     viewport: {
         width: "device-width",
         initialScale: 1,
-        interactiveWidget: "resizes-content",
+        interactiveWidget: "resizes-visual",
         userScalable: false,
         maximumScale: 1,
     },
