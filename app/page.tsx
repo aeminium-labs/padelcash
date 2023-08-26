@@ -29,7 +29,6 @@ export default function IndexPage() {
 
     const classes = (bodyClasses && bodyClasses.classList.values()) || [];
     const classesArray = Array.from(classes);
-    console.log(classesArray);
 
     return (
         <>

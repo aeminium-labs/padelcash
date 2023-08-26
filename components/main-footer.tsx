@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useAtomValue } from "jotai";
 
@@ -24,7 +24,11 @@ function FooterButton({
     const hasProgressier = isClientSide && window.progressier;
     const bodyClasses = isClientSide && document.querySelector("body");
     const isInApp =
-        bodyClasses && bodyClasses.classList.contains("progressier-standalone");
+        (bodyClasses &&
+            bodyClasses.classList.contains("progressier-standalone")) ||
+        (isClientSide &&
+            hasProgressier &&
+            window.progressier.native.standalone);
 
     const isInstallable =
         hasProgressier &&
@@ -102,7 +106,6 @@ function FooterButton({
 export function MainFooter() {
     const accounts = useAtomValue(loadableAccountsAtom);
     const connectionStatus = useAtomValue(connectionStatusAtom);
-    const [isInApp, setIsInApp] = useState(false);
 
     const shouldBeDisabled =
         connectionStatus !== "ready" && connectionStatus !== "errored";
@@ -110,47 +113,9 @@ export function MainFooter() {
     const accountAddress =
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
 
-    const isClientSide = typeof window !== "undefined";
-    const hasProgressier = isClientSide && window.progressier;
-
-    useEffect(() => {
-        function checkIsInAp() {
-            const inAppStatus =
-                document
-                    .querySelector("body")
-                    ?.classList.contains("progressier-standalone") || false;
-
-            setIsInApp(inAppStatus);
-        }
-
-        window.addEventListener("load", () => checkIsInAp());
-
-        return () => {
-            window.removeEventListener("load", () => checkIsInAp());
-        };
-    }, []);
-
-    const isInstallable =
-        hasProgressier &&
-        !isInApp &&
-        !window.progressier.native.installed &&
-        window.progressier.native.installable;
-
-    const isInstalled =
-        isClientSide && hasProgressier && window.progressier.native.installed;
-
     return (
         <footer className="container fixed bottom-0 w-full border-t border-t-slate-700  bg-slate-900/40 p-4 backdrop-blur-xl md:hidden">
             <div className="flex flex-col items-center justify-start gap-4 md:flex-row ">
-                {isInstalled ? "true" : "false"}/
-                {isInstallable ? "true" : "false"}/
-                {accountAddress ? "true" : "false"}/{isInApp ? "true" : "false"}
-                /
-                {isClientSide &&
-                hasProgressier &&
-                window.progressier.native.standalone
-                    ? "true"
-                    : "false"}
                 <FooterButton
                     accountAddress={accountAddress}
                     shouldBeDisabled={shouldBeDisabled}
