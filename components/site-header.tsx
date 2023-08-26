@@ -171,12 +171,15 @@ export function SiteHeader() {
                     className="flex items-center space-x-2 text-teal-500"
                 >
                     <Icons.logo className="h-6 w-6" />
-                    <span className="font-bold sm:inline-block">
-                        {siteConfig.name}
-                    </span>
                 </Link>
                 {isConnected ? "true" : "false"}/{isInApp ? "true" : "false"}/
-                {hasProgressier ? "true" : "false"}
+                {hasProgressier ? "true" : "false"}/
+                {isClientSide ? "true" : "false"}/
+                {document
+                    .querySelector("body")
+                    ?.classList.contains("progressier-standalone")
+                    ? "true"
+                    : "false"}
                 <div className="flex flex-1 items-center justify-end space-x-4">
                     <nav className="flex items-center space-x-2">
                         {isConnected && (isInApp || !hasProgressier) ? (
