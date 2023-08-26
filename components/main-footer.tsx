@@ -111,11 +111,9 @@ export function MainFooter() {
 
     const isClientSide = typeof window !== "undefined";
     const hasProgressier = isClientSide && window.progressier;
+    const bodyClasses = isClientSide && document.querySelector("body");
     const isInApp =
-        isClientSide &&
-        document
-            .querySelector("body")
-            ?.classList.contains("progressier-standalone");
+        bodyClasses && bodyClasses.classList.contains("progressier-standalone");
 
     const isInstallable =
         hasProgressier &&
@@ -131,7 +129,7 @@ export function MainFooter() {
             <div className="flex flex-col items-center justify-start gap-4 md:flex-row ">
                 {isInstalled ? "true" : "false"}/
                 {isInstallable ? "true" : "false"}/
-                {accountAddress ? "true" : "false"}
+                {accountAddress ? "true" : "false"}/{isInApp ? "true" : "false"}
                 <FooterButton
                     accountAddress={accountAddress}
                     shouldBeDisabled={shouldBeDisabled}
