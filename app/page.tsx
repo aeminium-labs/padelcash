@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import QRCode from "react-qr-code";
 
 import { getAppUrl } from "@/lib/utils";
@@ -27,6 +26,8 @@ export default function IndexPage() {
     return (
         <>
             <Container className="gap-10">
+                {typeof window !== "undefined" &&
+                    document.querySelector("body")?.classList}
                 <div className="flex flex-col items-start gap-2">
                     <h1 className="max-w-[1000px] text-4xl font-extrabold leading-tight lg:text-6xl lg:leading-snug">
                         Taking the World&apos;s fastest-growing sport into the{" "}
