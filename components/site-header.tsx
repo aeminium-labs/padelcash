@@ -2,19 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogoutResponse } from "@/app/api/logout/route";
 import { useWeb3Auth } from "@/hooks/use-web3auth";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 
 import { siteConfig } from "@/config/site";
-import { fetcher } from "@/lib/fetchers";
-import {
-    connectionStatusAtom,
-    isConnectedAtom,
-    loadableAccountsAtom,
-    web3AuthAtom,
-    web3AuthProviderAtom,
-} from "@/lib/store";
+import { isConnectedAtom, loadableAccountsAtom } from "@/lib/store";
 import { trimWalletAddress } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -53,38 +45,12 @@ function SiteHeaderLoggedOut() {
 
 function SiteHeaderLoggedIn() {
     const accounts = useAtomValue(loadableAccountsAtom);
-    const web3auth = useAtomValue(web3AuthAtom);
-    const setProvider = useSetAtom(web3AuthProviderAtom);
-    const setConnectionStatus = useSetAtom(connectionStatusAtom);
     const { toast } = useToast();
 
     const router = useRouter();
 
     const accountAddress =
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : "";
-
-    const onLogoutClick = async () => {
-        if (web3auth) {
-            try {
-                const userInfo = await web3auth.getUserInfo();
-
-                router.push("/");
-
-                setConnectionStatus("init");
-                await web3auth.logout();
-                setProvider(null);
-
-                await fetcher<LogoutResponse>(`/api/logout`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                        token: userInfo.oAuthAccessToken,
-                    }),
-                });
-            } catch (e) {
-                console.log(e);
-            }
-        }
-    };
 
     if (accountAddress) {
         return (
@@ -137,7 +103,9 @@ function SiteHeaderLoggedIn() {
                             Settings
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={onLogoutClick}>
+                        <DropdownMenuItem
+                            onClick={() => router.push(`/logout`)}
+                        >
                             <Icons.logout className="mr-2 h-4 w-4" />
                             Logout
                         </DropdownMenuItem>
