@@ -26,10 +26,7 @@ function FooterButton({
             window.progressier.native.standalone);
 
     const isInstallable =
-        hasProgressier &&
-        !isInApp &&
-        !window.progressier.native.installed &&
-        window.progressier.native.installable;
+        hasProgressier && !isInApp && !window.progressier.native.installed;
 
     const isInstalled =
         isClientSide && hasProgressier && window.progressier.native.installed;
