@@ -8,7 +8,7 @@ import { createBadge } from "@/lib/fetchers";
 import { connectionStatusAtom, loadableAccountsAtom } from "@/lib/store";
 import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 
-export default function PayPage() {
+export default function AccountPage() {
     const connectionStatus = useAtomValue(connectionStatusAtom);
     const accounts = useAtomValue(loadableAccountsAtom);
     const router = useRouter();
@@ -32,7 +32,6 @@ export default function PayPage() {
         }
 
         if (isFirstTime && accountAddress && accountAddress.length > 0) {
-            console.log("ASDAD");
             registerUser();
         }
     }, [accountAddress, isFirstTime]);
