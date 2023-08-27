@@ -120,11 +120,11 @@ export function MainFooter() {
             <div className="flex flex-col items-center justify-start gap-4 md:flex-row ">
                 {hasProgressier ? "true" : "false"}/
                 {!isInApp ? "true" : "false"}/
-                {isClientSide && !window.progressier.native.installed
+                {hasProgressier && !window.progressier.native.installed
                     ? "true"
                     : "false"}
                 /
-                {isClientSide && window.progressier.native.installable
+                {hasProgressier && window.progressier.native.installable
                     ? "true"
                     : "false"}
                 <FooterButton
