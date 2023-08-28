@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
 
-import { retrievePaymentParams } from "@/lib/fetchers";
 import { connectionStatusAtom, loadableAccountsAtom } from "@/lib/store";
 import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 
@@ -30,12 +29,8 @@ export default function PayPage({ params }: Props) {
 
     useEffect(() => {
         async function checkData() {
-            const res = await retrievePaymentParams(code);
-
-            if (!isLoading && res.params) {
-                router.push(
-                    `/account/${accountAddress}/payments?${res.params}`
-                );
+            if (!isLoading && accountAddress && code) {
+                router.push(`/account/${accountAddress}/payments?code=${code}`);
             }
         }
 

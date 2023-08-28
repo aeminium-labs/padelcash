@@ -13,8 +13,7 @@ type Props = {
         address: string;
     };
     searchParams?: {
-        to: string;
-        amount: string;
+        code: string;
     };
 };
 
@@ -40,7 +39,7 @@ const getBalances = async (address: string) => {
 export default async function PaymentsPage({ params, searchParams }: Props) {
     let defaultTab = "receive";
 
-    if (searchParams?.to) {
+    if (searchParams?.code) {
         defaultTab = "send";
     }
 

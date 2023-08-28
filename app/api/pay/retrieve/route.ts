@@ -2,7 +2,9 @@ import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 export type PayRetrieveResponse = {
-    params: string;
+    to: string;
+    amount: number;
+    generated: string;
 };
 
 export async function POST(req: NextRequest) {
@@ -23,9 +25,9 @@ export async function POST(req: NextRequest) {
 
             decryptedData += decipher.final("utf8");
 
-            return NextResponse.json<PayRetrieveResponse>({
-                params: decryptedData,
-            });
+            const data = JSON.parse(decryptedData);
+
+            return NextResponse.json<PayRetrieveResponse>(data);
         } catch (e) {
             console.log(e);
             return NextResponse.json({
