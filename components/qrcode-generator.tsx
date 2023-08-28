@@ -48,15 +48,17 @@ export function QrCodeGenerator({ to }: { to: string }) {
     const prevAmount = useRef<string>("");
 
     useEffect(() => {
+        const parsedAmount = parseFloat(amount);
+
         async function createUrl() {
-            const res = await createPaymentCode(`to=${to}&amount=${amount}`);
+            const res = await createPaymentCode(to, parsedAmount);
 
             if (res.code) {
                 setUrl(res.code);
             }
         }
 
-        if (prevAmount.current !== amount && parseFloat(amount) > 0) {
+        if (prevAmount.current !== amount && parsedAmount > 0) {
             createUrl();
             prevAmount.current = amount;
         }

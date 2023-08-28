@@ -3,11 +3,11 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { AccountBalances } from "@/app/account/[address]/page";
+import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
 import { Transaction } from "@solana/web3.js";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { gql } from "graphql-request";
 import { useAtomValue } from "jotai";
-import { useWindowSize } from "react-use";
 
 import { PADEL_TOKEN, TOKEN_MULTIPLIER } from "@/lib/constants";
 import {
@@ -68,10 +68,6 @@ export function QrCodeScanner({
 }: {
     balancesData: AccountBalances;
 }) {
-    const [code, setCode] = useState<string>("");
-    const [step, setStep] = useState<number>(0);
-    const [currentTx, setCurrentTx] = useState<string>("");
-    const lastTx = useRef<string>(currentTx);
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
@@ -82,9 +78,15 @@ export function QrCodeScanner({
     const from = Array.isArray(params.address)
         ? params.address[0]
         : params.address;
-    const to = searchParams.get("to");
-    const amount =
-        parseFloat(searchParams.get("amount") || "0") * TOKEN_MULTIPLIER;
+
+    const [code, setCode] = useState<string>(searchParams.get("code") || "");
+    const [txParams, setTxParams] = useState<PayRetrieveResponse | null>(null);
+    const [step, setStep] = useState<number>(0);
+    const [currentTx, setCurrentTx] = useState<string>("");
+    const lastTx = useRef<string>(currentTx);
+
+    const to = txParams?.to || "";
+    const amount = (txParams?.amount || 0) * TOKEN_MULTIPLIER;
 
     const hasTx = to && amount > 0;
 
@@ -92,8 +94,8 @@ export function QrCodeScanner({
         async function getUrl() {
             const res = await retrievePaymentParams(code);
 
-            if (res.params) {
-                router.replace(`?${res.params}`);
+            if (res.to && res.amount) {
+                setTxParams(res);
             }
         }
 
@@ -142,7 +144,6 @@ export function QrCodeScanner({
     }, [amount]);
 
     function handleRejectClick() {
-        router.replace("?");
         setCode("");
     }
 

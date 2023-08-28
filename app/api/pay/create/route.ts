@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     const iv = process.env.IV_KEY;
     const key = process.env.ENCRYPTION_KEY;
 
-    if (body.params && key && iv) {
+    if (body.to && body.amount && key && iv) {
         try {
             let cipher = crypto.createCipheriv(
                 "aes-256-cbc",
@@ -19,11 +19,17 @@ export async function POST(req: NextRequest) {
                 Buffer.from(iv, "hex")
             );
 
-            let encryptedData = cipher.update(body.params, "utf-8", "hex");
+            const data = JSON.stringify({
+                to: body.to,
+                amount: body.amount,
+                generated: new Date(),
+            });
 
-            encryptedData += cipher.final("hex");
+            let code = cipher.update(data, "utf-8", "hex");
 
-            return NextResponse.json({ code: encryptedData });
+            code += cipher.final("hex");
+
+            return NextResponse.json({ code });
         } catch (e) {
             return NextResponse.json({
                 error: "not able to create code",

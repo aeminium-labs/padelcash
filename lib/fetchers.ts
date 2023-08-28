@@ -38,11 +38,12 @@ export async function retrievePaymentParams(code: string) {
     });
 }
 
-export async function createPaymentCode(params: string) {
+export async function createPaymentCode(to: string, amount: number) {
     return fetcher<PayCreateResponse>("/api/pay/create", {
         method: "POST",
         body: JSON.stringify({
-            params,
+            to,
+            amount,
         }),
         cache: "force-cache",
     });
