@@ -4,6 +4,7 @@ import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 
 import { createPaymentCode } from "@/lib/fetchers";
+import { getAppUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,6 +17,7 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/components/ui/use-toast";
 
 const amounts = ["5", "10", "25", "50", "100"];
 
@@ -44,8 +46,10 @@ function AmountButton({
 
 export function QrCodeGenerator({ to }: { to: string }) {
     const [amount, setAmount] = useState<string>(amounts[0]);
-    const [url, setUrl] = useState<string>("");
+    const [code, setCode] = useState<string>("");
     const prevAmount = useRef<string>("");
+    const { toast } = useToast();
+    const appUrl = getAppUrl();
 
     useEffect(() => {
         const parsedAmount = parseFloat(amount);
@@ -54,7 +58,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
             const res = await createPaymentCode(to, parsedAmount);
 
             if (res.code) {
-                setUrl(res.code);
+                setCode(res.code);
             }
         }
 
@@ -64,7 +68,7 @@ export function QrCodeGenerator({ to }: { to: string }) {
         }
     }, [to, amount]);
 
-    if (url.length === 0) {
+    if (code.length === 0) {
         return <Skeleton className="w-full grow" />;
     }
 
@@ -72,9 +76,32 @@ export function QrCodeGenerator({ to }: { to: string }) {
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="rounded-xl bg-primary p-8">
-                <QRCode value={url} className="w-full" size={300} />
+            <div
+                className="flex flex-col gap-1"
+                onClick={async () => {
+                    try {
+                        await navigator.clipboard.writeText(
+                            `${appUrl}/pay/${code}`
+                        );
+
+                        toast({
+                            title: "Payment link copied to clipboard",
+                        });
+                    } catch (e) {
+                        toast({
+                            title: "Error copying payment link",
+                        });
+                    }
+                }}
+            >
+                <div className="rounded-xl bg-primary p-8">
+                    <QRCode value={code} className="w-full" size={300} />
+                </div>
+                <p className="text-center text-xs text-muted-foreground">
+                    Tap to copy payment link
+                </p>
             </div>
+
             <div className="grid grid-cols-2 gap-2">
                 {amounts.map((value) => (
                     <AmountButton
