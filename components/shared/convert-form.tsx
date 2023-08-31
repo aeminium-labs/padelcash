@@ -107,6 +107,13 @@ export function ConvertForm({
                 });
 
                 await createBadge(address, "firstDeposit");
+
+                // Adds tags to progressier
+                if (window.progressier) {
+                    window.progressier.add({
+                        tags: "firstDeposit",
+                    });
+                }
             } else {
                 toast({
                     variant: "destructive",
