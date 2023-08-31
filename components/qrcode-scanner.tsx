@@ -114,6 +114,13 @@ export function QrCodeScanner({
                 });
 
                 await createBadge(from, "firstTransaction");
+
+                // Adds tags to progressier
+                if (window.progressier) {
+                    window.progressier.add({
+                        tags: "firstTransaction",
+                    });
+                }
             } else {
                 toast({
                     variant: "destructive",

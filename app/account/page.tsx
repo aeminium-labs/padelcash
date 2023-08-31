@@ -28,6 +28,14 @@ export default function AccountPage() {
         async function registerUser() {
             if (accountAddress && accountAddress.length > 0) {
                 await createBadge(accountAddress, "registration");
+
+                // Registers wallet in Progressier
+                if (window.progressier) {
+                    window.progressier.add({
+                        id: accountAddress,
+                        tags: "registered",
+                    });
+                }
             }
         }
 
