@@ -48,7 +48,7 @@ export default function AccountPage() {
             // Registers wallet in Progressier
             if (window.progressier) {
                 window.progressier.add({
-                    id: accountAddress,
+                    wallet: accountAddress,
                 });
             }
 
