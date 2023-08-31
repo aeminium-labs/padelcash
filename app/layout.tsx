@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import Script from "next/script";
 import { Providers } from "@/app/providers";
 
+import { getBaseUrl } from "@/lib/server/utils";
 import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: Props) {
 }
 
 export const metadata = {
+    metadataBase: new URL(getBaseUrl()),
     title: {
         default: "Padelcash // A new Padel economy",
         template: "%s // Padelcash",
