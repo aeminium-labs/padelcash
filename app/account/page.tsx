@@ -29,10 +29,9 @@ export default function AccountPage() {
             if (accountAddress && accountAddress.length > 0) {
                 await createBadge(accountAddress, "registration");
 
-                // Registers wallet in Progressier
+                // Add registered tag
                 if (window.progressier) {
                     window.progressier.add({
-                        id: accountAddress,
                         tags: "registered",
                     });
                 }
@@ -46,6 +45,13 @@ export default function AccountPage() {
 
     useEffect(() => {
         if (!isLoading && accountAddress && accountAddress.length > 0) {
+            // Registers wallet in Progressier
+            if (window.progressier) {
+                window.progressier.add({
+                    id: accountAddress,
+                });
+            }
+
             router.push(`/account/${accountAddress}`);
         }
     }, [accountAddress, isLoading, router]);
