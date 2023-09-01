@@ -28,7 +28,7 @@ export default function IndexPage() {
 
     useEffect(() => {
         if (isFirstTime) {
-            router.push("/account?firstTime=true");
+            router.replace("/account?firstTime=true");
         }
     }, [isFirstTime, router]);
 

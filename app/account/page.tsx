@@ -14,6 +14,8 @@ export default function AccountPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
+    const [hasRefreshed, setHasRefreshed] = useState(false);
+
     const isFirstTime = searchParams.has("firstTime");
     const [isRegistering, setIsRegistering] = useState(false);
 
@@ -24,6 +26,13 @@ export default function AccountPage() {
         connectionStatus === "init" ||
         connectionStatus === "connecting" ||
         (connectionStatus === "connected" && !accountAddress);
+
+    useEffect(() => {
+        if (isFirstTime && !hasRefreshed) {
+            router.refresh();
+            setHasRefreshed(true);
+        }
+    }, [hasRefreshed, isFirstTime, router]);
 
     useEffect(() => {
         async function registerUser() {
