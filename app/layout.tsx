@@ -25,12 +25,6 @@ const fontSans = FontSans({
 export default function RootLayout({ children }: Props) {
     return (
         <html lang="en" className={`${fontSans.variable} dark`}>
-            <head>
-                <Script
-                    strategy="beforeInteractive"
-                    src="https://progressier.app/c00Kg9Z1JBplPIq0ICqp/script.js"
-                ></Script>
-            </head>
             <body className="min-h-screen bg-white font-sans text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-50">
                 <Providers>
                     <SiteHeader />
@@ -43,6 +37,10 @@ export default function RootLayout({ children }: Props) {
                     navigator.virtualKeyboard.overlaysContent = true;
                 }`}
             </Script>
+            <Script
+                strategy="beforeInteractive"
+                src="https://progressier.app/c00Kg9Z1JBplPIq0ICqp/script.js"
+            ></Script>
         </html>
     );
 }
