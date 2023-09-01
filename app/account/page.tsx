@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAtomValue } from "jotai";
 
@@ -14,10 +14,7 @@ export default function AccountPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const [hasRefreshed, setHasRefreshed] = useState(false);
-
     const isFirstTime = searchParams.has("firstTime");
-    const [isRegistering, setIsRegistering] = useState(false);
 
     const accountAddress =
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
@@ -26,13 +23,6 @@ export default function AccountPage() {
         connectionStatus === "init" ||
         connectionStatus === "connecting" ||
         (connectionStatus === "connected" && !accountAddress);
-
-    useEffect(() => {
-        if (isFirstTime && !hasRefreshed) {
-            router.refresh();
-            setHasRefreshed(true);
-        }
-    }, [hasRefreshed, isFirstTime, router]);
 
     useEffect(() => {
         async function registerUser() {
@@ -48,16 +38,10 @@ export default function AccountPage() {
             }
         }
 
-        if (
-            isFirstTime &&
-            !isRegistering &&
-            accountAddress &&
-            accountAddress.length > 0
-        ) {
-            setIsRegistering(true);
+        if (isFirstTime && accountAddress && accountAddress.length > 0) {
             registerUser();
         }
-    }, [accountAddress, isFirstTime, isRegistering]);
+    }, [accountAddress, isFirstTime]);
 
     useEffect(() => {
         if (!isLoading && accountAddress && accountAddress.length > 0) {

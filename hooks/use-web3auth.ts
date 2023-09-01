@@ -57,7 +57,7 @@ export function useWeb3Auth() {
                         adapterSettings: {
                             uxMode: "redirect",
                             replaceUrlOnRedirect: false,
-                            redirectUrl: `${url}/?firstTime=true`,
+                            redirectUrl: `${url}/account?firstTime=true`,
                             whiteLabel: {
                                 name: "Padelcash",
                                 logoLight:

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-before-interactive-script-outside-document */
 import { Poppins as FontSans } from "next/font/google";
 
 import "@/styles/globals.css";
@@ -25,10 +26,10 @@ export default function RootLayout({ children }: Props) {
     return (
         <html lang="en" className={`${fontSans.variable} dark`}>
             <head>
-                <script
-                    defer
+                <Script
+                    strategy="beforeInteractive"
                     src="https://progressier.app/c00Kg9Z1JBplPIq0ICqp/script.js"
-                ></script>
+                ></Script>
             </head>
             <body className="min-h-screen bg-white font-sans text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-50">
                 <Providers>

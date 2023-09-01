@@ -1,14 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import QRCode from "react-qr-code";
 
 import { getAppUrl } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { MainFooter } from "@/components/main-footer";
 import { Container } from "@/components/shared/container";
-import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -21,20 +18,6 @@ import {
 
 export default function IndexPage() {
     const appUrl = getAppUrl();
-    const searchParams = useSearchParams();
-    const router = useRouter();
-
-    const isFirstTime = searchParams.has("firstTime");
-
-    useEffect(() => {
-        if (isFirstTime) {
-            router.replace("/account?firstTime=true");
-        }
-    }, [isFirstTime, router]);
-
-    if (isFirstTime) {
-        return <LoadingSkeleton />;
-    }
 
     return (
         <>
