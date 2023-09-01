@@ -15,7 +15,6 @@ export default function AccountPage() {
     const searchParams = useSearchParams();
 
     const isFirstTime = searchParams.has("firstTime");
-    const shouldRegister = searchParams.has("shouldRegister");
 
     const accountAddress =
         accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
@@ -24,13 +23,6 @@ export default function AccountPage() {
         connectionStatus === "init" ||
         connectionStatus === "connecting" ||
         (connectionStatus === "connected" && !accountAddress);
-
-    useEffect(() => {
-        if (isFirstTime) {
-            router.replace("?shouldRegister=true");
-            router.refresh();
-        }
-    }, [isFirstTime, router]);
 
     useEffect(() => {
         async function registerUser() {
@@ -46,10 +38,10 @@ export default function AccountPage() {
             }
         }
 
-        if (shouldRegister && accountAddress && accountAddress.length > 0) {
+        if (isFirstTime && accountAddress && accountAddress.length > 0) {
             registerUser();
         }
-    }, [accountAddress, shouldRegister]);
+    }, [accountAddress, isFirstTime]);
 
     useEffect(() => {
         if (!isLoading && accountAddress && accountAddress.length > 0) {
