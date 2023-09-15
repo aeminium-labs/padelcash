@@ -52,7 +52,7 @@ export function useWeb3Auth() {
                     const openloginAdapter = new OpenloginAdapter({
                         privateKeyProvider,
                         loginSettings: {
-                            mfaLevel: "optional",
+                            mfaLevel: "none",
                         },
                         adapterSettings: {
                             uxMode: "redirect",
@@ -81,19 +81,19 @@ export function useWeb3Auth() {
                             },
                             mfaSettings: {
                                 deviceShareFactor: {
-                                    enable: true,
+                                    enable: false,
                                     priority: 1,
-                                    mandatory: true,
+                                    mandatory: false,
                                 },
                                 backUpShareFactor: {
-                                    enable: true,
+                                    enable: false,
                                     priority: 2,
                                     mandatory: false,
                                 },
                                 socialBackupFactor: {
                                     enable: true,
                                     priority: 3,
-                                    mandatory: false,
+                                    mandatory: true,
                                 },
                                 passwordFactor: {
                                     enable: true,

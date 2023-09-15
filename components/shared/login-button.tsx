@@ -52,7 +52,7 @@ export function LoginButtton({ children }: Props) {
                     const web3authProvider = await web3auth.connectTo(
                         WALLET_ADAPTERS.OPENLOGIN,
                         {
-                            mfaLevel: "optional",
+                            mfaLevel: "none",
                             loginProvider: provider,
                             extraLoginOptions: extra,
                         }
