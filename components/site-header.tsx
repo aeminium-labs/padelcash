@@ -127,6 +127,7 @@ export function SiteHeader() {
         async function checkLogin() {
             if (magic) {
                 // Check if the user is authenticated already
+                setConnectionStatus("connecting");
                 const isLoggedIn = await magic.user.isLoggedIn();
                 if (isLoggedIn && magic) {
                     // Pull their metadata, update our state, and route to dashboard
@@ -140,11 +141,8 @@ export function SiteHeader() {
                 }
             }
         }
-        // Set loading to true to display our loading message within pages/index.js
-        setConnectionStatus("connecting");
-        checkLogin();
 
-        // Add an empty dependency array so the useEffect only runs once upon page load
+        checkLogin();
     }, [setConnectionStatus, setUser]);
 
     const isClientSide = typeof window !== "undefined";

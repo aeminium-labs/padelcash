@@ -45,15 +45,3 @@ export async function getPadelAta(address: string) {
         }),
     });
 }
-
-export async function discordLogOut(data: FormData) {
-    return fetcher("https://discord.com/api/oauth2/token/revoke", {
-        method: "POST",
-        body: data,
-        headers: {
-            Authorization: `Basic ${Buffer.from(
-                `${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_SECRET_KEY}`
-            ).toString("base64")}`,
-        },
-    });
-}
