@@ -46,11 +46,9 @@ export function LoginButtton({ children }: Props) {
 
     const onEmailLoginSubmit = async () => {
         const email = getValues("email");
-
+        setConnectionStatus("connecting");
         // Log in using our email with Magic and store the returned DID token in a variable
         if (magic) {
-            setConnectionStatus("connecting");
-
             try {
                 const didToken = await magic.auth.loginWithMagicLink({
                     email,
@@ -74,6 +72,9 @@ export function LoginButtton({ children }: Props) {
                 setUser(null);
                 setConnectionStatus("errored");
             }
+        } else {
+            console.log("magic isn't available", magic);
+            setConnectionStatus("errored");
         }
     };
 
