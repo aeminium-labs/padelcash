@@ -87,7 +87,7 @@ export function LoginButtton({ children }: Props) {
     return (
         <Sheet open={open} onOpenChange={handleOpenChange}>
             <SheetTrigger asChild>{children}</SheetTrigger>
-            <SheetContent side="bottom">
+            <SheetContent side="bottom" className="keyboard-bottom">
                 <SheetHeader className="text-left">
                     <SheetTitle>Login to your account</SheetTitle>
                     <SheetDescription>
