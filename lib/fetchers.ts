@@ -1,4 +1,5 @@
 import { BadgeType } from "@/app/api/badges/create/route";
+import { LoginResponse } from "@/app/api/login/route";
 import { PayCreateResponse } from "@/app/api/pay/create/route";
 import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
 import { GetPriceResponse } from "@/app/api/token/price/route";
@@ -147,5 +148,15 @@ export async function getTokenSwapTransaction({
             quote,
             address,
         }),
+    });
+}
+
+export async function login(token: string | null) {
+    return fetcher<LoginResponse>("/api/login", {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
     });
 }

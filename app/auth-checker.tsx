@@ -3,11 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
 
-import {
-    connectionStatusAtom,
-    loadableAccountsAtom,
-    web3AuthProviderAtom,
-} from "@/lib/store";
+import { connectionStatusAtom, userAtom } from "@/lib/store";
 import { Icons } from "@/components/icons";
 import { Container } from "@/components/shared/container";
 import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
@@ -20,21 +16,17 @@ type Props = {
 
 export function AuthChecker({ children, address }: Props) {
     const connectionStatus = useAtomValue(connectionStatusAtom);
-    const provider = useAtomValue(web3AuthProviderAtom);
-    const accounts = useAtomValue(loadableAccountsAtom);
+    const user = useAtomValue(userAtom);
     const router = useRouter();
-
-    const accountAddress =
-        accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
 
     const isLoading =
         connectionStatus === "init" ||
         connectionStatus === "connecting" ||
-        (connectionStatus === "connected" && !accountAddress);
+        (connectionStatus === "connected" && !user);
 
     const isNotAuthorized =
-        (connectionStatus === "ready" && !provider) ||
-        (accountAddress && accountAddress !== address);
+        connectionStatus === "errored" ||
+        (user && user.publicAddress !== address);
 
     if (isLoading) {
         return <LoadingSkeleton />;

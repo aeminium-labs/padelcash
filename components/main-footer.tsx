@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAtomValue } from "jotai";
 
-import { connectionStatusAtom, loadableAccountsAtom } from "@/lib/store";
+import { connectionStatusAtom, userAtom } from "@/lib/store";
 import { Icons } from "@/components/icons";
 import { LoginButtton } from "@/components/shared/login-button";
 import { Button } from "@/components/ui/button";
@@ -87,21 +87,15 @@ function FooterButton({
 }
 
 export function MainFooter() {
-    const accounts = useAtomValue(loadableAccountsAtom);
+    const user = useAtomValue(userAtom);
     const connectionStatus = useAtomValue(connectionStatusAtom);
-
-    const shouldBeDisabled =
-        connectionStatus !== "ready" && connectionStatus !== "errored";
-
-    const accountAddress =
-        accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
 
     return (
         <footer className="container fixed bottom-0 w-full border-t border-t-slate-700  bg-slate-900/40 p-4 backdrop-blur-xl md:hidden">
             <div className="flex flex-col items-center justify-start gap-4 md:flex-row ">
                 <FooterButton
-                    accountAddress={accountAddress}
-                    shouldBeDisabled={shouldBeDisabled}
+                    accountAddress={user && user.publicAddress}
+                    shouldBeDisabled={connectionStatus === "connecting"}
                 />
             </div>
         </footer>

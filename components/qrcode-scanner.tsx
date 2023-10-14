@@ -7,7 +7,6 @@ import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
 import { Transaction } from "@solana/web3.js";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { gql } from "graphql-request";
-import { useAtomValue } from "jotai";
 
 import { PADEL_TOKEN, TOKEN_MULTIPLIER } from "@/lib/constants";
 import {
@@ -19,8 +18,7 @@ import {
     signRelayerTx,
 } from "@/lib/fetchers";
 import { graphQLClient } from "@/lib/graphql";
-import { RPC } from "@/lib/rpc";
-import { web3AuthProviderAtom } from "@/lib/store";
+import { magic } from "@/lib/magic";
 import {
     formatAdjustedValue,
     formatValue,
@@ -71,7 +69,6 @@ export function QrCodeScanner({
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
-    const provider = useAtomValue(web3AuthProviderAtom);
     const { toast } = useToast();
     const [usdcValue, setUsdcValue] = useState(0);
 
@@ -170,14 +167,20 @@ export function QrCodeScanner({
         const tx = Transaction.from(Buffer.from(createTxRes.tx, "base64"));
 
         // Sign transaction
-        if (provider) {
-            const rpc = new RPC(provider);
+        if (magic) {
+            const signedTx = await magic.solana.signTransaction(tx, {
+                requireAllSignatures: false,
+            });
 
-            const signedTx = await rpc.signTransaction(tx);
+            const serializedTx = Transaction.from(signedTx.rawTransaction)
+                .serialize({
+                    requireAllSignatures: false,
+                })
+                .toString("base64");
 
             setStep(3);
 
-            const relayerTx = await signRelayerTx(signedTx);
+            const relayerTx = await signRelayerTx(serializedTx);
 
             setCurrentTx(relayerTx.signedTx);
             setStep(4);

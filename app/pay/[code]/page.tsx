@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
 
-import { connectionStatusAtom, loadableAccountsAtom } from "@/lib/store";
+import { connectionStatusAtom, userAtom } from "@/lib/store";
 import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 
 type Props = {
@@ -15,12 +15,11 @@ type Props = {
 
 export default function PayPage({ params }: Props) {
     const connectionStatus = useAtomValue(connectionStatusAtom);
-    const accounts = useAtomValue(loadableAccountsAtom);
+    const user = useAtomValue(userAtom);
     const router = useRouter();
     const { code } = params;
 
-    const accountAddress =
-        accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
+    const accountAddress = user && user.publicAddress;
 
     const isLoading =
         connectionStatus === "init" ||
