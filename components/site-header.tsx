@@ -156,7 +156,7 @@ export function SiteHeader() {
             window.progressier.native.standalone);
 
     return (
-        <header className="fixed top-0 z-10 w-full border-b border-b-teal-700 bg-slate-900/30 backdrop-blur-xl">
+        <header className="fixed top-0 z-10 w-full border-b border-b-teal-700 bg-slate-900/90 backdrop-blur-xl">
             <div className="container flex h-16 items-center space-x-4 px-4 sm:justify-between sm:space-x-0">
                 <Link
                     href="/"

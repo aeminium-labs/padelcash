@@ -61,3 +61,7 @@
 .keyboard-bottom {
     margin-bottom: env(keyboard-inset-height, 0px) !important;
 }
+
+.magic-iframe {
+    pointer-events: all;
+}

@@ -16,24 +16,29 @@ export default function AccountPage() {
 
     const isFirstTime = searchParams.has("firstTime");
 
-    // useEffect(() => {
-    //     async function registerUser() {
-    //         if (user && user.publicAddress) {
-    //             await createBadge(user.publicAddress, "registration");
+    useEffect(() => {
+        async function registerUser() {
+            if (user && user.publicAddress) {
+                await createBadge(user.publicAddress, "registration");
 
-    //             // Add registered tag
-    //             if (window.progressier) {
-    //                 window.progressier.add({
-    //                     tags: "registered",
-    //                 });
-    //             }
-    //         }
-    //     }
+                // Add registered tag
+                if (window.progressier) {
+                    window.progressier.add({
+                        tags: "registered",
+                    });
+                }
+            }
+        }
 
-    //     if (isFirstTime && user && user.publicAddress) {
-    //         registerUser();
-    //     }
-    // }, [user, isFirstTime]);
+        if (
+            isFirstTime &&
+            connectionStatus === "connected" &&
+            user &&
+            user.publicAddress
+        ) {
+            registerUser();
+        }
+    }, [user, isFirstTime, connectionStatus]);
 
     useEffect(() => {
         if (connectionStatus === "errored") {

@@ -1,27 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GetNftsResponse } from "@underdog-protocol/types";
+import { DAS, Helius } from "helius-sdk";
 
-import { fetcher } from "@/lib/fetchers";
+import { COLLECTION_MINT } from "@/lib/constants";
 
-export type BadgesResponse = GetNftsResponse;
+export type BadgesResponse = DAS.GetAssetResponseList;
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
+    const helius = new Helius(process.env.HELIUS_API_KEY || "");
 
     if (body.address) {
         try {
-            const getNfts = await fetcher<GetNftsResponse>(
-                `https://api.underdogprotocol.com/v2/projects/c/2/nfts?page=1&limit=100&ownerAddress=${body.address}`,
-                {
-                    method: "GET",
-                    headers: {
-                        accept: "application/json",
-                        authorization: `Bearer ${process.env.UNDERDOG_API_KEY}`,
-                    },
-                }
-            );
+            const nfts = await helius.rpc.searchAssets({
+                ownerAddress: body.address,
+                grouping: ["collection", COLLECTION_MINT],
+                compressed: true,
+                page: 1,
+                limit: 100,
+            });
 
-            return NextResponse.json(getNfts);
+            return NextResponse.json(nfts);
         } catch (e) {
             console.log(e);
         }

@@ -10,11 +10,13 @@ export function Container({
     return (
         <section
             className={cn(
-                "container flex h-[100dvh] flex-col justify-start gap-4 px-4 py-20",
+                "container flex min-h-[100dvh] flex-col px-4 py-20",
                 className
             )}
         >
-            {children}
+            <div className="flex grow flex-col justify-start gap-4">
+                {children}
+            </div>
         </section>
     );
 }
