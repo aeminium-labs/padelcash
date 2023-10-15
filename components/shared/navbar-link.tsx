@@ -3,7 +3,9 @@
 import { Url } from "next/dist/shared/lib/router/router";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { cva, VariantProps } from "class-variance-authority";
 
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
     Tooltip,
@@ -12,22 +14,43 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+const navlinkVariants = cva([], {
+    variants: {
+        variant: {
+            horizontal: "flex-row py-5 w-full justify-start",
+            vertical: "flex-col",
+        },
+    },
+    defaultVariants: {
+        variant: "vertical",
+    },
+});
+
+type NavbarLinkProps = Omit<
+    React.ComponentPropsWithoutRef<typeof Link>,
+    "href"
+> & {
+    disabled?: boolean;
+    href?: Url;
+} & VariantProps<typeof navlinkVariants>;
+
 export function NavbarLink({
     children,
     href,
     disabled = false,
+    variant,
     ...rest
-}: Omit<React.ComponentPropsWithoutRef<typeof Link>, "href"> & {
-    disabled?: boolean;
-    href?: Url;
-}) {
+}: NavbarLinkProps) {
     const pathname = usePathname();
     const isActive = pathname === href;
 
     const button = (
         <Button
             variant={isActive ? "default" : "ghost"}
-            className="flex h-auto w-full flex-col rounded-none text-xs"
+            className={cn(
+                navlinkVariants({ variant }),
+                "flex h-auto w-full gap-2 rounded-none text-xs"
+            )}
             disabled={disabled}
         >
             {children}

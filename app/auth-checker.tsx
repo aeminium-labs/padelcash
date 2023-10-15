@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAtomValue } from "jotai";
 
 import { connectionStatusAtom, userAtom } from "@/lib/store";
@@ -17,7 +17,6 @@ type Props = {
 export function AuthChecker({ children, address }: Props) {
     const connectionStatus = useAtomValue(connectionStatusAtom);
     const user = useAtomValue(userAtom);
-    const router = useRouter();
 
     const isLoading =
         connectionStatus === "init" ||
@@ -44,16 +43,15 @@ export function AuthChecker({ children, address }: Props) {
                         the homepage and login again
                     </p>
                 </div>
-                <Button
-                    variant="default"
-                    size="lg"
-                    className="mt-8 flex w-full flex-row items-center gap-2"
-                    onClick={() => {
-                        router.push("/");
-                    }}
-                >
-                    <Icons.undo className="h-4 w-4" /> Return home
-                </Button>
+                <Link href="/">
+                    <Button
+                        variant="default"
+                        size="lg"
+                        className="mt-8 flex w-full flex-row items-center gap-2"
+                    >
+                        <Icons.undo className="h-4 w-4" /> Return home
+                    </Button>
+                </Link>
             </Container>
         );
     }

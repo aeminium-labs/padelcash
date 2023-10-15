@@ -61,7 +61,7 @@ const getBalances = async (address: string) => {
     return graphQLClient.request<AccountBalances>(query, { address });
 };
 
-export function QrCodeScanner({
+export function PaymentsCodeScanner({
     balancesData,
 }: {
     balancesData: AccountBalances;

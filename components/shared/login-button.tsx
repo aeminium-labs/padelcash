@@ -78,7 +78,7 @@ export function LoginButtton({ children }: Props) {
         }
     };
 
-    const handleOpenChange = (open) => {
+    const handleOpenChange = (open: boolean) => {
         if (!shouldBeDisabled) {
             setOpen(open);
         }

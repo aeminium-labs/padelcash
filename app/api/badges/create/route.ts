@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Helius } from "helius-sdk";
 
-import { COLLECTION_MINT } from "@/lib/constants";
+import { BADGES_COLLECTION_MINT } from "@/lib/constants";
 
 export type RegisterResponse = {
     status: string;
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
             description:
                 "Welcome to the Padelcash family! You get this badge when you register an account.",
             symbol: symbolsMap.registration,
-            collection: COLLECTION_MINT,
+            collection: BADGES_COLLECTION_MINT,
             // imagePath: `https://${baseURL}/badges/pioneer.png`,
             attributes: [
                 {
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
             description:
                 "Woohoo you got your first transaction in! Did it feel... instant?!",
             symbol: symbolsMap.firstTransaction,
-            collection: COLLECTION_MINT,
+            collection: BADGES_COLLECTION_MINT,
             // imagePath: `https://${baseURL}/badges/first-transaction.png`,
             attributes: [
                 {
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
             description:
                 "You've just opened your new savings account and it didn't even cost you a pennie!",
             symbol: symbolsMap.firstDeposit,
-            collection: COLLECTION_MINT,
+            collection: BADGES_COLLECTION_MINT,
             // imagePath: `https://${baseURL}/badges/first-deposit.png`,
             attributes: [
                 {

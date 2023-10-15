@@ -44,7 +44,7 @@ function AmountButton({
     );
 }
 
-export function QrCodeGenerator({ to }: { to: string }) {
+export function PaymentsCodeGenerator({ to }: { to: string }) {
     const [amount, setAmount] = useState<string>(amounts[0]);
     const [code, setCode] = useState<string>("");
     const prevAmount = useRef<string>("");

@@ -3,8 +3,8 @@ import { AuthChecker } from "@/app/auth-checker";
 import { gql } from "graphql-request";
 
 import { graphQLClient } from "@/lib/graphql";
-import { QrCodeGenerator } from "@/components/qrcode-generator";
-import { QrCodeScanner } from "@/components/qrcode-scanner";
+import { PaymentsCodeGenerator } from "@/components/payments-code-generator";
+import { PaymentsCodeScanner } from "@/components/payments-code-scanner";
 import { Container } from "@/components/shared/container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -61,13 +61,13 @@ export default async function PaymentsPage({ params, searchParams }: Props) {
                         value="receive"
                         className="flex grow flex-col data-[state=inactive]:hidden"
                     >
-                        <QrCodeGenerator to={params.address} />
+                        <PaymentsCodeGenerator to={params.address} />
                     </TabsContent>
                     <TabsContent
                         value="send"
                         className="flex grow flex-col data-[state=inactive]:hidden"
                     >
-                        <QrCodeScanner balancesData={balancesData} />
+                        <PaymentsCodeScanner balancesData={balancesData} />
                     </TabsContent>
                 </Tabs>
             </Container>

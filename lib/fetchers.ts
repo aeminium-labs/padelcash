@@ -96,6 +96,15 @@ export async function signRelayerTx(signedTx: string) {
     });
 }
 
+export async function signRelayerVersionTx(signedTx: string) {
+    return fetcher<TxSignResponse>("/api/tx/sign_versioned", {
+        method: "POST",
+        body: JSON.stringify({
+            signedTx,
+        }),
+    });
+}
+
 export async function createBadge(address: string, badgeType: BadgeType) {
     return fetcher(`/api/badges/create`, {
         method: "POST",

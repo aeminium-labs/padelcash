@@ -10,6 +10,7 @@ import {
     Coins,
     Contact,
     Download,
+    Gift,
     Globe2,
     HeartHandshake,
     Landmark,
@@ -29,7 +30,7 @@ import {
     Trophy,
     Twitter,
     Undo,
-    User,
+    UserCircle,
     Wallet,
     Youtube,
     type IconNode as LucideIcon,
@@ -49,7 +50,7 @@ export const Icons = {
     wallet: Wallet,
     scroll: Scroll,
     award: Award,
-    user: User,
+    user: UserCircle,
     settings: Settings,
     logout: LogOut,
     login: LogIn,
@@ -70,6 +71,7 @@ export const Icons = {
     download: Download,
     phone: Smartphone,
     copy: ClipboardCopy,
+    gift: Gift,
     logo: (props: LucideProps) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"

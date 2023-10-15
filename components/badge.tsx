@@ -48,6 +48,7 @@ export function Badge({
                                     width={150}
                                     height={150}
                                     className="aspect-square h-auto w-auto object-cover"
+                                    priority
                                 />
                             )}
                         </div>

@@ -91,7 +91,7 @@ export default function OverviewPage({ params }: Props) {
                     <PadelBalance data={getBalances(params.address)} />
                 </Suspense>
                 <Suspense fallback={<Skeleton className="w-full grow" />}>
-                    <ScrollArea className="flex grow rounded-xl border">
+                    <ScrollArea className="flex grow rounded-md bg-slate-800/60 p-2">
                         <Transactions
                             data={getTransactions(params.address)}
                             accountAddress={params.address}

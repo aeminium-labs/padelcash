@@ -72,9 +72,6 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
                         <p className="text-sm font-medium leading-none">
                             {trimWalletAddress(account)}
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                            {formatDate(tx.dateUTC)}
-                        </p>
                     </div>
                     <div className="flex flex-col gap-1 text-right">
                         <p className={"text-md font-medium leading-none"}>
