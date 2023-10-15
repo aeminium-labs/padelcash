@@ -10,16 +10,16 @@ export type RegisterResponse = {
 
 export type BadgeType = "registration" | "firstTransaction" | "firstDeposit";
 
-export const symbolsMap: Record<BadgeType, string> = {
-    registration: "REG",
-    firstTransaction: "FIRST_TX",
-    firstDeposit: "DEPOSIT",
-};
-
 export async function POST(req: NextRequest) {
     const body = await req.json();
     const baseURL = process.env.VERCEL_URL || "www.padel.cash";
     const helius = new Helius(process.env.HELIUS_API_KEY || "");
+
+    const symbolsMap: Record<BadgeType, string> = {
+        registration: "REG",
+        firstTransaction: "FIRST_TX",
+        firstDeposit: "DEPOSIT",
+    };
 
     const configMap: Record<BadgeType, Object> = {
         registration: {
