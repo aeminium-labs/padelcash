@@ -101,7 +101,6 @@ export function LoginButtton({ children }: Props) {
                         className="flex flex-col gap-4"
                     >
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="email">Email address</Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -121,7 +120,7 @@ export function LoginButtton({ children }: Props) {
                             type="submit"
                             className="px-4"
                         >
-                            Continue
+                            Continue with your email
                             <Icons.chevronRight className="ml-2 h-4 w-4" />
                         </Button>
                     </form>

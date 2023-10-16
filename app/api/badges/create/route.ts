@@ -3,19 +3,22 @@ import { Helius } from "helius-sdk";
 
 import { BADGES_COLLECTION_MINT } from "@/lib/constants";
 
-export type RegisterResponse = {
+export type CreateBadgeResponse = {
     status: string;
     id?: string;
 };
 
 export type BadgeType = "registration" | "firstTransaction" | "firstDeposit";
+export type BadgeSymbol = "REG" | "FIRST_TX" | "DEPOSIT";
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
     const baseURL = process.env.VERCEL_URL || "www.padel.cash";
     const helius = new Helius(process.env.HELIUS_API_KEY || "");
+    const timestamp = Date.now();
+    const additionalAttributes = body.additionalAtributes || [];
 
-    const symbolsMap: Record<BadgeType, string> = {
+    const symbolsMap: Record<BadgeType, BadgeSymbol> = {
         registration: "REG",
         firstTransaction: "FIRST_TX",
         firstDeposit: "DEPOSIT",
@@ -42,6 +45,11 @@ export async function POST(req: NextRequest) {
                     trait_type: "artist",
                     value: "Padelcash",
                 },
+                {
+                    trait_type: "timestamp",
+                    value: `${timestamp}`,
+                },
+                ...additionalAttributes,
             ],
         },
         firstTransaction: {
@@ -64,6 +72,11 @@ export async function POST(req: NextRequest) {
                     trait_type: "artist",
                     value: "Padelcash",
                 },
+                {
+                    trait_type: "timestamp",
+                    value: `${timestamp}`,
+                },
+                ...additionalAttributes,
             ],
         },
         firstDeposit: {
@@ -86,14 +99,21 @@ export async function POST(req: NextRequest) {
                     trait_type: "artist",
                     value: "Padelcash",
                 },
+                {
+                    trait_type: "timestamp",
+                    value: `${timestamp}`,
+                },
+                ...additionalAttributes,
             ],
         },
     };
 
     if (body.address && body.badgeType) {
         try {
-            const nfts = await helius.rpc.getAssetsByOwner({
+            const nfts = await helius.rpc.searchAssets({
                 ownerAddress: body.address,
+                grouping: ["collection", BADGES_COLLECTION_MINT],
+                compressed: true,
                 page: 1,
                 limit: 100,
             });

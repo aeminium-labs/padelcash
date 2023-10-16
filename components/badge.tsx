@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { BadgeSymbol } from "@/app/api/badges/create/route";
 import { DAS } from "helius-sdk";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,7 +22,7 @@ type Props = {
     type?: string;
 };
 
-const mapTypeToImage = {
+const mapTypeToImage: Record<BadgeSymbol, string> = {
     REG: `/badges/pioneer.png`,
     FIRST_TX: `/badges/first-transaction.png`,
     DEPOSIT: `/badges/first-deposit.png`,

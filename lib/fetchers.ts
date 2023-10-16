@@ -1,4 +1,9 @@
-import { BadgeType } from "@/app/api/badges/create/route";
+import {
+    BadgeSymbol,
+    BadgeType,
+    CreateBadgeResponse,
+} from "@/app/api/badges/create/route";
+import { VerifyBadgeResponse } from "@/app/api/badges/verify/route";
 import { LoginResponse } from "@/app/api/login/route";
 import { PayCreateResponse } from "@/app/api/pay/create/route";
 import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
@@ -105,12 +110,27 @@ export async function signRelayerVersionTx(signedTx: string) {
     });
 }
 
-export async function createBadge(address: string, badgeType: BadgeType) {
-    return fetcher(`/api/badges/create`, {
+export async function createBadge(
+    address: string,
+    badgeType: BadgeType,
+    additionalAtributes?: Array<{ trait_type: string; value: string }>
+) {
+    return fetcher<CreateBadgeResponse>(`/api/badges/create`, {
         method: "POST",
         body: JSON.stringify({
             address,
             badgeType,
+            additionalAtributes,
+        }),
+    });
+}
+
+export async function verifyBadge(address: string, badgeSymbol: BadgeSymbol) {
+    return fetcher<VerifyBadgeResponse>(`/api/badges/verify`, {
+        method: "POST",
+        body: JSON.stringify({
+            address,
+            badgeSymbol,
         }),
     });
 }

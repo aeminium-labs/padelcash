@@ -64,9 +64,7 @@ function SiteHeaderLoggedIn() {
                 <DropdownMenuContent className="w-56" align="end">
                     <DropdownMenuGroup>
                         <DropdownMenuItem
-                            onClick={() =>
-                                router.push(`/account/${accountAddress}/`)
-                            }
+                            onClick={() => router.push(`/account/`)}
                         >
                             <Icons.app className="mr-2 h-4 w-4" />
                             Padelcash App
