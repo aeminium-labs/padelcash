@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Connection, Keypair, Transaction } from "@solana/web3.js";
+import {
+    Connection,
+    Keypair,
+    Transaction,
+    VersionedTransaction,
+} from "@solana/web3.js";
 import bs58 from "bs58";
 
 import { getBaseUrl } from "@/lib/server/utils";
@@ -19,14 +24,18 @@ export async function POST(req: NextRequest) {
                 bs58.decode(process.env.RELAYER_WALLET_PK)
             );
 
-            const recoveredTransaction = Transaction.from(
+            const recoveredTransaction = VersionedTransaction.deserialize(
                 Buffer.from(signedTx, "base64")
             );
 
-            recoveredTransaction.partialSign(feePayer);
+            recoveredTransaction.sign([feePayer]);
 
             const txnSignature = await connection.sendRawTransaction(
-                recoveredTransaction.serialize()
+                recoveredTransaction.serialize(),
+                {
+                    skipPreflight: true,
+                    maxRetries: 2,
+                }
             );
 
             if (txnSignature) {

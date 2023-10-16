@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DAS, Helius } from "helius-sdk";
 
-import { BADGES_COLLECTION_MINT } from "@/lib/constants";
+import { EVENTS_COLLECTION_MINT } from "@/lib/constants";
 
 export type BadgesResponse = DAS.GetAssetResponseList;
 
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
         try {
             const nfts = await helius.rpc.searchAssets({
                 ownerAddress: body.address,
-                grouping: ["collection", BADGES_COLLECTION_MINT],
+                grouping: ["collection", EVENTS_COLLECTION_MINT],
                 compressed: true,
                 page: 1,
                 limit: 100,

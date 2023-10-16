@@ -1,15 +1,14 @@
 "use client";
 
 import React from "react";
-import { WALLET_ADAPTERS } from "@web3auth/base";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useRouter } from "next/navigation";
+import { useAtom, useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
 
-import {
-    connectionStatusAtom,
-    web3AuthAtom,
-    web3AuthProviderAtom,
-} from "@/lib/store";
+import { login } from "@/lib/fetchers";
+import { magic } from "@/lib/magic";
+import { connectionStatusAtom, userAtom } from "@/lib/store";
+import { getAppUrl } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,49 +31,54 @@ type Inputs = {
 };
 
 export function LoginButtton({ children }: Props) {
-    const web3auth = useAtomValue(web3AuthAtom);
-    const setProvider = useSetAtom(web3AuthProviderAtom);
-    const connectionStatus = useAtomValue(connectionStatusAtom);
+    const [connectionStatus, setConnectionStatus] =
+        useAtom(connectionStatusAtom);
+    const setUser = useSetAtom(userAtom);
+    const url = getAppUrl();
+    const router = useRouter();
 
     // Local state
     const { register, getValues, handleSubmit, watch } = useForm<Inputs>();
     const [open, setOpen] = React.useState(false);
 
     const hasEmail = (watch("email") || "").length > 0;
-    const shouldBeDisabled =
-        connectionStatus !== "ready" && connectionStatus !== "errored";
-
-    const onProviderClick =
-        (provider: string, extra: Record<string, string> = {}) =>
-        async () => {
-            if (web3auth) {
-                try {
-                    const web3authProvider = await web3auth.connectTo(
-                        WALLET_ADAPTERS.OPENLOGIN,
-                        {
-                            mfaLevel: "none",
-                            loginProvider: provider,
-                            extraLoginOptions: extra,
-                        }
-                    );
-
-                    setProvider(web3authProvider);
-                } catch (e) {
-                    console.log(e);
-                }
-            }
-        };
+    const shouldBeDisabled = connectionStatus === "connecting";
 
     const onEmailLoginSubmit = async () => {
         const email = getValues("email");
+        setConnectionStatus("connecting");
+        // Log in using our email with Magic and store the returned DID token in a variable
+        if (magic) {
+            try {
+                const didToken = await magic.auth.loginWithMagicLink({
+                    email,
+                });
 
-        onProviderClick("email_passwordless", {
-            login_hint: email,
-            domain: "https://auth.openlogin.com/",
-        })();
+                // Send this token to our validation endpoint
+                const loginRes = await login(didToken);
+
+                // If successful, update our user state with their metadata and route to the dashboard
+                if (loginRes.authenticated) {
+                    const userMetadata = await magic.user.getInfo();
+                    setUser(userMetadata);
+                    setConnectionStatus("connected");
+                    router.push(`${url}/account?firstTime=true`);
+                } else {
+                    setUser(null);
+                    setConnectionStatus("errored");
+                }
+            } catch (error) {
+                console.error(error);
+                setUser(null);
+                setConnectionStatus("errored");
+            }
+        } else {
+            console.log("magic isn't available", magic);
+            setConnectionStatus("errored");
+        }
     };
 
-    const handleOpenChange = (open) => {
+    const handleOpenChange = (open: boolean) => {
         if (!shouldBeDisabled) {
             setOpen(open);
         }
@@ -83,86 +87,41 @@ export function LoginButtton({ children }: Props) {
     return (
         <Sheet open={open} onOpenChange={handleOpenChange}>
             <SheetTrigger asChild>{children}</SheetTrigger>
-            <SheetContent side="bottom">
+            <SheetContent side="bottom" className="keyboard-bottom">
                 <SheetHeader className="text-left">
                     <SheetTitle>Login to your account</SheetTitle>
                     <SheetDescription>
-                        Use your preferred method to login to your Padelcash
-                        account. If this is your first time, we'll automatically
-                        create a new one.
+                        If this is your first time, we'll automatically create a
+                        new one.
                     </SheetDescription>
                 </SheetHeader>
                 <div className="mt-8 flex flex-col gap-8">
-                    <div className="flex flex-col gap-4">
-                        <Button
-                            variant="secondary"
-                            onClick={onProviderClick("google")}
-                            size="lg"
-                            disabled={shouldBeDisabled}
-                            className="px-4"
-                        >
-                            <Icons.google className="mr-2 h-4 w-4" /> Login with
-                            Google
-                        </Button>
-                        <div className="grid grid-cols-2 gap-4">
-                            <Button
-                                variant="secondary"
-                                size="lg"
-                                onClick={onProviderClick("twitter")}
-                                disabled={shouldBeDisabled}
-                                className="px-4"
-                            >
-                                <Icons.twitter className="mr-2 h-4 w-4" />
-                                Twitter
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="lg"
-                                onClick={onProviderClick("discord")}
-                                disabled={shouldBeDisabled}
-                                className="px-4"
-                            >
-                                <Icons.discord className="mr-2 h-4 w-4" />
-                                Discord
-                            </Button>
-                        </div>
-                    </div>
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t" />
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-background px-2 text-muted-foreground">
-                                Or continue with
-                            </span>
-                        </div>
-                    </div>
                     <form
                         onSubmit={handleSubmit(onEmailLoginSubmit)}
                         className="flex flex-col gap-4"
                     >
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="email">Email address</Label>
                             <Input
                                 id="email"
                                 type="email"
                                 placeholder="your@email.com"
                                 autoComplete="off"
                                 disabled={shouldBeDisabled}
+                                className="h-12"
                                 {...register("email", {
                                     required: true,
                                 })}
                             />
                         </div>
                         <Button
-                            variant="secondary"
+                            variant="default"
                             size="lg"
                             disabled={shouldBeDisabled || !hasEmail}
                             type="submit"
                             className="px-4"
                         >
-                            <Icons.mail className="mr-2 h-4 w-4" />
-                            Login with Email
+                            Continue with your email
+                            <Icons.chevronRight className="ml-2 h-4 w-4" />
                         </Button>
                     </form>
                 </div>

@@ -2,7 +2,7 @@ import { BadgesResponse } from "@/app/api/badges/route";
 import { GetAtaResponse } from "@/app/api/rpc/getAta/route";
 import { GetTokenInfoResponse } from "@/app/api/rpc/getTokenInfo/route";
 
-import { PADEL_TOKEN } from "@/lib/constants";
+import { PADEL_TOKEN, USDC_TOKEN } from "@/lib/constants";
 import { fetcher } from "@/lib/fetchers";
 import { getBaseUrl } from "@/lib/server/utils";
 
@@ -46,14 +46,26 @@ export async function getPadelAta(address: string) {
     });
 }
 
-export async function discordLogOut(data: FormData) {
-    return fetcher("https://discord.com/api/oauth2/token/revoke", {
+export async function getUsdcAta(address: string) {
+    const baseUrl = getBaseUrl();
+
+    return fetcher<GetAtaResponse>(`${baseUrl}/api/rpc/getAta`, {
         method: "POST",
-        body: data,
-        headers: {
-            Authorization: `Basic ${Buffer.from(
-                `${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_SECRET_KEY}`
-            ).toString("base64")}`,
-        },
+        body: JSON.stringify({
+            address,
+            mint: USDC_TOKEN,
+        }),
+    });
+}
+
+export async function getEvents(address: string) {
+    const baseUrl = getBaseUrl();
+
+    return fetcher<BadgesResponse>(`${baseUrl}/api/events`, {
+        method: "POST",
+        cache: "no-store",
+        body: JSON.stringify({
+            address,
+        }),
     });
 }

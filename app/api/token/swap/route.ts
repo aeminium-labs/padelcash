@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createAssociatedTokenAccountInstruction } from "@solana/spl-token";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 
-import { FEE_PAYER_ADDRESS } from "@/lib/constants";
+import { FEE_PAYER_ADDRESS, USDC_TOKEN } from "@/lib/constants";
 import { fetcher } from "@/lib/fetchers";
+import { getTokenInfo, getUsdcAta } from "@/lib/server/fetchers";
 import { getBaseUrl } from "@/lib/server/utils";
 
 export type JupiterSwapInstructionResponse = {
@@ -19,6 +21,7 @@ export async function POST(req: NextRequest) {
     const { quote, address } = body;
 
     const connection = new Connection(`${baseUrl}/api/rpc`);
+    const payer = new PublicKey(FEE_PAYER_ADDRESS);
 
     if (quote && address) {
         try {
@@ -38,12 +41,34 @@ export async function POST(req: NextRequest) {
                 }
             );
 
+            // Fetch receiver ATA
+            const receiverAta = await getUsdcAta(address);
+
+            // Fetches token info
+            const tokenInfo = await getTokenInfo(USDC_TOKEN);
+
             const blockHash = (await connection.getLatestBlockhash("finalized"))
                 .blockhash;
 
-            const tx = Transaction.from(
+            const tx = new Transaction();
+
+            // Create ATA on behalf of receiver
+            if (!receiverAta.created) {
+                tx.add(
+                    createAssociatedTokenAccountInstruction(
+                        payer,
+                        new PublicKey(receiverAta.ata),
+                        new PublicKey(address),
+                        new PublicKey(tokenInfo.mint)
+                    )
+                );
+            }
+
+            const recoveredTx = Transaction.from(
                 Buffer.from(swapTx.swapTransaction, "base64")
             );
+
+            tx.add(...recoveredTx.instructions);
 
             tx.feePayer = new PublicKey(FEE_PAYER_ADDRESS);
             tx.recentBlockhash = blockHash;

@@ -1,13 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAtomValue } from "jotai";
 
-import {
-    connectionStatusAtom,
-    loadableAccountsAtom,
-    web3AuthProviderAtom,
-} from "@/lib/store";
+import { connectionStatusAtom, userAtom } from "@/lib/store";
 import { Icons } from "@/components/icons";
 import { Container } from "@/components/shared/container";
 import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
@@ -20,21 +16,16 @@ type Props = {
 
 export function AuthChecker({ children, address }: Props) {
     const connectionStatus = useAtomValue(connectionStatusAtom);
-    const provider = useAtomValue(web3AuthProviderAtom);
-    const accounts = useAtomValue(loadableAccountsAtom);
-    const router = useRouter();
-
-    const accountAddress =
-        accounts.state === "hasData" && accounts.data ? accounts.data[0] : null;
+    const user = useAtomValue(userAtom);
 
     const isLoading =
         connectionStatus === "init" ||
         connectionStatus === "connecting" ||
-        (connectionStatus === "connected" && !accountAddress);
+        (connectionStatus === "connected" && !user);
 
     const isNotAuthorized =
-        (connectionStatus === "ready" && !provider) ||
-        (accountAddress && accountAddress !== address);
+        connectionStatus === "errored" ||
+        (user && user.publicAddress !== address);
 
     if (isLoading) {
         return <LoadingSkeleton />;
@@ -52,16 +43,15 @@ export function AuthChecker({ children, address }: Props) {
                         the homepage and login again
                     </p>
                 </div>
-                <Button
-                    variant="default"
-                    size="lg"
-                    className="mt-8 flex w-full flex-row items-center gap-2"
-                    onClick={() => {
-                        router.push("/");
-                    }}
-                >
-                    <Icons.undo className="h-4 w-4" /> Return home
-                </Button>
+                <Link href="/">
+                    <Button
+                        variant="default"
+                        size="lg"
+                        className="mt-8 flex w-full flex-row items-center gap-2"
+                    >
+                        <Icons.undo className="h-4 w-4" /> Return home
+                    </Button>
+                </Link>
             </Container>
         );
     }

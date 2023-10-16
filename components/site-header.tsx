@@ -1,12 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useWeb3Auth } from "@/hooks/use-web3auth";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { siteConfig } from "@/config/site";
-import { isConnectedAtom, loadableAccountsAtom } from "@/lib/store";
+import { magic } from "@/lib/magic";
+import { connectionStatusAtom, userAtom } from "@/lib/store";
 import { trimWalletAddress } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -44,13 +45,12 @@ function SiteHeaderLoggedOut() {
 }
 
 function SiteHeaderLoggedIn() {
-    const accounts = useAtomValue(loadableAccountsAtom);
+    const user = useAtomValue(userAtom);
     const { toast } = useToast();
 
     const router = useRouter();
 
-    const accountAddress =
-        accounts.state === "hasData" && accounts.data ? accounts.data[0] : "";
+    const accountAddress = (user && user.publicAddress) || "";
 
     if (accountAddress) {
         return (
@@ -64,9 +64,7 @@ function SiteHeaderLoggedIn() {
                 <DropdownMenuContent className="w-56" align="end">
                     <DropdownMenuGroup>
                         <DropdownMenuItem
-                            onClick={() =>
-                                router.push(`/account/${accountAddress}/`)
-                            }
+                            onClick={() => router.push(`/account/`)}
                         >
                             <Icons.app className="mr-2 h-4 w-4" />
                             Padelcash App
@@ -119,9 +117,31 @@ function SiteHeaderLoggedIn() {
 }
 
 export function SiteHeader() {
-    useWeb3Auth();
+    const [connectionStatus, setConnectionStatus] =
+        useAtom(connectionStatusAtom);
+    const setUser = useSetAtom(userAtom);
 
-    const isConnected = useAtomValue(isConnectedAtom);
+    useEffect(() => {
+        async function checkLogin() {
+            if (magic) {
+                // Check if the user is authenticated already
+                setConnectionStatus("connecting");
+                const isLoggedIn = await magic.user.isLoggedIn();
+                if (isLoggedIn && magic) {
+                    // Pull their metadata, update our state, and route to dashboard
+                    const userData = await magic.user.getInfo();
+
+                    setUser(userData);
+                    setConnectionStatus("connected");
+                } else {
+                    setUser(null);
+                    setConnectionStatus("errored");
+                }
+            }
+        }
+
+        checkLogin();
+    }, [setConnectionStatus, setUser]);
 
     const isClientSide = typeof window !== "undefined";
     const bodyClasses = isClientSide && document.querySelector("body");
@@ -134,7 +154,7 @@ export function SiteHeader() {
             window.progressier.native.standalone);
 
     return (
-        <header className="fixed top-0 z-10 w-full border-b border-b-teal-700 bg-slate-900/30 backdrop-blur-xl">
+        <header className="fixed top-0 z-10 w-full border-b border-b-teal-700 bg-slate-900/90 backdrop-blur-xl">
             <div className="container flex h-16 items-center space-x-4 px-4 sm:justify-between sm:space-x-0">
                 <Link
                     href="/"
@@ -144,7 +164,8 @@ export function SiteHeader() {
                 </Link>
                 <div className="flex flex-1 items-center justify-end space-x-4">
                     <nav className="flex items-center space-x-2">
-                        {isConnected && (isInApp || !hasProgressier) ? (
+                        {connectionStatus === "connected" &&
+                        (isInApp || !hasProgressier) ? (
                             <SiteHeaderLoggedIn />
                         ) : (
                             <SiteHeaderLoggedOut />

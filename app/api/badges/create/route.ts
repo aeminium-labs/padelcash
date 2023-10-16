@@ -1,23 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-    CreateCompressedNftResponse,
-    GetNftsResponse,
-} from "@underdog-protocol/types";
+import { Helius } from "helius-sdk";
 
-import { fetcher } from "@/lib/fetchers";
+import { BADGES_COLLECTION_MINT } from "@/lib/constants";
 
-export type RegisterResponse = {
+export type CreateBadgeResponse = {
     status: string;
     id?: string;
 };
 
 export type BadgeType = "registration" | "firstTransaction" | "firstDeposit";
+export type BadgeSymbol = "REG" | "FIRST_TX" | "DEPOSIT";
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
     const baseURL = process.env.VERCEL_URL || "www.padel.cash";
+    const helius = new Helius(process.env.HELIUS_API_KEY || "");
+    const timestamp = Date.now();
+    const additionalAttributes = body.additionalAtributes || [];
 
-    const symbolsMap: Record<BadgeType, string> = {
+    const symbolsMap: Record<BadgeType, BadgeSymbol> = {
         registration: "REG",
         firstTransaction: "FIRST_TX",
         firstDeposit: "DEPOSIT",
@@ -25,80 +26,112 @@ export async function POST(req: NextRequest) {
 
     const configMap: Record<BadgeType, Object> = {
         registration: {
-            attributes: {
-                event: "Registration",
-                type: "Pioneer",
-                artist: "Padelcash",
-            },
-            name: "Pioneer",
+            name: "Registered",
             description:
-                "Welcome to the Padelcash family! You get this badge when you're one of the first ones to register an account.",
+                "Welcome to the Padelcash family! You get this badge when you register an account.",
             symbol: symbolsMap.registration,
-            image: `https://${baseURL}/badges/pioneer.png`,
+            collection: BADGES_COLLECTION_MINT,
+            // imagePath: `https://${baseURL}/badges/pioneer.png`,
+            attributes: [
+                {
+                    trait_type: "event",
+                    value: "Registration",
+                },
+                {
+                    trait_type: "type",
+                    value: "Registered",
+                },
+                {
+                    trait_type: "artist",
+                    value: "Padelcash",
+                },
+                {
+                    trait_type: "timestamp",
+                    value: `${timestamp}`,
+                },
+                ...additionalAttributes,
+            ],
         },
         firstTransaction: {
-            attributes: {
-                event: "Transaction",
-                type: "First",
-                artist: "Padelcash",
-            },
             name: "First transaction",
             description:
                 "Woohoo you got your first transaction in! Did it feel... instant?!",
             symbol: symbolsMap.firstTransaction,
-            image: `https://${baseURL}/badges/first-transaction.png`,
+            collection: BADGES_COLLECTION_MINT,
+            // imagePath: `https://${baseURL}/badges/first-transaction.png`,
+            attributes: [
+                {
+                    trait_type: "event",
+                    value: "Transaction",
+                },
+                {
+                    trait_type: "type",
+                    value: "First",
+                },
+                {
+                    trait_type: "artist",
+                    value: "Padelcash",
+                },
+                {
+                    trait_type: "timestamp",
+                    value: `${timestamp}`,
+                },
+                ...additionalAttributes,
+            ],
         },
         firstDeposit: {
-            attributes: {
-                event: "Deposit",
-                type: "First",
-                artist: "Padelcash",
-            },
             name: "First deposit",
             description:
                 "You've just opened your new savings account and it didn't even cost you a pennie!",
             symbol: symbolsMap.firstDeposit,
-            image: `https://${baseURL}/badges/first-deposit.png`,
+            collection: BADGES_COLLECTION_MINT,
+            // imagePath: `https://${baseURL}/badges/first-deposit.png`,
+            attributes: [
+                {
+                    trait_type: "event",
+                    value: "Deposit",
+                },
+                {
+                    trait_type: "type",
+                    value: "First",
+                },
+                {
+                    trait_type: "artist",
+                    value: "Padelcash",
+                },
+                {
+                    trait_type: "timestamp",
+                    value: `${timestamp}`,
+                },
+                ...additionalAttributes,
+            ],
         },
     };
 
     if (body.address && body.badgeType) {
         try {
-            const getNfts = await fetcher<GetNftsResponse>(
-                `https://api.underdogprotocol.com/v2/projects/c/2/nfts?page=1&limit=100&ownerAddress=${body.address}`,
-                {
-                    method: "GET",
-                    headers: {
-                        accept: "application/json",
-                        authorization: `Bearer ${process.env.UNDERDOG_API_KEY}`,
-                    },
-                }
-            );
+            const nfts = await helius.rpc.searchAssets({
+                ownerAddress: body.address,
+                grouping: ["collection", BADGES_COLLECTION_MINT],
+                compressed: true,
+                page: 1,
+                limit: 100,
+            });
 
-            const hasNFT = getNfts.results.some(
-                (nft) => nft.symbol === symbolsMap[body.badgeType]
+            const hasNFT = nfts.items.some(
+                (nft) =>
+                    nft.content?.metadata.symbol === symbolsMap[body.badgeType]
             );
 
             if (!hasNFT) {
-                const mintNft = await fetcher<CreateCompressedNftResponse>(
-                    "https://api.underdogprotocol.com/v2/projects/c/2/nfts",
-                    {
-                        method: "POST",
-                        headers: {
-                            accept: "application/json",
-                            "content-type": "application/json",
-                            authorization: `Bearer ${process.env.UNDERDOG_API_KEY}`,
-                        },
-                        body: JSON.stringify({
-                            ...configMap[body.badgeType],
-                            receiverAddress: body.address,
-                        }),
-                    }
-                );
+                const mintResponse = await helius.mintCompressedNft({
+                    ...configMap[body.badgeType],
+                    owner: body.address,
+                });
 
                 return NextResponse.json({
                     status: "success",
-                    id: mintNft.transactionId,
+                    id: mintResponse.result.assetId,
                 });
             }
 

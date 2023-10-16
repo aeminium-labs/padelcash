@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DAS, Helius } from "helius-sdk";
+import { Helius } from "helius-sdk";
 
 import { BADGES_COLLECTION_MINT } from "@/lib/constants";
 
-export type BadgesResponse = DAS.GetAssetResponseList;
+export type VerifyBadgeResponse = {
+    exists: boolean;
+};
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
     const helius = new Helius(process.env.HELIUS_API_KEY || "");
+    const symbol = body.badgeSymbol || "REG";
 
     if (body.address) {
         try {
@@ -19,11 +22,15 @@ export async function POST(req: NextRequest) {
                 limit: 100,
             });
 
-            return NextResponse.json(nfts);
+            const exists = nfts.items.some(
+                (nft) => nft.content?.metadata.symbol === symbol
+            );
+
+            return NextResponse.json({ exists }, { status: 200 });
         } catch (e) {
             console.log(e);
         }
     }
 
-    return NextResponse.json({}, { status: 500 });
+    return NextResponse.json({ exists: false }, { status: 500 });
 }

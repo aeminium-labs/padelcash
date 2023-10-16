@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { GetQuoteResponse } from "@/app/api/token/quote/route";
 import { Transaction } from "@solana/web3.js";
-import { useAtomValue } from "jotai";
 
 import { PADEL_TOKEN, TOKEN_MULTIPLIER } from "@/lib/constants";
 import {
@@ -14,8 +13,7 @@ import {
     getTokenSwapTransaction,
     signRelayerTx,
 } from "@/lib/fetchers";
-import { RPC } from "@/lib/rpc";
-import { web3AuthProviderAtom } from "@/lib/store";
+import { magic } from "@/lib/magic";
 import { formatAdjustedValue, formatValue } from "@/lib/utils";
 import { ConfirmationPanel } from "@/components/shared/confirmation-panel";
 import { Button } from "@/components/ui/button";
@@ -48,7 +46,6 @@ export function ConvertForm({
     const [fromValue, setFromValue] = useState<string>(`${fromBalance.native}`);
     const [tokenQuote, setTokenQuote] = useState<GetQuoteResponse | null>(null);
     const params = useParams();
-    const provider = useAtomValue(web3AuthProviderAtom);
     const [step, setStep] = useState<number>(0);
     const [currentTx, setCurrentTx] = useState<string>("");
     const lastTx = useRef<string>(currentTx);
@@ -153,14 +150,20 @@ export function ConvertForm({
             setStep(2);
 
             // Sign transaction
-            if (provider) {
-                const rpc = new RPC(provider);
+            if (magic) {
+                const signedTx = await magic.solana.signTransaction(tx, {
+                    requireAllSignatures: false,
+                });
 
-                const signedTx = await rpc.signTransaction(tx);
+                const serializedTx = Transaction.from(signedTx.rawTransaction)
+                    .serialize({
+                        requireAllSignatures: false,
+                    })
+                    .toString("base64");
 
                 setStep(3);
 
-                const relayerTx = await signRelayerTx(signedTx);
+                const relayerTx = await signRelayerTx(serializedTx);
 
                 setCurrentTx(relayerTx.signedTx);
                 setStep(4);
