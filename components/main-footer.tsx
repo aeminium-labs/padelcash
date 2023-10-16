@@ -60,7 +60,7 @@ function FooterButton({
 
     if (accountAddress) {
         return (
-            <Link href={`/account/${accountAddress}/`} className="w-full">
+            <Link href={`/account`} className="w-full">
                 <Button
                     variant="default"
                     size="lg"
