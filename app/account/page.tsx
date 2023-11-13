@@ -12,22 +12,26 @@ export default function AccountPage() {
     const router = useRouter();
     const user = useAtomValue(userAtom);
 
+    const userAddress = user?.address || null;
+
     useEffect(() => {
         async function checkUserBadge() {
-            if (user && user.publicAddress) {
-                // Check if has registered before
-                const { exists } = await verifyBadge(user.publicAddress, "REG");
+            if (userAddress) {
+                if (userAddress) {
+                    // Check if has registered before
+                    const { exists } = await verifyBadge(userAddress, "REG");
 
-                if (exists) {
-                    router.push(`/account/${user.publicAddress}`);
-                } else {
-                    router.push(`/account/welcome`);
+                    if (exists) {
+                        router.push(`/account/${userAddress}`);
+                    } else {
+                        router.push(`/account/welcome`);
+                    }
                 }
             }
         }
 
         checkUserBadge();
-    }, [user, router]);
+    }, [router, userAddress]);
 
     return <LoadingSkeleton />;
 }

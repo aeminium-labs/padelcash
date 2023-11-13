@@ -5,7 +5,6 @@ import { gql } from "graphql-request";
 
 import { graphQLClient } from "@/lib/graphql";
 import { getPadelAta } from "@/lib/server/fetchers";
-import { PadelBalance } from "@/components/padelBalance";
 import { Container } from "@/components/shared/container";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -26,25 +25,6 @@ export type AccountBalances = {
             ];
         };
     };
-};
-
-const getBalances = async (address: string) => {
-    const query = gql`
-        query getBalances($address: String!) {
-            account(address: $address) {
-                balances {
-                    tokens {
-                        amount
-                        amountUSD
-                        decimals
-                        mint
-                    }
-                }
-            }
-        }
-    `;
-
-    return graphQLClient.request<AccountBalances>(query, { address });
 };
 
 const getTransactions = async (address: string) => {
@@ -87,9 +67,6 @@ export default function OverviewPage({ params }: Props) {
     return (
         <AuthChecker address={params.address}>
             <Container>
-                <Suspense fallback={<Skeleton className="h-36 w-full" />}>
-                    <PadelBalance data={getBalances(params.address)} />
-                </Suspense>
                 <Suspense fallback={<Skeleton className="w-full grow" />}>
                     <ScrollArea className="flex grow rounded-md bg-slate-800/60 p-2">
                         <Transactions

@@ -2,17 +2,15 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
 
 import { login } from "@/lib/fetchers";
-import { magic } from "@/lib/magic";
-import { connectionStatusAtom, userAtom } from "@/lib/store";
+import { authAtom, connectionStatusAtom, userAtom } from "@/lib/store";
 import { getAppUrl } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
     Sheet,
     SheetContent,
@@ -33,7 +31,9 @@ type Inputs = {
 export function LoginButtton({ children }: Props) {
     const [connectionStatus, setConnectionStatus] =
         useAtom(connectionStatusAtom);
+    const auth = useAtomValue(authAtom);
     const setUser = useSetAtom(userAtom);
+
     const url = getAppUrl();
     const router = useRouter();
 
@@ -46,21 +46,15 @@ export function LoginButtton({ children }: Props) {
 
     const onEmailLoginSubmit = async () => {
         const email = getValues("email");
-        setConnectionStatus("connecting");
-        // Log in using our email with Magic and store the returned DID token in a variable
-        if (magic) {
+
+        if (auth) {
             try {
-                const didToken = await magic.auth.loginWithMagicLink({
-                    email,
-                });
+                setConnectionStatus("connecting");
+                await auth.login(email);
 
-                // Send this token to our validation endpoint
-                const loginRes = await login(didToken);
-
-                // If successful, update our user state with their metadata and route to the dashboard
-                if (loginRes.authenticated) {
-                    const userMetadata = await magic.user.getInfo();
-                    setUser(userMetadata);
+                if (await auth.isLoggedIn()) {
+                    const userData = await auth.getUserInfo();
+                    setUser(userData);
                     setConnectionStatus("connected");
                     router.push(`${url}/account?firstTime=true`);
                 } else {
@@ -68,13 +62,9 @@ export function LoginButtton({ children }: Props) {
                     setConnectionStatus("errored");
                 }
             } catch (error) {
-                console.error(error);
                 setUser(null);
                 setConnectionStatus("errored");
             }
-        } else {
-            console.log("magic isn't available", magic);
-            setConnectionStatus("errored");
         }
     };
 

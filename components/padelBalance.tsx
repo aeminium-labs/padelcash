@@ -2,7 +2,6 @@ import { AccountBalances } from "@/app/account/[address]/page";
 
 import { PADEL_TOKEN } from "@/lib/constants";
 import { formatAdjustedValue, formatValue } from "@/lib/utils";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Props = {
     data: Promise<AccountBalances>;
@@ -28,38 +27,28 @@ export async function PadelBalance({
 
     if (variant === "small") {
         return (
-            <Card className="flex flex-row items-center justify-between">
-                <CardHeader className="pr-0">
-                    <CardTitle className="text-sm font-medium text-teal-500">
-                        {label}
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6 pl-2">
+            <>
+                <div className="text-sm font-medium text-teal-500">{label}</div>
+                <div className="p-6 pl-2">
                     <div className="text-lg font-bold">
                         {padelBalance.native.toString()}{" "}
                         <span className="text-sm text-muted">PADEL</span>
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </>
         );
     }
 
     return (
-        <Card>
-            <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-teal-500">
-                    {label}
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="mb-1 text-4xl font-bold">
-                    {padelBalance.native.toString()}{" "}
-                    <span className="text-2xl text-muted">PADEL</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                    ${padelBalance.usd?.toString()} USDC
-                </p>
-            </CardContent>
-        </Card>
+        <div className="flex flex-row items-baseline gap-8">
+            <div className="mb-1 text-2xl font-bold">
+                ${padelBalance.usd?.toString()}{" "}
+                <span className="text-sm text-muted-foreground">USD</span>
+            </div>
+            <div className="text-md mb-1 opacity-80">
+                {padelBalance.native?.toString()}{" "}
+                <span className="text-xs text-muted-foreground">PADEL</span>
+            </div>
+        </div>
     );
 }

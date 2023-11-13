@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { GetQuoteResponse } from "@/app/api/token/quote/route";
 import { Transaction } from "@solana/web3.js";
+import { useAtomValue } from "jotai";
 
 import { PADEL_TOKEN, TOKEN_MULTIPLIER } from "@/lib/constants";
 import {
@@ -13,7 +14,7 @@ import {
     getTokenSwapTransaction,
     signRelayerTx,
 } from "@/lib/fetchers";
-import { magic } from "@/lib/magic";
+import { authAtom } from "@/lib/store";
 import { formatAdjustedValue, formatValue } from "@/lib/utils";
 import { ConfirmationPanel } from "@/components/shared/confirmation-panel";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,7 @@ export function ConvertForm({
     const [currentTx, setCurrentTx] = useState<string>("");
     const lastTx = useRef<string>(currentTx);
     const { toast } = useToast();
+    const auth = useAtomValue(authAtom);
 
     const address = Array.isArray(params.address)
         ? params.address[0]
@@ -142,28 +144,20 @@ export function ConvertForm({
                 quote: tokenQuote.quote,
             });
 
+            setStep(2);
+
             // Rebuild tx in client
             const tx = Transaction.from(
                 Buffer.from(getSwapTx.swapTransaction, "base64")
             );
 
-            setStep(2);
-
             // Sign transaction
-            if (magic) {
-                const signedTx = await magic.solana.signTransaction(tx, {
-                    requireAllSignatures: false,
-                });
-
-                const serializedTx = Transaction.from(signedTx.rawTransaction)
-                    .serialize({
-                        requireAllSignatures: false,
-                    })
-                    .toString("base64");
+            if (auth) {
+                const signedTx = await auth.signTransaction(tx);
 
                 setStep(3);
 
-                const relayerTx = await signRelayerTx(serializedTx);
+                const relayerTx = await signRelayerTx(signedTx);
 
                 setCurrentTx(relayerTx.signedTx);
                 setStep(4);

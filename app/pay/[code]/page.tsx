@@ -19,7 +19,7 @@ export default function PayPage({ params }: Props) {
     const router = useRouter();
     const { code } = params;
 
-    const accountAddress = user && user.publicAddress;
+    const accountAddress = user && user.address;
 
     const isLoading =
         connectionStatus === "init" ||

@@ -21,7 +21,7 @@ export function trimWalletAddress(address: string, chars: number = 5) {
 export function formatValue(value: number = 0, decimals: number = 0) {
     const res = value / 10 ** decimals;
 
-    return Math.round((res + Number.EPSILON) * 10000) / 10000;
+    return Math.round((res + Number.EPSILON) * 100) / 100;
 }
 
 // ATTENTION we only do this adjustment during pilot because we're using BONK

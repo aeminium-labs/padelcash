@@ -1,3 +1,4 @@
+import { AccountBalances } from "@/app/account/[address]/page";
 import {
     BadgeSymbol,
     BadgeType,
@@ -18,6 +19,9 @@ import { TxCreateResponse } from "@/app/api/tx/create/route";
 import { TxSendResponse } from "@/app/api/tx/send/route";
 import { TxSignResponse } from "@/app/api/tx/sign/route";
 import { RpcResponseAndContext } from "@solana/web3.js";
+import { gql } from "graphql-request";
+
+import { graphQLClient } from "@/lib/graphql";
 
 export type RpcHttpResponse<T> = {
     jsonrpc: "string";
@@ -188,4 +192,23 @@ export async function login(token: string | null) {
             Authorization: `Bearer ${token}`,
         },
     });
+}
+
+export async function getBalances(address: string) {
+    const query = gql`
+        query getBalances($address: String!) {
+            account(address: $address) {
+                balances {
+                    tokens {
+                        amount
+                        amountUSD
+                        decimals
+                        mint
+                    }
+                }
+            }
+        }
+    `;
+
+    return graphQLClient.request<AccountBalances>(query, { address });
 }

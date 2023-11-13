@@ -94,7 +94,7 @@ export function MainFooter() {
         <footer className="container fixed bottom-0 w-full border-t border-t-slate-700 bg-slate-900/90 p-4 backdrop-blur-xl md:hidden">
             <div className="flex flex-col items-center justify-start gap-4 md:flex-row ">
                 <FooterButton
-                    accountAddress={user && user.publicAddress}
+                    accountAddress={user && user.address}
                     shouldBeDisabled={connectionStatus === "connecting"}
                 />
             </div>

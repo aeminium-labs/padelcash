@@ -1,10 +1,19 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 
 import { Icons } from "@/components/icons";
 import { NavbarLink } from "@/components/shared/navbar-link";
 import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
     Sheet,
     SheetContent,
@@ -33,76 +42,49 @@ export default function AccountLayout({
     return (
         <>
             {children}
-            <footer className="fixed bottom-0 w-full border-t border-t-teal-700 bg-slate-900/90 backdrop-blur-xl">
+            <footer className="fixed inset-x-4 bottom-4 rounded-lg border border-teal-700 bg-slate-900/50 backdrop-blur-xl">
                 <div className="grid grid-cols-5 divide-x">
-                    <NavbarLink href={`/account/${address}`}>
-                        <Icons.wallet className="h-6 w-6" />
+                    <NavbarLink
+                        href={`/account/${address}`}
+                        className="rounded-l-lg"
+                    >
                         Wallet
                     </NavbarLink>
                     <NavbarLink href={`/account/${address}/vault`}>
-                        <Icons.vault className="h-6 w-6" />
                         Vault
                     </NavbarLink>
                     <NavbarLink href={`/account/${address}/payments`}>
-                        <Icons.coins className="h-6 w-6" />
                         Payments
                     </NavbarLink>
                     <NavbarLink href={`/account/${address}/events`}>
-                        <Icons.calendar className="h-6 w-6" />
                         Events
                     </NavbarLink>
-                    <Sheet open={open} onOpenChange={handleOpenChange}>
-                        <SheetTrigger asChild>
+                    <DropdownMenu open={open} onOpenChange={handleOpenChange}>
+                        <DropdownMenuTrigger asChild>
                             <Button
                                 variant="ghost"
-                                className="flex h-auto w-full flex-col rounded-none text-xs"
+                                className="flex h-auto w-full flex-col rounded-none rounded-r-lg text-xs"
                             >
-                                <Icons.moreHorizontal className="h-6 w-6" />
-                                More
+                                <Icons.moreHorizontal className="h-4 w-4" />
                             </Button>
-                        </SheetTrigger>
-                        <SheetContent side="right" className="w-[250px] p-0">
-                            <div className="flex h-full grow flex-col justify-end divide-y">
-                                <NavbarLink
-                                    href={`/account/${address}/badges`}
-                                    variant="horizontal"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                >
-                                    <Icons.award className="h-6 w-6" />
-                                    Badges
-                                </NavbarLink>
-                                <NavbarLink
-                                    href={`/account/${address}/giftcards`}
-                                    variant="horizontal"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                >
-                                    <Icons.gift className="h-6 w-6" />
-                                    Gift cards
-                                </NavbarLink>
-                                <NavbarLink
-                                    href={`/account/${address}/settings`}
-                                    variant="horizontal"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                >
-                                    <Icons.user className="h-6 w-6" />
-                                    Account
-                                </NavbarLink>
-                                <NavbarLink
-                                    href={`/logout`}
-                                    variant="horizontal"
-                                >
-                                    <Icons.logout className="h-6 w-6" />
-                                    Logout
-                                </NavbarLink>
-                            </div>
-                        </SheetContent>
-                    </Sheet>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" align="end">
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem asChild>
+                                    <Link href={`/account/${address}/badges`}>
+                                        Badges
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Link
+                                        href={`/account/${address}/giftcards`}
+                                    >
+                                        Gift cards
+                                    </Link>
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </footer>
         </>

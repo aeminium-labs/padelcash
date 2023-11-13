@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { siteConfig } from "@/config/site";
-import { magic } from "@/lib/magic";
-import { connectionStatusAtom, userAtom } from "@/lib/store";
-import { trimWalletAddress } from "@/lib/utils";
+import { getBalances } from "@/lib/fetchers";
+import { authAtom, connectionStatusAtom, userAtom } from "@/lib/store";
 import { Icons } from "@/components/icons";
+import { PadelBalance } from "@/components/padelBalance";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -19,6 +19,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 
 function SiteHeaderLoggedOut() {
@@ -50,66 +51,66 @@ function SiteHeaderLoggedIn() {
 
     const router = useRouter();
 
-    const accountAddress = (user && user.publicAddress) || "";
+    const accountAddress = (user && user.address) || "";
 
     if (accountAddress) {
         return (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="secondary" className="px-3">
-                        {trimWalletAddress(accountAddress)}
-                        <Icons.moreVertical className="ml-3 h-4 w-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end">
-                    <DropdownMenuGroup>
-                        <DropdownMenuItem
-                            onClick={() => router.push(`/account/`)}
-                        >
-                            <Icons.app className="mr-2 h-4 w-4" />
-                            Padelcash App
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={async () => {
-                                try {
-                                    await navigator.clipboard.writeText(
-                                        accountAddress
-                                    );
+            <>
+                <Suspense fallback={<Skeleton className="h-6 w-full" />}>
+                    <PadelBalance data={getBalances(accountAddress)} />
+                </Suspense>
+                <div className="flex flex-1 items-center justify-end space-x-4">
+                    <nav className="flex items-center space-x-2">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="secondary" className="px-3">
+                                    <Icons.user className="h-4 w-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56" align="end">
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem
+                                        onClick={async () => {
+                                            try {
+                                                await navigator.clipboard.writeText(
+                                                    accountAddress
+                                                );
 
-                                    toast({
-                                        title: "Wallet address copied to clipboard",
-                                    });
-                                } catch (e) {
-                                    toast({
-                                        title: "Error copying address",
-                                    });
-                                }
-                            }}
-                        >
-                            <Icons.copy className="mr-2 h-4 w-4" />
-                            Copy wallet address
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={() =>
-                                router.push(
-                                    `/account/${accountAddress}/settings`
-                                )
-                            }
-                            disabled={true}
-                        >
-                            <Icons.settings className="mr-2 h-4 w-4" />
-                            Settings
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                            onClick={() => router.push(`/logout`)}
-                        >
-                            <Icons.logout className="mr-2 h-4 w-4" />
-                            Logout
-                        </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                </DropdownMenuContent>
-            </DropdownMenu>
+                                                toast({
+                                                    title: "Wallet address copied to clipboard",
+                                                });
+                                            } catch (e) {
+                                                toast({
+                                                    title: "Error copying address",
+                                                });
+                                            }
+                                        }}
+                                    >
+                                        Copy wallet address
+                                    </DropdownMenuItem>
+
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            router.push(
+                                                `/account/${accountAddress}/settings`
+                                            )
+                                        }
+                                        disabled={true}
+                                    >
+                                        Account
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                        onClick={() => router.push(`/logout`)}
+                                    >
+                                        Logout
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </nav>
+                </div>
+            </>
         );
     }
 
@@ -120,28 +121,33 @@ export function SiteHeader() {
     const [connectionStatus, setConnectionStatus] =
         useAtom(connectionStatusAtom);
     const setUser = useSetAtom(userAtom);
+    const auth = useAtomValue(authAtom);
 
     useEffect(() => {
         async function checkLogin() {
-            if (magic) {
+            if (auth) {
+                if (!auth.getInstance()) {
+                    auth.init();
+                }
+
                 // Check if the user is authenticated already
                 setConnectionStatus("connecting");
-                const isLoggedIn = await magic.user.isLoggedIn();
-                if (isLoggedIn && magic) {
+                const isLoggedIn = await auth.isLoggedIn();
+                if (isLoggedIn) {
                     // Pull their metadata, update our state, and route to dashboard
-                    const userData = await magic.user.getInfo();
+                    const userData = await auth.getUserInfo();
 
                     setUser(userData);
                     setConnectionStatus("connected");
                 } else {
                     setUser(null);
-                    setConnectionStatus("errored");
+                    setConnectionStatus("init");
                 }
             }
         }
 
         checkLogin();
-    }, [setConnectionStatus, setUser]);
+    }, [setConnectionStatus, setUser, auth]);
 
     const isClientSide = typeof window !== "undefined";
     const bodyClasses = isClientSide && document.querySelector("body");
@@ -156,22 +162,12 @@ export function SiteHeader() {
     return (
         <header className="fixed top-0 z-10 w-full border-b border-b-teal-700 bg-slate-900/90 backdrop-blur-xl">
             <div className="container flex h-16 items-center space-x-4 px-4 sm:justify-between sm:space-x-0">
-                <Link
-                    href="/"
-                    className="flex items-center space-x-2 text-teal-500"
-                >
-                    <Icons.logo className="h-6 w-6" />
-                </Link>
-                <div className="flex flex-1 items-center justify-end space-x-4">
-                    <nav className="flex items-center space-x-2">
-                        {connectionStatus === "connected" &&
-                        (isInApp || !hasProgressier) ? (
-                            <SiteHeaderLoggedIn />
-                        ) : (
-                            <SiteHeaderLoggedOut />
-                        )}
-                    </nav>
-                </div>
+                {connectionStatus === "connected" &&
+                (isInApp || !hasProgressier) ? (
+                    <SiteHeaderLoggedIn />
+                ) : (
+                    <SiteHeaderLoggedOut />
+                )}
             </div>
         </header>
     );

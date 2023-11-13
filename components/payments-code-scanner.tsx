@@ -7,6 +7,7 @@ import { PayRetrieveResponse } from "@/app/api/pay/retrieve/route";
 import { Transaction } from "@solana/web3.js";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { gql } from "graphql-request";
+import { useAtomValue } from "jotai";
 
 import { PADEL_TOKEN, TOKEN_MULTIPLIER } from "@/lib/constants";
 import {
@@ -18,7 +19,7 @@ import {
     signRelayerTx,
 } from "@/lib/fetchers";
 import { graphQLClient } from "@/lib/graphql";
-import { magic } from "@/lib/magic";
+import { authAtom } from "@/lib/store";
 import {
     formatAdjustedValue,
     formatValue,
@@ -81,6 +82,7 @@ export function PaymentsCodeScanner({
     const [step, setStep] = useState<number>(0);
     const [currentTx, setCurrentTx] = useState<string>("");
     const lastTx = useRef<string>(currentTx);
+    const auth = useAtomValue(authAtom);
 
     const to = txParams?.to || "";
     const amount = (txParams?.amount || 0) * TOKEN_MULTIPLIER;
@@ -167,20 +169,12 @@ export function PaymentsCodeScanner({
         const tx = Transaction.from(Buffer.from(createTxRes.tx, "base64"));
 
         // Sign transaction
-        if (magic) {
-            const signedTx = await magic.solana.signTransaction(tx, {
-                requireAllSignatures: false,
-            });
-
-            const serializedTx = Transaction.from(signedTx.rawTransaction)
-                .serialize({
-                    requireAllSignatures: false,
-                })
-                .toString("base64");
+        if (auth) {
+            const signedTx = await auth.signTransaction(tx);
 
             setStep(3);
 
-            const relayerTx = await signRelayerTx(serializedTx);
+            const relayerTx = await signRelayerTx(signedTx);
 
             setCurrentTx(relayerTx.signedTx);
             setStep(4);

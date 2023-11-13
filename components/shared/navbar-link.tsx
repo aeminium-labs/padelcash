@@ -39,6 +39,7 @@ export function NavbarLink({
     href,
     disabled = false,
     variant,
+    className,
     ...rest
 }: NavbarLinkProps) {
     const pathname = usePathname();
@@ -46,10 +47,11 @@ export function NavbarLink({
 
     const button = (
         <Button
-            variant={isActive ? "default" : "ghost"}
+            variant={isActive ? "success" : "ghost"}
             className={cn(
                 navlinkVariants({ variant }),
-                "flex h-auto w-full gap-2 rounded-none text-xs"
+                "flex h-auto w-full gap-2 rounded-none py-4 text-xs",
+                className
             )}
             disabled={disabled}
         >

@@ -2,21 +2,21 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 
-import { magic } from "@/lib/magic";
-import { connectionStatusAtom, userAtom } from "@/lib/store";
+import { authAtom, connectionStatusAtom, userAtom } from "@/lib/store";
 import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 
 export default function LogoutPage() {
     const setConnectionStatus = useSetAtom(connectionStatusAtom);
     const setUser = useSetAtom(userAtom);
+    const auth = useAtomValue(authAtom);
     const router = useRouter();
 
     useEffect(() => {
         async function logout() {
-            if (magic) {
-                await magic.user.logout();
+            if (auth) {
+                await auth.logout();
                 setConnectionStatus("init");
                 setUser(null);
                 router.push("/");
@@ -24,7 +24,7 @@ export default function LogoutPage() {
         }
 
         logout();
-    }, [router, setConnectionStatus, setUser]);
+    }, [router, setConnectionStatus, setUser, auth]);
 
     return <LoadingSkeleton />;
 }

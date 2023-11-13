@@ -24,8 +24,7 @@ export function AuthChecker({ children, address }: Props) {
         (connectionStatus === "connected" && !user);
 
     const isNotAuthorized =
-        connectionStatus === "errored" ||
-        (user && user.publicAddress !== address);
+        connectionStatus === "errored" || (user && user.address !== address);
 
     if (isLoading) {
         return <LoadingSkeleton />;

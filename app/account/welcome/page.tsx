@@ -14,21 +14,21 @@ export default function WelcomePage() {
     const router = useRouter();
 
     const handleClick = async () => {
-        if (user && user.publicAddress) {
+        if (user && user.address) {
             const badgeResponse = await createBadge(
-                user.publicAddress,
+                user.address,
                 "registration"
             );
 
             if (window.progressier) {
                 window.progressier.add({
                     tags: "registered",
-                    wallet: user.publicAddress,
+                    wallet: user.address,
                 });
             }
 
             if (badgeResponse.status !== "error") {
-                router.push(`/account/${user.publicAddress}`);
+                router.push(`/account/${user.address}`);
             }
         }
     };
