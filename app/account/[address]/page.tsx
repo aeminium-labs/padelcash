@@ -68,20 +68,20 @@ type Props = {
 export default function OverviewPage({ params }: Props) {
     return (
         <AuthChecker address={params.address}>
-            <Container className="pb-24">
-                <div className="fixed inset-x-2 bottom-16 z-10 flex flex-row gap-2">
+            <Container className="pb-28">
+                <div className="fixed inset-x-2 bottom-16 z-10 grid grid-cols-3 gap-2">
                     <Button
                         variant="secondary"
-                        size="default"
-                        className="grow flex-row items-center gap-2 md:flex"
+                        size="lg"
+                        className="grow flex-row items-center gap-2 px-6 md:flex"
                     >
                         <Icons.receive className="h-4 w-4" />
                         Receive
                     </Button>
                     <Button
                         variant="secondary"
-                        size="default"
-                        className="grow flex-row items-center gap-2 md:flex"
+                        size="lg"
+                        className="col-span-2 grow flex-row items-center gap-2 md:flex"
                     >
                         <Icons.pay className="h-4 w-4" />
                         Pay
