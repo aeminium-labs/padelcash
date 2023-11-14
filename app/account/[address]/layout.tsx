@@ -11,17 +11,8 @@ import {
     DropdownMenuContent,
     DropdownMenuGroup,
     DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet";
 
 export default function AccountLayout({
     children,
@@ -42,14 +33,9 @@ export default function AccountLayout({
     return (
         <>
             {children}
-            <footer className="fixed inset-x-4 bottom-4 rounded-lg border border-teal-700 bg-slate-900/50 backdrop-blur-xl">
+            <footer className="fixed inset-x-4 bottom-4 overflow-hidden rounded-lg border border-teal-700 bg-slate-900/50 backdrop-blur-xl">
                 <div className="grid grid-cols-5 divide-x">
-                    <NavbarLink
-                        href={`/account/${address}`}
-                        className="rounded-l-lg"
-                    >
-                        Wallet
-                    </NavbarLink>
+                    <NavbarLink href={`/account/${address}`}>Wallet</NavbarLink>
                     <NavbarLink href={`/account/${address}/vault`}>
                         Vault
                     </NavbarLink>
@@ -63,7 +49,7 @@ export default function AccountLayout({
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="ghost"
-                                className="flex h-auto w-full flex-col rounded-none rounded-r-lg text-xs"
+                                className="flex h-auto w-full flex-col rounded-none text-xs"
                             >
                                 <Icons.moreHorizontal className="h-4 w-4" />
                             </Button>

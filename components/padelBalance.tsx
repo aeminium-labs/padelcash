@@ -9,11 +9,7 @@ type Props = {
     variant?: "default" | "small";
 };
 
-export async function PadelBalance({
-    data,
-    label = "Available balance",
-    variant = "default",
-}: Props) {
+export async function PadelBalance({ data }: Props) {
     const { account } = await data;
 
     const padelToken = account.balances.tokens.find(
@@ -25,29 +21,14 @@ export async function PadelBalance({
         usd: formatValue(padelToken?.amountUSD),
     };
 
-    if (variant === "small") {
-        return (
-            <>
-                <div className="text-sm font-medium text-teal-500">{label}</div>
-                <div className="p-6 pl-2">
-                    <div className="text-lg font-bold">
-                        {padelBalance.native.toString()}{" "}
-                        <span className="text-sm text-muted">PADEL</span>
-                    </div>
-                </div>
-            </>
-        );
-    }
-
     return (
-        <div className="flex flex-row items-baseline gap-8">
-            <div className="mb-1 text-2xl font-bold">
-                ${padelBalance.usd?.toString()}{" "}
-                <span className="text-sm text-muted-foreground">USD</span>
+        <div className="flex flex-1 flex-row items-baseline justify-between">
+            <div className="text-3xl font-bold">
+                ${padelBalance.usd?.toString()}
             </div>
-            <div className="text-md mb-1 opacity-80">
+            <div className="text-lg font-bold">
                 {padelBalance.native?.toString()}{" "}
-                <span className="text-xs text-muted-foreground">PADEL</span>
+                <span className="text-xs text-slate-700">$PADEL</span>
             </div>
         </div>
     );

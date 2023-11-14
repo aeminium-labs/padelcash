@@ -24,7 +24,10 @@ import { useToast } from "@/components/ui/use-toast";
 
 function SiteHeaderLoggedOut() {
     return (
-        <>
+        <div className="flex grow flex-row items-center justify-between">
+            <Link href="/" className="text-teal-500">
+                <Icons.logo className="h-6 w-6" />
+            </Link>
             <Link
                 href={siteConfig.links.twitter}
                 target="_blank"
@@ -41,7 +44,7 @@ function SiteHeaderLoggedOut() {
                     <span className="sr-only">Twitter</span>
                 </div>
             </Link>
-        </>
+        </div>
     );
 }
 
@@ -56,10 +59,7 @@ function SiteHeaderLoggedIn() {
     if (accountAddress) {
         return (
             <>
-                <Suspense fallback={<Skeleton className="h-6 w-full" />}>
-                    <PadelBalance data={getBalances(accountAddress)} />
-                </Suspense>
-                <div className="flex flex-1 items-center justify-end space-x-4">
+                <div className="flex items-center justify-start">
                     <nav className="flex items-center space-x-2">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -67,7 +67,7 @@ function SiteHeaderLoggedIn() {
                                     <Icons.user className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56" align="end">
+                            <DropdownMenuContent className="w-56" align="start">
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem
                                         onClick={async () => {
@@ -86,7 +86,7 @@ function SiteHeaderLoggedIn() {
                                             }
                                         }}
                                     >
-                                        Copy wallet address
+                                        Copy address
                                     </DropdownMenuItem>
 
                                     <DropdownMenuItem
@@ -110,11 +110,14 @@ function SiteHeaderLoggedIn() {
                         </DropdownMenu>
                     </nav>
                 </div>
+                <Suspense fallback={<Skeleton className="h-8 w-full" />}>
+                    <PadelBalance data={getBalances(accountAddress)} />
+                </Suspense>
             </>
         );
     }
 
-    return null;
+    return <Skeleton className="h-8 w-full" />;
 }
 
 export function SiteHeader() {
@@ -141,7 +144,7 @@ export function SiteHeader() {
                     setConnectionStatus("connected");
                 } else {
                     setUser(null);
-                    setConnectionStatus("init");
+                    setConnectionStatus("errored");
                 }
             }
         }
@@ -149,21 +152,10 @@ export function SiteHeader() {
         checkLogin();
     }, [setConnectionStatus, setUser, auth]);
 
-    const isClientSide = typeof window !== "undefined";
-    const bodyClasses = isClientSide && document.querySelector("body");
-    const hasProgressier = isClientSide && window.progressier;
-    const isInApp =
-        (bodyClasses &&
-            bodyClasses.classList.contains("progressier-standalone")) ||
-        (isClientSide &&
-            hasProgressier &&
-            window.progressier.native.standalone);
-
     return (
         <header className="fixed top-0 z-10 w-full border-b border-b-teal-700 bg-slate-900/90 backdrop-blur-xl">
-            <div className="container flex h-16 items-center space-x-4 px-4 sm:justify-between sm:space-x-0">
-                {connectionStatus === "connected" &&
-                (isInApp || !hasProgressier) ? (
+            <div className="container flex h-16 items-center justify-start gap-3 px-4">
+                {connectionStatus === "connected" ? (
                     <SiteHeaderLoggedIn />
                 ) : (
                     <SiteHeaderLoggedOut />

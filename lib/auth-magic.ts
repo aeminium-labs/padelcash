@@ -1,29 +1,15 @@
 import { SolanaExtension } from "@magic-ext/solana";
 import { InstanceWithExtensions, SDKBase } from "@magic-sdk/provider";
 import { Transaction } from "@solana/web3.js";
-import { CustomChainConfig, IProvider, WALLET_ADAPTERS } from "@web3auth/base";
-import { Web3AuthNoModal } from "@web3auth/no-modal";
-import {
-    LOGIN_PROVIDER_TYPE,
-    OpenloginAdapter,
-} from "@web3auth/openlogin-adapter";
-import {
-    SolanaPrivateKeyProvider,
-    SolanaWallet,
-} from "@web3auth/solana-provider";
 import { Magic } from "magic-sdk";
 
-import { login } from "@/lib/fetchers";
 import { getAppUrl } from "@/lib/utils";
 
-const clientId = process.env.NEXT_PUBLIC_WEB3AUTH_KEY;
+const clientId = process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY;
 const url = getAppUrl();
 export type Status = "init" | "connecting" | "connected" | "errored";
 
 export class Auth {
-    private web3auth: Web3AuthNoModal;
-    provider: IProvider | null;
-
     private magic:
         | InstanceWithExtensions<SDKBase, SolanaExtension[]>
         | undefined;
@@ -45,7 +31,7 @@ export class Auth {
             }
         }
 
-        this.magic = createMagic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY);
+        this.magic = createMagic(clientId);
     };
 
     getInstance = () => {
@@ -92,16 +78,12 @@ export class Auth {
     };
 
     signTransaction = async (transaction: Transaction): Promise<string> => {
-        const provider = this.web3auth.provider;
-
-        if (provider) {
+        if (this.magic) {
             try {
-                const solanaWallet = new SolanaWallet(provider);
-
                 const signedTx =
-                    await solanaWallet.signTransaction(transaction);
+                    await this.magic.solana.signTransaction(transaction);
 
-                return signedTx
+                return Transaction.from(signedTx.rawTransaction)
                     .serialize({
                         requireAllSignatures: false,
                     })

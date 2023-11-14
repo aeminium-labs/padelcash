@@ -1,5 +1,7 @@
 import {
+    ArrowDownLeftFromCircle,
     ArrowLeftRight,
+    ArrowUpRightFromCircle,
     Award,
     Book,
     CalendarDays,
@@ -72,6 +74,8 @@ export const Icons = {
     phone: Smartphone,
     copy: ClipboardCopy,
     gift: Gift,
+    pay: ArrowUpRightFromCircle,
+    receive: ArrowDownLeftFromCircle,
     logo: (props: LucideProps) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"

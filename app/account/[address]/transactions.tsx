@@ -4,8 +4,10 @@ import { PADEL_TOKEN } from "@/lib/constants";
 import {
     formatAdjustedValue,
     formatDate,
+    formatValue,
     trimWalletAddress,
 } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
     Sheet,
@@ -30,6 +32,7 @@ export type Transfer = {
         fromUserAccount: string;
         toUserAccount: string;
         tokenAmount: string;
+        tokenAmountUSD: string;
         mint: string;
     }>;
 };
@@ -47,6 +50,7 @@ type ParsedTransaction = {
     fromUserAccount: string;
     toUserAccount: string;
     tokenAmount: number;
+    tokenAmountUSD: number;
     mint: string;
 };
 
@@ -56,26 +60,35 @@ type TransactionProps = {
 };
 
 function Transaction({ accountAddress, tx }: TransactionProps) {
-    let txSign = "+";
-    let account = tx.fromUserAccount;
+    let txSign = "";
+    let extraClass = "";
+    let account = tx.toUserAccount;
 
-    if (tx.fromUserAccount === accountAddress) {
-        txSign = "-";
-        account = tx.toUserAccount;
+    if (tx.toUserAccount === accountAddress) {
+        txSign = "+";
+        extraClass = "text-teal-500";
+        account = tx.fromUserAccount;
     }
 
     return (
         <Sheet>
             <SheetTrigger>
-                <div className="flex items-center p-4">
-                    <div className="flex grow flex-col gap-1 text-left">
+                <div className="flex items-center py-4">
+                    <div className="flex grow flex-row items-center gap-2 text-left">
+                        <Avatar className="h-7 w-7">
+                            <AvatarFallback className="text-[0.6rem]">
+                                {account.substring(0, 2)}
+                            </AvatarFallback>
+                        </Avatar>
                         <p className="text-sm font-medium leading-none">
                             {trimWalletAddress(account)}
                         </p>
                     </div>
                     <div className="flex flex-col gap-1 text-right">
-                        <p className={"text-md font-medium leading-none"}>
-                            {`${txSign}${formatAdjustedValue(tx.tokenAmount)}`}
+                        <p
+                            className={`text-lg font-medium leading-none ${extraClass}`}
+                        >
+                            {`${txSign}$${formatValue(tx.tokenAmountUSD)}`}
                         </p>
                     </div>
                 </div>
@@ -163,6 +176,7 @@ export async function Transactions({
                     ...padelTx,
                     signature: tx.signature,
                     tokenAmount: parseFloat(padelTx.tokenAmount),
+                    tokenAmountUSD: parseFloat(padelTx.tokenAmountUSD),
                     timestamp: tx.timestamp,
                     dateUTC: tx.dateUTC,
                 };
@@ -177,7 +191,7 @@ export async function Transactions({
     }
 
     return (
-        <div className="flex flex-col divide-y">
+        <div className="flex flex-col">
             {padelTxs.map((tx) => (
                 <Transaction
                     accountAddress={accountAddress}

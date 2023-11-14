@@ -5,8 +5,9 @@ import { gql } from "graphql-request";
 
 import { graphQLClient } from "@/lib/graphql";
 import { getPadelAta } from "@/lib/server/fetchers";
+import { Icons } from "@/components/icons";
 import { Container } from "@/components/shared/container";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export type AccountBalances = {
@@ -41,6 +42,7 @@ const getTransactions = async (address: string) => {
                         fromUserAccount
                         toUserAccount
                         tokenAmount
+                        tokenAmountUSD
                         mint
                     }
                 }
@@ -67,13 +69,32 @@ export default function OverviewPage({ params }: Props) {
     return (
         <AuthChecker address={params.address}>
             <Container>
+                <div className="flex flex-row gap-2">
+                    <Button
+                        variant="secondary"
+                        size="default"
+                        className="grow flex-row items-center gap-2 md:flex"
+                    >
+                        <Icons.pay className="h-4 w-4" />
+                        Pay
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        size="default"
+                        className="grow flex-row items-center gap-2 md:flex"
+                    >
+                        <Icons.receive className="h-4 w-4" />
+                        Receive
+                    </Button>
+                </div>
+                <h3 className="py-2 text-left text-lg font-bold">
+                    Recent transactions
+                </h3>
                 <Suspense fallback={<Skeleton className="w-full grow" />}>
-                    <ScrollArea className="flex grow rounded-md bg-slate-800/60 p-2">
-                        <Transactions
-                            data={getTransactions(params.address)}
-                            accountAddress={params.address}
-                        />
-                    </ScrollArea>
+                    <Transactions
+                        data={getTransactions(params.address)}
+                        accountAddress={params.address}
+                    />
                 </Suspense>
             </Container>
         </AuthChecker>
