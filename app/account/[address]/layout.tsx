@@ -33,7 +33,7 @@ export default function AccountLayout({
     return (
         <>
             {children}
-            <footer className="fixed inset-x-4 bottom-4 overflow-hidden rounded-lg border border-teal-700 bg-slate-900/50 backdrop-blur-xl">
+            <footer className="fixed inset-x-0 bottom-0 overflow-hidden border-t border-teal-700 bg-slate-900/50 backdrop-blur-xl">
                 <div className="grid grid-cols-5 divide-x">
                     <NavbarLink href={`/account/${address}`}>Wallet</NavbarLink>
                     <NavbarLink href={`/account/${address}/vault`}>

@@ -17,15 +17,13 @@ export default function AccountPage() {
     useEffect(() => {
         async function checkUserBadge() {
             if (userAddress) {
-                if (userAddress) {
-                    // Check if has registered before
-                    const { exists } = await verifyBadge(userAddress, "REG");
+                // Check if has registered before
+                const { exists } = await verifyBadge(userAddress, "REG");
 
-                    if (exists) {
-                        router.push(`/account/${userAddress}`);
-                    } else {
-                        router.push(`/account/welcome`);
-                    }
+                if (exists) {
+                    router.push(`/account/${userAddress}`);
+                } else {
+                    router.push(`/account/welcome`);
                 }
             }
         }

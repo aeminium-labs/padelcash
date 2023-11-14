@@ -68,16 +68,8 @@ type Props = {
 export default function OverviewPage({ params }: Props) {
     return (
         <AuthChecker address={params.address}>
-            <Container>
-                <div className="flex flex-row gap-2">
-                    <Button
-                        variant="secondary"
-                        size="default"
-                        className="grow flex-row items-center gap-2 md:flex"
-                    >
-                        <Icons.pay className="h-4 w-4" />
-                        Pay
-                    </Button>
+            <Container className="pb-24">
+                <div className="fixed inset-x-2 bottom-16 z-10 flex flex-row gap-2">
                     <Button
                         variant="secondary"
                         size="default"
@@ -86,10 +78,15 @@ export default function OverviewPage({ params }: Props) {
                         <Icons.receive className="h-4 w-4" />
                         Receive
                     </Button>
+                    <Button
+                        variant="secondary"
+                        size="default"
+                        className="grow flex-row items-center gap-2 md:flex"
+                    >
+                        <Icons.pay className="h-4 w-4" />
+                        Pay
+                    </Button>
                 </div>
-                <h3 className="py-2 text-left text-lg font-bold">
-                    Recent transactions
-                </h3>
                 <Suspense fallback={<Skeleton className="w-full grow" />}>
                     <Transactions
                         data={getTransactions(params.address)}

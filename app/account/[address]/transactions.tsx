@@ -73,6 +73,9 @@ function Transaction({ accountAddress, tx }: TransactionProps) {
     return (
         <Sheet>
             <SheetTrigger>
+                <h3 className="text-md py-2 text-left font-bold text-muted-foreground">
+                    Today
+                </h3>
                 <div className="flex items-center py-4">
                     <div className="flex grow flex-row items-center gap-2 text-left">
                         <Avatar className="h-7 w-7">
