@@ -23,6 +23,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 
 export function SiteHeaderLoggedOut() {
+    const auth = useAtomValue(authAtom);
+
+    useEffect(() => {
+        if (auth && !auth.getInstance()) {
+            auth.init();
+        }
+    });
+
     return (
         <header className="fixed top-0 z-10 w-full border-b border-b-teal-700 bg-slate-900/90 backdrop-blur-xl">
             <div className="container flex h-16 items-center justify-start gap-3 px-4">
