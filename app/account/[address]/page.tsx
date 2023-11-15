@@ -5,7 +5,6 @@ import { gql } from "graphql-request";
 
 import { graphQLClient } from "@/lib/graphql";
 import { getPadelAta } from "@/lib/server/fetchers";
-import { Icons } from "@/components/icons";
 import { Container } from "@/components/shared/container";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -69,13 +68,21 @@ export default function OverviewPage({ params }: Props) {
     return (
         <AuthChecker address={params.address}>
             <Container className="pb-28">
-                <div className="fixed inset-x-2 bottom-16 z-10 grid grid-cols-3 gap-2">
+                <h1 className="py-2 text-left text-2xl font-bold">
+                    Transactions
+                </h1>
+                <Suspense fallback={<Skeleton className="w-full grow" />}>
+                    <Transactions
+                        data={getTransactions(params.address)}
+                        accountAddress={params.address}
+                    />
+                </Suspense>
+                <div className="fixed inset-x-2 bottom-20 z-10 grid grid-cols-3 gap-2">
                     <Button
                         variant="secondary"
                         size="lg"
                         className="grow flex-row items-center gap-2 px-6 md:flex"
                     >
-                        <Icons.receive className="h-4 w-4" />
                         Receive
                     </Button>
                     <Button
@@ -83,16 +90,9 @@ export default function OverviewPage({ params }: Props) {
                         size="lg"
                         className="col-span-2 grow flex-row items-center gap-2 md:flex"
                     >
-                        <Icons.pay className="h-4 w-4" />
                         Pay
                     </Button>
                 </div>
-                <Suspense fallback={<Skeleton className="w-full grow" />}>
-                    <Transactions
-                        data={getTransactions(params.address)}
-                        accountAddress={params.address}
-                    />
-                </Suspense>
             </Container>
         </AuthChecker>
     );

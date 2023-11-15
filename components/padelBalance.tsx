@@ -2,6 +2,7 @@ import { AccountBalances } from "@/app/account/[address]/page";
 
 import { PADEL_TOKEN } from "@/lib/constants";
 import { formatAdjustedValue, formatValue } from "@/lib/utils";
+import { BalanceToggle } from "@/components/shared/balanceToggle";
 
 type Props = {
     data: Promise<AccountBalances>;
@@ -22,14 +23,11 @@ export async function PadelBalance({ data }: Props) {
     };
 
     return (
-        <div className="flex flex-1 flex-row items-baseline justify-between">
-            <div className="text-3xl font-bold">
-                ${padelBalance.usd?.toString()}
-            </div>
-            <div className="text-lg font-bold">
-                {padelBalance.native?.toString()}{" "}
-                <span className="text-xs text-slate-700">$PADEL</span>
-            </div>
+        <div className="flex flex-1 flex-row items-baseline justify-start">
+            <BalanceToggle
+                usdBalance={padelBalance.usd.toString()}
+                padelBalance={padelBalance.native.toString()}
+            />
         </div>
     );
 }

@@ -26,7 +26,6 @@ export default function RootLayout({ children }: Props) {
         <html lang="en" className={`${fontSans.variable} dark`}>
             <body className="min-h-screen bg-white font-sans text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-50">
                 <Providers>
-                    <SiteHeader />
                     {children}
                     <Toaster />
                 </Providers>

@@ -10,7 +10,7 @@ export function Container({
     return (
         <section
             className={cn(
-                "container flex min-h-[100dvh] flex-col px-4 py-20",
+                "container flex min-h-[100dvh] flex-col px-4 py-20 pt-4",
                 className
             )}
         >

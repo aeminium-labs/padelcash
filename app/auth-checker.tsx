@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
-import { connectionStatusAtom, userAtom } from "@/lib/store";
+import { authAtom, connectionStatusAtom, userAtom } from "@/lib/store";
 import { Icons } from "@/components/icons";
 import { Container } from "@/components/shared/container";
 import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
@@ -15,8 +16,37 @@ type Props = {
 };
 
 export function AuthChecker({ children, address }: Props) {
-    const connectionStatus = useAtomValue(connectionStatusAtom);
-    const user = useAtomValue(userAtom);
+    const [connectionStatus, setConnectionStatus] =
+        useAtom(connectionStatusAtom);
+    const [user, setUser] = useAtom(userAtom);
+
+    const auth = useAtomValue(authAtom);
+
+    useEffect(() => {
+        async function checkLogin() {
+            if (auth) {
+                if (!auth.getInstance()) {
+                    auth.init();
+                }
+
+                // Check if the user is authenticated already
+                setConnectionStatus("connecting");
+                const isLoggedIn = await auth.isLoggedIn();
+                if (isLoggedIn) {
+                    // Pull their metadata, update our state, and route to dashboard
+                    const userData = await auth.getUserInfo();
+
+                    setUser(userData);
+                    setConnectionStatus("connected");
+                } else {
+                    setUser(null);
+                    setConnectionStatus("errored");
+                }
+            }
+        }
+
+        checkLogin();
+    }, [setConnectionStatus, setUser, auth]);
 
     const isLoading =
         connectionStatus === "init" ||

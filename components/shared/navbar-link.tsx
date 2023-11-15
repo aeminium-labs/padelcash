@@ -50,7 +50,7 @@ export function NavbarLink({
             variant={isActive ? "success" : "ghost"}
             className={cn(
                 navlinkVariants({ variant }),
-                "flex h-auto w-full gap-2 rounded-none py-4 text-xs",
+                "flex h-auto w-full gap-1 rounded-none py-4 text-xs",
                 className
             )}
             disabled={disabled}

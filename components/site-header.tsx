@@ -22,29 +22,33 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 
-function SiteHeaderLoggedOut() {
+export function SiteHeaderLoggedOut() {
     return (
-        <div className="flex grow flex-row items-center justify-between">
-            <Link href="/" className="text-teal-500">
-                <Icons.logo className="h-6 w-6" />
-            </Link>
-            <Link
-                href={siteConfig.links.twitter}
-                target="_blank"
-                rel="noreferrer"
-            >
-                <div
-                    className={buttonVariants({
-                        size: "sm",
-                        variant: "ghost",
-                        className: "text-slate-700 dark:text-slate-400",
-                    })}
-                >
-                    <Icons.twitter className="h-5 w-5 fill-current" />
-                    <span className="sr-only">Twitter</span>
+        <header className="fixed top-0 z-10 w-full border-b border-b-teal-700 bg-slate-900/90 backdrop-blur-xl">
+            <div className="container flex h-16 items-center justify-start gap-3 px-4">
+                <div className="flex grow flex-row items-center justify-between">
+                    <Link href="/" className="text-teal-500">
+                        <Icons.logo className="h-6 w-6" />
+                    </Link>
+                    <Link
+                        href={siteConfig.links.twitter}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        <div
+                            className={buttonVariants({
+                                size: "sm",
+                                variant: "ghost",
+                                className: "text-slate-700 dark:text-slate-400",
+                            })}
+                        >
+                            <Icons.twitter className="h-5 w-5 fill-current" />
+                            <span className="sr-only">Twitter</span>
+                        </div>
+                    </Link>
                 </div>
-            </Link>
-        </div>
+            </div>
+        </header>
     );
 }
 

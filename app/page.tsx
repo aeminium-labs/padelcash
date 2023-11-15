@@ -1,5 +1,3 @@
-"use client";
-
 import Script from "next/script";
 import QRCode from "react-qr-code";
 
@@ -7,6 +5,7 @@ import { getAppUrl } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { MainFooter } from "@/components/main-footer";
 import { Container } from "@/components/shared/container";
+import { SiteHeaderLoggedOut } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -26,7 +25,8 @@ export default function IndexPage() {
                 strategy="afterInteractive"
                 src="https://progressier.app/c00Kg9Z1JBplPIq0ICqp/script.js"
             ></Script>
-            <Container className="gap-10">
+            <SiteHeaderLoggedOut />
+            <Container className="gap-10 py-20">
                 <div className="flex flex-col items-start gap-2">
                     <h1 className="max-w-[1000px] text-4xl font-extrabold leading-tight lg:text-6xl lg:leading-snug">
                         Taking the World&apos;s fastest-growing sport into the{" "}
